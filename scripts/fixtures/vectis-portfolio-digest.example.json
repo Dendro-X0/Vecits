@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "portfolio-digest-v1",
+  "maintainerPubkey": "",
+  "skills": ["rust", "typescript", "devops"],
+  "repos": ["vectis-coordination/demo"],
+  "intent": ["maintenance", "oss-contribution", "software-fixes"],
+  "excludeTags": ["crypto", "nft", "unpaid", "equity-only"]
+}

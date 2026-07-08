@@ -1,0 +1,15 @@
+{
+  "schema": "client.session@0.1.0",
+  "sessionId": "csess-3f9df05a3ef8",
+  "provider": "webview2-cdp",
+  "proofTier": "t3",
+  "createdAt": "2026-07-03T08:14:54.548236900+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "url": "http://127.0.0.1:5173/verify/monitor",
+  "attachedTarget": {
+    "targetId": "91F3540C0AC2BEE19E7D82461884B42B",
+    "windowLabel": "main",
+    "url": "http://127.0.0.1:5173/verify/monitor",
+    "attachedAt": "2026-07-03T08:15:00.910529700+00:00"
+  }
+}

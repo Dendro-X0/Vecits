@@ -1,0 +1,9 @@
+{
+  "schema": "client.session@0.1.0",
+  "sessionId": "csess-b62126696701",
+  "provider": "playwright-chromium",
+  "proofTier": "t2",
+  "createdAt": "2026-07-03T08:15:52.385138600+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "url": "http://localhost:3000/marketplace"
+}

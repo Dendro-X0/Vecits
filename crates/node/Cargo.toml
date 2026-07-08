@@ -1,0 +1,28 @@
+[package]
+name = "node"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+chrono.workspace = true
+http.workspace = true
+hex.workspace = true
+policy = { path = "../policy" }
+protocol-core = { path = "../protocol-core" }
+reqwest.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+state-engine = { path = "../state-engine" }
+tokio.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+ed25519-dalek.workspace = true
+tokio.workspace = true

@@ -1,0 +1,2879 @@
+{
+  "schema": "studio.repo.tree.snapshot@1.0.0",
+  "exploreId": "re-c06139f8ea77",
+  "scanSnapshotHash": "sha256:1dac977025b93f57f686dd3297b5429e2046da518e4ed00ad653572a84896543",
+  "root": ".",
+  "snapshotHash": "sha256:198b8ba53bfa35163d3aaee33d0090b0194f958141b71805fb80cc1aa3a44824",
+  "totalNodes": 424,
+  "truncated": false,
+  "warnings": [],
+  "nodes": [
+    {
+      "path": ".codactrl",
+      "name": ".codactrl",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": ".codactrl/.gitignore",
+      "name": ".gitignore",
+      "kind": "file",
+      "depth": 2
+    },
+    {
+      "path": ".codactrl/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 2,
+      "extension": "md"
+    },
+    {
+      "path": ".codactrl/config.json",
+      "name": "config.json",
+      "kind": "file",
+      "depth": 2,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/index.json",
+      "name": "index.json",
+      "kind": "file",
+      "depth": 2,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/technical",
+      "name": "technical",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": ".codactrl/technical/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": ".codactrl/technical/explore-latest.json",
+      "name": "explore-latest.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/technical/flows.snapshot.json",
+      "name": "flows.snapshot.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/technical/meta.json",
+      "name": "meta.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/technical/repo.profile.json",
+      "name": "repo.profile.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": ".codactrl/technical/report.md",
+      "name": "report.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": ".codactrl/technical/summary.md",
+      "name": "summary.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": ".dockerignore",
+      "name": ".dockerignore",
+      "kind": "file",
+      "depth": 1
+    },
+    {
+      "path": ".github",
+      "name": ".github",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": ".github/workflows",
+      "name": "workflows",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": ".github/workflows/release-build.yml",
+      "name": "release-build.yml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "yml"
+    },
+    {
+      "path": ".gitignore",
+      "name": ".gitignore",
+      "kind": "file",
+      "depth": 1
+    },
+    {
+      "path": "Cargo.lock",
+      "name": "Cargo.lock",
+      "kind": "file",
+      "depth": 1,
+      "extension": "lock"
+    },
+    {
+      "path": "Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 1,
+      "extension": "toml"
+    },
+    {
+      "path": "Dockerfile",
+      "name": "Dockerfile",
+      "kind": "file",
+      "depth": 1
+    },
+    {
+      "path": "README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 1,
+      "extension": "md"
+    },
+    {
+      "path": "apps",
+      "name": "apps",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "apps/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 2,
+      "extension": "md"
+    },
+    {
+      "path": "apps/cli",
+      "name": "cli",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "apps/cli/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "apps/cli/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/cli/src/main.rs",
+      "name": "main.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "apps/desktop",
+      "name": "desktop",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "apps/desktop/.gitignore",
+      "name": ".gitignore",
+      "kind": "file",
+      "depth": 3
+    },
+    {
+      "path": "apps/desktop/assets",
+      "name": "assets",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/desktop/assets/icon.svg",
+      "name": "icon.svg",
+      "kind": "file",
+      "depth": 4,
+      "extension": "svg"
+    },
+    {
+      "path": "apps/desktop/package.json",
+      "name": "package.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri",
+      "name": "src-tauri",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/desktop/src-tauri/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 4,
+      "extension": "toml"
+    },
+    {
+      "path": "apps/desktop/src-tauri/build.rs",
+      "name": "build.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "apps/desktop/src-tauri/capabilities",
+      "name": "capabilities",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/desktop/src-tauri/capabilities/default.json",
+      "name": "default.json",
+      "kind": "file",
+      "depth": 5,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen",
+      "name": "gen",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen/schemas",
+      "name": "schemas",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen/schemas/acl-manifests.json",
+      "name": "acl-manifests.json",
+      "kind": "file",
+      "depth": 6,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen/schemas/capabilities.json",
+      "name": "capabilities.json",
+      "kind": "file",
+      "depth": 6,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen/schemas/desktop-schema.json",
+      "name": "desktop-schema.json",
+      "kind": "file",
+      "depth": 6,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri/gen/schemas/windows-schema.json",
+      "name": "windows-schema.json",
+      "kind": "file",
+      "depth": 6,
+      "extension": "json"
+    },
+    {
+      "path": "apps/desktop/src-tauri/icons",
+      "name": "icons",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/desktop/src-tauri/icons/128x128.png",
+      "name": "128x128.png",
+      "kind": "file",
+      "depth": 5,
+      "extension": "png"
+    },
+    {
+      "path": "apps/desktop/src-tauri/icons/128x128@2x.png",
+      "name": "128x128@2x.png",
+      "kind": "file",
+      "depth": 5,
+      "extension": "png"
+    },
+    {
+      "path": "apps/desktop/src-tauri/icons/32x32.png",
+      "name": "32x32.png",
+      "kind": "file",
+      "depth": 5,
+      "extension": "png"
+    },
+    {
+      "path": "apps/desktop/src-tauri/icons/icon.ico",
+      "name": "icon.ico",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ico"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 5,
+      "extension": "rs"
+    },
+    {
+      "path": "apps/desktop/src-tauri/src/main.rs",
+      "name": "main.rs",
+      "kind": "file",
+      "depth": 5,
+      "extension": "rs"
+    },
+    {
+      "path": "apps/desktop/src-tauri/tauri.conf.json",
+      "name": "tauri.conf.json",
+      "kind": "file",
+      "depth": 4,
+      "extension": "json"
+    },
+    {
+      "path": "apps/web",
+      "name": "web",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "apps/web/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "apps/web/app",
+      "name": "app",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/web/app/account",
+      "name": "account",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/account/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/api",
+      "name": "api",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/api/operations",
+      "name": "operations",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/api/operations/exports",
+      "name": "exports",
+      "kind": "dir",
+      "depth": 6
+    },
+    {
+      "path": "apps/web/app/api/operations/exports/route.ts",
+      "name": "route.ts",
+      "kind": "file",
+      "depth": 7,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/app/components",
+      "name": "components",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/components/contribution-credit-builder.tsx",
+      "name": "contribution-credit-builder.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/fixture-quickstart.tsx",
+      "name": "fixture-quickstart.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/identity-create-form.tsx",
+      "name": "identity-create-form.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/kernel-truth-notice.tsx",
+      "name": "kernel-truth-notice.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/marketplace-event-builder.tsx",
+      "name": "marketplace-event-builder.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/onboarding-wizard.tsx",
+      "name": "onboarding-wizard.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/components/operations-command-tools.tsx",
+      "name": "operations-command-tools.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/dashboard",
+      "name": "dashboard",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/dashboard/layout.tsx",
+      "name": "layout.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/dashboard/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/dashboard/settings",
+      "name": "settings",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/dashboard/settings/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer",
+      "name": "explorer",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/explorer/balance",
+      "name": "balance",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/balance/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/components",
+      "name": "components",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/components/example-presets.tsx",
+      "name": "example-presets.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/components/explorer-defaults-bar.tsx",
+      "name": "explorer-defaults-bar.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/components/explorer-shell.tsx",
+      "name": "explorer-shell.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/components/json-viewer.tsx",
+      "name": "json-viewer.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/components/share-url-button.tsx",
+      "name": "share-url-button.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/discovery",
+      "name": "discovery",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/discovery/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/identity",
+      "name": "identity",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/identity/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/lib.ts",
+      "name": "lib.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/app/explorer/milestones",
+      "name": "milestones",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/milestones/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/offers",
+      "name": "offers",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/offers/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/orders",
+      "name": "orders",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/orders/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/policy",
+      "name": "policy",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/policy/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/explorer/reputation",
+      "name": "reputation",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/explorer/reputation/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/globals.css",
+      "name": "globals.css",
+      "kind": "file",
+      "depth": 4,
+      "extension": "css"
+    },
+    {
+      "path": "apps/web/app/layout.tsx",
+      "name": "layout.tsx",
+      "kind": "file",
+      "depth": 4,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace",
+      "name": "marketplace",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/marketplace/lanes",
+      "name": "lanes",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/marketplace/lanes/[lane]",
+      "name": "[lane]",
+      "kind": "dir",
+      "depth": 6
+    },
+    {
+      "path": "apps/web/app/marketplace/lanes/[lane]/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 7,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace/layout.tsx",
+      "name": "layout.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace/mutual-aid",
+      "name": "mutual-aid",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/marketplace/mutual-aid/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 6,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace/offers",
+      "name": "offers",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/marketplace/offers/[id]",
+      "name": "[id]",
+      "kind": "dir",
+      "depth": 6
+    },
+    {
+      "path": "apps/web/app/marketplace/offers/[id]/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 7,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace/orders",
+      "name": "orders",
+      "kind": "dir",
+      "depth": 5
+    },
+    {
+      "path": "apps/web/app/marketplace/orders/[id]",
+      "name": "[id]",
+      "kind": "dir",
+      "depth": 6
+    },
+    {
+      "path": "apps/web/app/marketplace/orders/[id]/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 7,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/marketplace/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/operator",
+      "name": "operator",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/operator/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 4,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/register",
+      "name": "register",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/register/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/app/sign-in",
+      "name": "sign-in",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/app/sign-in/page.tsx",
+      "name": "page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components",
+      "name": "components",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/web/components.json",
+      "name": "components.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "apps/web/components/auth",
+      "name": "auth",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/auth/auth-carousel.tsx",
+      "name": "auth-carousel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/auth-divider.tsx",
+      "name": "auth-divider.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/auth-shell.tsx",
+      "name": "auth-shell.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/auth-status.tsx",
+      "name": "auth-status.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/key-backup-panel.tsx",
+      "name": "key-backup-panel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/key-quick-actions.tsx",
+      "name": "key-quick-actions.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/passkey-vault-panel.tsx",
+      "name": "passkey-vault-panel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/register-form.tsx",
+      "name": "register-form.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/auth/sign-in-form.tsx",
+      "name": "sign-in-form.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/dashboard",
+      "name": "dashboard",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/dashboard/dashboard-settings-panel.tsx",
+      "name": "dashboard-settings-panel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/dashboard/dashboard-shell.tsx",
+      "name": "dashboard-shell.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/dashboard/overview-page.tsx",
+      "name": "overview-page.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace",
+      "name": "marketplace",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/marketplace/category-sidebar.tsx",
+      "name": "category-sidebar.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/kernel-truth-banner.tsx",
+      "name": "kernel-truth-banner.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/listing-card.tsx",
+      "name": "listing-card.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/listing-grid-with-session.tsx",
+      "name": "listing-grid-with-session.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/listing-grid.tsx",
+      "name": "listing-grid.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/marketplace-filters.tsx",
+      "name": "marketplace-filters.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/marketplace-hero.tsx",
+      "name": "marketplace-hero.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/marketplace-toolbar.tsx",
+      "name": "marketplace-toolbar.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/order-exchange-panel.tsx",
+      "name": "order-exchange-panel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/marketplace/start-exchange-panel.tsx",
+      "name": "start-exchange-panel.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/shell",
+      "name": "shell",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/shell/app-shell.tsx",
+      "name": "app-shell.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/shell/marketplace-trust-bar.tsx",
+      "name": "marketplace-trust-bar.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/shell/site-footer.tsx",
+      "name": "site-footer.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/shell/site-header.tsx",
+      "name": "site-header.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/theme",
+      "name": "theme",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/theme/theme-init-script.tsx",
+      "name": "theme-init-script.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/theme/theme-provider.tsx",
+      "name": "theme-provider.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/theme/theme-toggle.tsx",
+      "name": "theme-toggle.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui",
+      "name": "ui",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/components/ui/badge.tsx",
+      "name": "badge.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/button.tsx",
+      "name": "button.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/card.tsx",
+      "name": "card.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/input.tsx",
+      "name": "input.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/label.tsx",
+      "name": "label.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/scroll-area.tsx",
+      "name": "scroll-area.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/select.tsx",
+      "name": "select.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/components/ui/separator.tsx",
+      "name": "separator.tsx",
+      "kind": "file",
+      "depth": 5,
+      "extension": "tsx"
+    },
+    {
+      "path": "apps/web/lib",
+      "name": "lib",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "apps/web/lib/auth",
+      "name": "auth",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/lib/auth/key-backup.ts",
+      "name": "key-backup.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/auth/passkey-vault.ts",
+      "name": "passkey-vault.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/auth/session.ts",
+      "name": "session.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/auth/vault-crypto.ts",
+      "name": "vault-crypto.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/dashboard",
+      "name": "dashboard",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/lib/dashboard/load-live-overview.ts",
+      "name": "load-live-overview.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/dashboard/profile.ts",
+      "name": "profile.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/dashboard/showcase-stats.ts",
+      "name": "showcase-stats.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace",
+      "name": "marketplace",
+      "kind": "dir",
+      "depth": 4
+    },
+    {
+      "path": "apps/web/lib/marketplace/escrow-spend.ts",
+      "name": "escrow-spend.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/lanes.ts",
+      "name": "lanes.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/listings.ts",
+      "name": "listings.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/load.ts",
+      "name": "load.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/node.ts",
+      "name": "node.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/offer-normalize.ts",
+      "name": "offer-normalize.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/order-normalize.ts",
+      "name": "order-normalize.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/policy.ts",
+      "name": "policy.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/service-accept.ts",
+      "name": "service-accept.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/service-delivery.ts",
+      "name": "service-delivery.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/marketplace/service-order.ts",
+      "name": "service-order.ts",
+      "kind": "file",
+      "depth": 5,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/theme.ts",
+      "name": "theme.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/lib/utils.ts",
+      "name": "utils.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/next-env.d.ts",
+      "name": "next-env.d.ts",
+      "kind": "file",
+      "depth": 3,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/next.config.ts",
+      "name": "next.config.ts",
+      "kind": "file",
+      "depth": 3,
+      "extension": "ts"
+    },
+    {
+      "path": "apps/web/package.json",
+      "name": "package.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "apps/web/postcss.config.mjs",
+      "name": "postcss.config.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "apps/web/tsconfig.json",
+      "name": "tsconfig.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "apps/web/tsconfig.tsbuildinfo",
+      "name": "tsconfig.tsbuildinfo",
+      "kind": "file",
+      "depth": 3,
+      "extension": "tsbuildinfo"
+    },
+    {
+      "path": "crates",
+      "name": "crates",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "crates/node",
+      "name": "node",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "crates/node/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "crates/node/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/node/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/node/src/server.rs",
+      "name": "server.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/node/src/storage.rs",
+      "name": "storage.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/node/tests",
+      "name": "tests",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/node/tests/api.rs",
+      "name": "api.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/node/tests/runtime.rs",
+      "name": "runtime.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/node/tests/sync.rs",
+      "name": "sync.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/policy",
+      "name": "policy",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "crates/policy/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "crates/policy/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/policy/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/protocol-core",
+      "name": "protocol-core",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "crates/protocol-core/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "crates/protocol-core/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/protocol-core/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/reputation",
+      "name": "reputation",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "crates/reputation/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "crates/reputation/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/reputation/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine",
+      "name": "state-engine",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "crates/state-engine/Cargo.toml",
+      "name": "Cargo.toml",
+      "kind": "file",
+      "depth": 3,
+      "extension": "toml"
+    },
+    {
+      "path": "crates/state-engine/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/state-engine/src/lib.rs",
+      "name": "lib.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine/src/model.rs",
+      "name": "model.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine/src/replay.rs",
+      "name": "replay.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine/tests",
+      "name": "tests",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "crates/state-engine/tests/fixtures.rs",
+      "name": "fixtures.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine/tests/in_memory_replay.rs",
+      "name": "in_memory_replay.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "crates/state-engine/tests/reputation.rs",
+      "name": "reputation.rs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "rs"
+    },
+    {
+      "path": "deploy",
+      "name": "deploy",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "deploy/docker-compose.production.yml",
+      "name": "docker-compose.production.yml",
+      "kind": "file",
+      "depth": 2,
+      "extension": "yml"
+    },
+    {
+      "path": "deploy/scripts",
+      "name": "scripts",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "deploy/scripts/r2-backup.sh",
+      "name": "r2-backup.sh",
+      "kind": "file",
+      "depth": 3,
+      "extension": "sh"
+    },
+    {
+      "path": "deploy/systemd",
+      "name": "systemd",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "deploy/systemd/vectis-backup.service",
+      "name": "vectis-backup.service",
+      "kind": "file",
+      "depth": 3,
+      "extension": "service"
+    },
+    {
+      "path": "deploy/systemd/vectis-backup.timer",
+      "name": "vectis-backup.timer",
+      "kind": "file",
+      "depth": 3,
+      "extension": "timer"
+    },
+    {
+      "path": "deploy/systemd/vectis-node.service",
+      "name": "vectis-node.service",
+      "kind": "file",
+      "depth": 3,
+      "extension": "service"
+    },
+    {
+      "path": "deploy/windows",
+      "name": "windows",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "deploy/windows/Register-VectisBackupTask.ps1",
+      "name": "Register-VectisBackupTask.ps1",
+      "kind": "file",
+      "depth": 3,
+      "extension": "ps1"
+    },
+    {
+      "path": "docker",
+      "name": "docker",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "docker-compose.yml",
+      "name": "docker-compose.yml",
+      "kind": "file",
+      "depth": 1,
+      "extension": "yml"
+    },
+    {
+      "path": "docker/entrypoint.sh",
+      "name": "entrypoint.sh",
+      "kind": "file",
+      "depth": 2,
+      "extension": "sh"
+    },
+    {
+      "path": "docs",
+      "name": "docs",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "docs/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 2,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture",
+      "name": "architecture",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/discovery-engine-bridge.md",
+      "name": "discovery-engine-bridge.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/event-versioning-strategy.md",
+      "name": "event-versioning-strategy.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/phase2-compute-job-lane.md",
+      "name": "phase2-compute-job-lane.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/stalled-project-support-flow.md",
+      "name": "stalled-project-support-flow.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/v0-architecture.md",
+      "name": "v0-architecture.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/v0-foundation.md",
+      "name": "v0-foundation.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/architecture/v0-spec-outline.md",
+      "name": "v0-spec-outline.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive",
+      "name": "archive",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/archive/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/glossary.md",
+      "name": "glossary.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/legacy-dcos-index.md",
+      "name": "legacy-dcos-index.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/marketplace-v0.md",
+      "name": "marketplace-v0.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/protocol-v0.md",
+      "name": "protocol-v0.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/roadmap.md",
+      "name": "roadmap.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/archive/vision.md",
+      "name": "vision.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation",
+      "name": "foundation",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/foundation/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/collaboration-value-doctrine.md",
+      "name": "collaboration-value-doctrine.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/design-principles.md",
+      "name": "design-principles.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/economic-controls-track.md",
+      "name": "economic-controls-track.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/economic-protocol-v1.md",
+      "name": "economic-protocol-v1.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/exploration-roadmap.md",
+      "name": "exploration-roadmap.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/market-operating-model.md",
+      "name": "market-operating-model.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/open-questions.md",
+      "name": "open-questions.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/platform-vision-exploration.md",
+      "name": "platform-vision-exploration.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/product-identity.md",
+      "name": "product-identity.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/project-thesis.md",
+      "name": "project-thesis.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/foundation/vectis-vs-blockchain-exploration.md",
+      "name": "vectis-vs-blockchain-exploration.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/index.md",
+      "name": "index.md",
+      "kind": "file",
+      "depth": 2,
+      "extension": "md"
+    },
+    {
+      "path": "docs/meta",
+      "name": "meta",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/meta/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/meta/docs-sync-checklist.md",
+      "name": "docs-sync-checklist.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap",
+      "name": "roadmap",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/roadmap/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/progress.md",
+      "name": "progress.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/r0-spec-lock-execution-plan.md",
+      "name": "r0-spec-lock-execution-plan.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/r2-deployment-proof-execution-plan.md",
+      "name": "r2-deployment-proof-execution-plan.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/r7-professional-client-execution-plan.md",
+      "name": "r7-professional-client-execution-plan.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/restart-roadmap.md",
+      "name": "restart-roadmap.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/roadmap/working-context-log.md",
+      "name": "working-context-log.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks",
+      "name": "runbooks",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/runbooks/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/alpha-operations-runbook.md",
+      "name": "alpha-operations-runbook.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/operator-backup-runbook.md",
+      "name": "operator-backup-runbook.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/operator-quickstart.md",
+      "name": "operator-quickstart.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/operator-security-guide.md",
+      "name": "operator-security-guide.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/phase1-operations-cadence.md",
+      "name": "phase1-operations-cadence.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/phase1-preflight-checklist.md",
+      "name": "phase1-preflight-checklist.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/r2-exchange-runbook.md",
+      "name": "r2-exchange-runbook.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/runbooks/r2-persistent-deployment-runbook.md",
+      "name": "r2-persistent-deployment-runbook.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs",
+      "name": "specs",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/specs/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/deployment-distribution-spec.md",
+      "name": "deployment-distribution-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/discovery-bridge-spec.md",
+      "name": "discovery-bridge-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/kernel-boundary-spec.md",
+      "name": "kernel-boundary-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/kernel-public-api.md",
+      "name": "kernel-public-api.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/restart-decisions.md",
+      "name": "restart-decisions.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/specs/security-resilience-spec.md",
+      "name": "security-resilience-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0",
+      "name": "v0",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "docs/v0/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/r4-client-kernel-audit.md",
+      "name": "r4-client-kernel-audit.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-abuse-gaming-test-matrix.md",
+      "name": "v0-abuse-gaming-test-matrix.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-closed-alpha-readiness-report.md",
+      "name": "v0-closed-alpha-readiness-report.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-exit-evidence-matrix.md",
+      "name": "v0-exit-evidence-matrix.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-phase0-execution-plan.md",
+      "name": "v0-phase0-execution-plan.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-roadmap.md",
+      "name": "v0-roadmap.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-scenario-fixture-matrix.md",
+      "name": "v0-scenario-fixture-matrix.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-track3-remaining-spec.md",
+      "name": "v0-track3-remaining-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "docs/v0/v0-track4-sync-spec.md",
+      "name": "v0-track4-sync-spec.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "fixtures",
+      "name": "fixtures",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "fixtures/invalid",
+      "name": "invalid",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "fixtures/invalid/bad-signature.jsonl",
+      "name": "bad-signature.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/duplicate-nonce.jsonl",
+      "name": "duplicate-nonce.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/marketplace-duplicate-offer.jsonl",
+      "name": "marketplace-duplicate-offer.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/marketplace-missing-reference.jsonl",
+      "name": "marketplace-missing-reference.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/marketplace-overfunding.jsonl",
+      "name": "marketplace-overfunding.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/marketplace-settlement-mismatch.jsonl",
+      "name": "marketplace-settlement-mismatch.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/marketplace-unauthorized-delivery.jsonl",
+      "name": "marketplace-unauthorized-delivery.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/missing-reference.jsonl",
+      "name": "missing-reference.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/policy-update-backdated-effective-at.jsonl",
+      "name": "policy-update-backdated-effective-at.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/policy-update-duplicate-version.jsonl",
+      "name": "policy-update-duplicate-version.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/policy-update-non-monotonic-effective-at.jsonl",
+      "name": "policy-update-non-monotonic-effective-at.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/policy-update-unauthorized.jsonl",
+      "name": "policy-update-unauthorized.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/policy-version-mismatch-post-activation.jsonl",
+      "name": "policy-version-mismatch-post-activation.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/invalid/unsupported-sink.jsonl",
+      "name": "unsupported-sink.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/node",
+      "name": "node",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "fixtures/node/as-of-consistency.jsonl",
+      "name": "as-of-consistency.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/node/batch-mixed.json",
+      "name": "batch-mixed.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "fixtures/node/corrupted-snapshot.json",
+      "name": "corrupted-snapshot.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "fixtures/node/pagination-sequence.jsonl",
+      "name": "pagination-sequence.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid",
+      "name": "valid",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "fixtures/valid/claim-mint-spend.jsonl",
+      "name": "claim-mint-spend.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/expiry-demurrage.jsonl",
+      "name": "expiry-demurrage.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/identity-rotation.jsonl",
+      "name": "identity-rotation.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-accept.jsonl",
+      "name": "marketplace-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-compute-job-accept.jsonl",
+      "name": "marketplace-compute-job-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-compute-job-dispute.jsonl",
+      "name": "marketplace-compute-job-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-dispute-settle.jsonl",
+      "name": "marketplace-dispute-settle.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-documentation-accept.jsonl",
+      "name": "marketplace-documentation-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-documentation-dispute.jsonl",
+      "name": "marketplace-documentation-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-feature-work-accept.jsonl",
+      "name": "marketplace-feature-work-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-feature-work-dispute.jsonl",
+      "name": "marketplace-feature-work-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-project-maintenance-accept.jsonl",
+      "name": "marketplace-project-maintenance-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-project-maintenance-dispute.jsonl",
+      "name": "marketplace-project-maintenance-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-research-accept.jsonl",
+      "name": "marketplace-research-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-research-dispute.jsonl",
+      "name": "marketplace-research-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-testing-accept.jsonl",
+      "name": "marketplace-testing-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-testing-dispute.jsonl",
+      "name": "marketplace-testing-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-timeout-autorefund.jsonl",
+      "name": "marketplace-timeout-autorefund.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-translation-accept.jsonl",
+      "name": "marketplace-translation-accept.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/marketplace-translation-dispute.jsonl",
+      "name": "marketplace-translation-dispute.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "fixtures/valid/policy-update-forward.jsonl",
+      "name": "policy-update-forward.jsonl",
+      "kind": "file",
+      "depth": 3,
+      "extension": "jsonl"
+    },
+    {
+      "path": "package-lock.json",
+      "name": "package-lock.json",
+      "kind": "file",
+      "depth": 1,
+      "extension": "json"
+    },
+    {
+      "path": "package.json",
+      "name": "package.json",
+      "kind": "file",
+      "depth": 1,
+      "extension": "json"
+    },
+    {
+      "path": "packages",
+      "name": "packages",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "packages/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 2,
+      "extension": "md"
+    },
+    {
+      "path": "packages/sdk-ts",
+      "name": "sdk-ts",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "packages/sdk-ts/README.md",
+      "name": "README.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "packages/sdk-ts/STABILITY.md",
+      "name": "STABILITY.md",
+      "kind": "file",
+      "depth": 3,
+      "extension": "md"
+    },
+    {
+      "path": "packages/sdk-ts/package.json",
+      "name": "package.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "packages/sdk-ts/src",
+      "name": "src",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "packages/sdk-ts/src/client.ts",
+      "name": "client.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "packages/sdk-ts/src/events.ts",
+      "name": "events.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "packages/sdk-ts/src/index.ts",
+      "name": "index.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "packages/sdk-ts/src/types.ts",
+      "name": "types.ts",
+      "kind": "file",
+      "depth": 4,
+      "extension": "ts"
+    },
+    {
+      "path": "packages/sdk-ts/tsconfig.json",
+      "name": "tsconfig.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "name": "pnpm-lock.yaml",
+      "kind": "file",
+      "depth": 1,
+      "extension": "yaml"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "name": "pnpm-workspace.yaml",
+      "kind": "file",
+      "depth": 1,
+      "extension": "yaml"
+    },
+    {
+      "path": "scripts",
+      "name": "scripts",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "scripts/build-release.mjs",
+      "name": "build-release.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/docker-smoke.mjs",
+      "name": "docker-smoke.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/fixtures",
+      "name": "fixtures",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "scripts/fixtures/discovery-signals-golden.json",
+      "name": "discovery-signals-golden.json",
+      "kind": "file",
+      "depth": 3,
+      "extension": "json"
+    },
+    {
+      "path": "scripts/fixtures/generate-discovery-golden.mjs",
+      "name": "generate-discovery-golden.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/install.ps1",
+      "name": "install.ps1",
+      "kind": "file",
+      "depth": 2,
+      "extension": "ps1"
+    },
+    {
+      "path": "scripts/install.sh",
+      "name": "install.sh",
+      "kind": "file",
+      "depth": 2,
+      "extension": "sh"
+    },
+    {
+      "path": "scripts/lib",
+      "name": "lib",
+      "kind": "dir",
+      "depth": 2
+    },
+    {
+      "path": "scripts/lib/discovery-bridge",
+      "name": "discovery-bridge",
+      "kind": "dir",
+      "depth": 3
+    },
+    {
+      "path": "scripts/lib/discovery-bridge/bootstrap-offer-events.mjs",
+      "name": "bootstrap-offer-events.mjs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/discovery-bridge/lane-templates.mjs",
+      "name": "lane-templates.mjs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/discovery-bridge/offer-draft.mjs",
+      "name": "offer-draft.mjs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/discovery-bridge/signal-schema.mjs",
+      "name": "signal-schema.mjs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/discovery-bridge/validate-draft.mjs",
+      "name": "validate-draft.mjs",
+      "kind": "file",
+      "depth": 4,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/ga6-drill-core.mjs",
+      "name": "ga6-drill-core.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/r2-evidence-core.mjs",
+      "name": "r2-evidence-core.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/r2-exchange-core.mjs",
+      "name": "r2-exchange-core.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/lib/release-binary.mjs",
+      "name": "release-binary.mjs",
+      "kind": "file",
+      "depth": 3,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-backup.mjs",
+      "name": "r2-backup.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-deploy-smoke.mjs",
+      "name": "r2-deploy-smoke.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-evidence-export.mjs",
+      "name": "r2-evidence-export.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-evidence-pack.mjs",
+      "name": "r2-evidence-pack.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-exchange-drill.mjs",
+      "name": "r2-exchange-drill.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r2-restore-drill.mjs",
+      "name": "r2-restore-drill.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/r4-client-audit.mjs",
+      "name": "r4-client-audit.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/resolve-release-binary.mjs",
+      "name": "resolve-release-binary.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-artifact-prune-plan.mjs",
+      "name": "v1-artifact-prune-plan.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-evidence-manifest.mjs",
+      "name": "v1-evidence-manifest.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-export-audit-log-plan-smoke.mjs",
+      "name": "v1-export-audit-log-plan-smoke.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-export-audit-log-plan.mjs",
+      "name": "v1-export-audit-log-plan.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-ga6-drill-release.mjs",
+      "name": "v1-ga6-drill-release.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-ga6-drill.mjs",
+      "name": "v1-ga6-drill.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-generate-lane-fixture.mjs",
+      "name": "v1-generate-lane-fixture.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-lane-fixture-check.mjs",
+      "name": "v1-lane-fixture-check.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v1-preflight.mjs",
+      "name": "v1-preflight.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v2-compute-receipt.mjs",
+      "name": "v2-compute-receipt.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v3-discovery-bridge-e2e.mjs",
+      "name": "v3-discovery-bridge-e2e.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "scripts/v3-discovery-bridge.mjs",
+      "name": "v3-discovery-bridge.mjs",
+      "kind": "file",
+      "depth": 2,
+      "extension": "mjs"
+    },
+    {
+      "path": "tsconfig.base.json",
+      "name": "tsconfig.base.json",
+      "kind": "file",
+      "depth": 1,
+      "extension": "json"
+    },
+    {
+      "path": "vectis-data",
+      "name": "vectis-data",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "vectis-data-r2",
+      "name": "vectis-data-r2",
+      "kind": "dir",
+      "depth": 1
+    },
+    {
+      "path": "vectis-data-r2/events.log",
+      "name": "events.log",
+      "kind": "file",
+      "depth": 2,
+      "extension": "log"
+    },
+    {
+      "path": "vectis-data-r2/manifest.json",
+      "name": "manifest.json",
+      "kind": "file",
+      "depth": 2,
+      "extension": "json"
+    },
+    {
+      "path": "vectis-data-r2/node.db",
+      "name": "node.db",
+      "kind": "file",
+      "depth": 2,
+      "extension": "db"
+    },
+    {
+      "path": "vectis-data/events.log",
+      "name": "events.log",
+      "kind": "file",
+      "depth": 2,
+      "extension": "log"
+    },
+    {
+      "path": "vectis-data/manifest.json",
+      "name": "manifest.json",
+      "kind": "file",
+      "depth": 2,
+      "extension": "json"
+    },
+    {
+      "path": "vectis-data/node.db",
+      "name": "node.db",
+      "kind": "file",
+      "depth": 2,
+      "extension": "db"
+    }
+  ]
+}

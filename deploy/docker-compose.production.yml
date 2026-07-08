@@ -1,0 +1,23 @@
+services:
+  vectis-node:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: vectis-node:local
+    restart: unless-stopped
+    ports:
+      - "7878:7878"
+    environment:
+      VECTIS_DATA_DIR: /data
+    volumes:
+      - vectis-data:/data
+    command: ["node", "serve", "--data-dir", "/data", "--bind", "0.0.0.0:7878"]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:7878/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  vectis-data:

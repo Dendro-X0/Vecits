@@ -1,0 +1,12 @@
+target
+dist
+.git
+.github
+node_modules
+**/node_modules
+.next
+**/.next
+target/tmp
+*.tsbuildinfo
+apps/web/.next
+packages/sdk-ts/dist

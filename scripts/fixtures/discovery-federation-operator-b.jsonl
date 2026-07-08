@@ -1,0 +1,2 @@
+{"schemaVersion":"discovery-signal-v1","source":"github-issues","externalId":"fed-gh-1","title":"Duplicate title from operator B","url":"https://example.com/fed/1","dedupeKey":"fed-d1","discoveredAt":"2026-07-01T00:00:00Z","tags":["help-wanted"]}
+{"schemaVersion":"discovery-signal-v1","source":"github-issues","externalId":"fed-gh-3","title":"GPU batch inference job","url":"https://example.com/fed/3","dedupeKey":"fed-d3","discoveredAt":"2026-07-01T00:02:00Z","tags":["compute"]}

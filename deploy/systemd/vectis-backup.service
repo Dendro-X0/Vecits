@@ -1,0 +1,10 @@
+[Unit]
+Description=Vectis operator data backup (R2)
+
+[Service]
+Type=oneshot
+User=vectis
+Group=vectis
+Environment=VECTIS_DATA_DIR=/var/lib/vectis/data
+Environment=VECTIS_BACKUP_DIR=/var/backups/vectis
+ExecStart=/opt/vectis/scripts/r2-backup.sh ${VECTIS_DATA_DIR} ${VECTIS_BACKUP_DIR}

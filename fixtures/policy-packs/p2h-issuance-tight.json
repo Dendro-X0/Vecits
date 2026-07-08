@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "policy-pack-v1",
+  "packId": "p2h-issuance-tight",
+  "description": "Activates issuance window controls and caps P2H risk band at medium (SCN-19 reference pack).",
+  "nextPolicyVersion": "v0-policy-p2h",
+  "policy": {
+    "version": "v0-policy-p2h",
+    "clockSkewSeconds": 300,
+    "creditDefaultExpiryDays": 180,
+    "providerRewardExpiryDays": 90,
+    "demurrageRateWeeklyBps": 100,
+    "claimApprovalThreshold": 2,
+    "maxContributionClaimCredits": 1000,
+    "allowedServiceTypes": [
+      "software-fixes",
+      "documentation",
+      "project-maintenance",
+      "local-resource-exchange",
+      "physical-handoff"
+    ],
+    "maxMilestonesPerOrder": 16,
+    "maxMilestoneCredits": 5000,
+    "acceptanceWindowSeconds": 604800,
+    "disputeTimeoutSeconds": 1209600,
+    "providerEligibilityThreshold": 2,
+    "attestorEligibilityThreshold": 1,
+    "allowedSinkKinds": ["ServiceEscrowSink", "ComputeSink", "AISink", "StorageSink", "BountySink"],
+    "policyAuthorityPubKey": "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
+    "issuanceWindowSeconds": 86400,
+    "maxIssuanceEventsPerIdentityWindow": 1,
+    "maxIssuanceEventsPerLaneWindow": 0,
+    "minIssuanceCounterpartyDiversity": 2,
+    "maxP2hRiskBand": "medium"
+  }
+}

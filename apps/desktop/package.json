@@ -1,0 +1,16 @@
+{
+  "name": "@vectis/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "android:init": "tauri android init --ci",
+    "android:dev": "tauri android dev",
+    "android:build": "tauri android build",
+    "typecheck": "echo \"@vectis/desktop: no TS sources\""
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.3"
+  }
+}

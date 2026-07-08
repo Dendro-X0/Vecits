@@ -1,0 +1,36 @@
+{
+  "schema": "client.session.steps@0.1.0",
+  "sessionId": "csess-870e2c136ebf",
+  "updatedAt": "2026-07-03T08:16:31.450190800+00:00",
+  "stepCount": 3,
+  "steps": [
+    {
+      "index": 0,
+      "stepId": "step-7953c41238f4",
+      "action": "snapshot",
+      "captureId": "cap-9300fc887942",
+      "manifestPath": ".codectx/verify/client-sessions/csess-870e2c136ebf/captures/cap-9300fc887942/manifest.json",
+      "pass": true,
+      "at": "2026-07-03T08:16:20.549623600+00:00"
+    },
+    {
+      "index": 1,
+      "stepId": "step-8d54a1601a86",
+      "action": "click",
+      "captureId": "cap-12163f4a91cd",
+      "manifestPath": ".codectx/verify/client-sessions/csess-870e2c136ebf/captures/cap-12163f4a91cd/manifest.json",
+      "selector": "header nav a[href=\"/dashboard\"]",
+      "pass": true,
+      "at": "2026-07-03T08:16:31.435388800+00:00"
+    },
+    {
+      "index": 0,
+      "stepId": "step-41fdd5f69be6",
+      "action": "mcp.client.interact.click",
+      "captureId": "cap-12163f4a91cd",
+      "manifestPath": ".codectx/verify/client-sessions/csess-870e2c136ebf/captures/cap-12163f4a91cd/manifest.json",
+      "pass": true,
+      "at": "2026-07-03T08:16:31.438534400+00:00"
+    }
+  ]
+}

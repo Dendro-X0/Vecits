@@ -1,0 +1,15 @@
+[package]
+name = "state-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+chrono.workspace = true
+hex.workspace = true
+policy = { path = "../policy" }
+protocol-core = { path = "../protocol-core" }
+reputation = { path = "../reputation" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

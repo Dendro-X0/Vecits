@@ -1,0 +1,15 @@
+# CodaCtrl workspace CDP profile for Vectis.
+# Web dev port: assigned by scripts/ensure-dev-web-port.mjs (see .dev/web-port).
+schema: client.cdp.profile@0.1.0
+
+probePorts: [9222]
+devServerPorts: [7878, 4601, 4602]
+excludeProbePorts: [5173, 3000, 3001]
+
+preferUrlIncludes:
+  - "/marketplace"
+  - ":4601"
+  - ":4602"
+
+excludeUrlIncludes:
+  - ":5173"

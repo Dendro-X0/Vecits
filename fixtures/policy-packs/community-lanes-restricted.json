@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "policy-pack-v1",
+  "packId": "community-lanes-restricted",
+  "description": "Restricts marketplace lanes to software-fixes and documentation with a shorter acceptance window.",
+  "nextPolicyVersion": "v0-policy-1",
+  "policy": {
+    "version": "v0-policy-1",
+    "clockSkewSeconds": 300,
+    "creditDefaultExpiryDays": 180,
+    "providerRewardExpiryDays": 90,
+    "demurrageRateWeeklyBps": 100,
+    "claimApprovalThreshold": 2,
+    "maxContributionClaimCredits": 1000,
+    "allowedServiceTypes": ["software-fixes", "documentation"],
+    "maxMilestonesPerOrder": 16,
+    "maxMilestoneCredits": 5000,
+    "acceptanceWindowSeconds": 7200,
+    "disputeTimeoutSeconds": 1209600,
+    "providerEligibilityThreshold": 2,
+    "attestorEligibilityThreshold": 1,
+    "allowedSinkKinds": ["ServiceEscrowSink", "ComputeSink", "AISink", "StorageSink", "BountySink"],
+    "policyAuthorityPubKey": "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737"
+  }
+}

@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[30977,["/_next/static/chunks/0w0_e1t8i18f2.js","/_next/static/chunks/20chkicxe5v_u.js","/_next/static/chunks/2vhz72ukw-xoh.js"],""]
+3:I[60683,["/_next/static/chunks/0w0_e1t8i18f2.js","/_next/static/chunks/20chkicxe5v_u.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"mx-auto max-w-2xl space-y-4 px-6 py-16 text-sm","children":[["$","h1",null,{"className":"text-2xl font-semibold tracking-tight","children":"Operator console"}],["$","p",null,{"className":"text-muted-foreground","children":"The full debug console is not bundled in the desktop static shell. Use Settings → Advanced for readiness drills and evidence export, or run the web deployment for the legacy console."}],["$","$L2",null,{"href":"/dashboard/settings/advanced","className":"inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 font-medium text-primary-foreground","children":"Open advanced tools"}]]}],[["$","script","script-0",{"src":"/_next/static/chunks/2vhz72ukw-xoh.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"5Bbrv73sk6zuI596ANwxq"}
+5:null

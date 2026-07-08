@@ -1,0 +1,11 @@
+/target
+/.idea
+/.vscode
+/node_modules
+**/node_modules
+/.next
+**/.next
+**/dist
+/.dev
+apps/web/.env.local
+.env.local

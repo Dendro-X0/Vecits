@@ -1,0 +1,18 @@
+[Unit]
+Description=Vectis coordination node
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vectis
+Group=vectis
+WorkingDirectory=/opt/vectis
+Environment=VECTIS_DATA_DIR=/var/lib/vectis/data
+ExecStart=/opt/vectis/bin/vectis-node node serve --data-dir ${VECTIS_DATA_DIR} --bind 127.0.0.1:7878
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

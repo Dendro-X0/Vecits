@@ -1,0 +1,392 @@
+{
+  "schema": "studio.repo.flows.snapshot@1.0.0",
+  "exploreId": "re-d4a1a23c4465",
+  "scanSnapshotHash": "sha256:b2aad089f6ad06da7d3b9e53765983dd952014297b5bf2889120f04721a219b1",
+  "snapshotHash": "sha256:1a55330a6230f7cc63a96e04e0da70b041b3fe9c9fa626ec290af95490b8b741",
+  "generatedAt": "2026-07-03T06:23:47.892400100+00:00",
+  "summary": {
+    "ciFlowCount": 1,
+    "scriptFlowCount": 4,
+    "stepCount": 41
+  },
+  "flows": [
+    {
+      "id": "ci:release-build",
+      "kind": "ci",
+      "name": "Release Build",
+      "sourcePath": ".github/workflows/release-build.yml",
+      "packagePath": null,
+      "trigger": "workflow_dispatch, push, tags",
+      "steps": [
+        {
+          "order": 1,
+          "id": "build",
+          "name": "build",
+          "kind": "job",
+          "command": "cargo build --release --bin cli --bin vectis-node --target ${{ matrix.target }}",
+          "evidencePath": ".github/workflows/release-build.yml"
+        }
+      ]
+    },
+    {
+      "id": "script:apps/desktop",
+      "kind": "script",
+      "name": "@vectis/desktop scripts",
+      "sourcePath": "apps/desktop/package.json",
+      "packagePath": "apps/desktop",
+      "trigger": null,
+      "steps": [
+        {
+          "order": 1,
+          "id": "build",
+          "name": "build",
+          "kind": "script",
+          "command": "tauri build",
+          "evidencePath": "apps/desktop/package.json"
+        },
+        {
+          "order": 2,
+          "id": "dev",
+          "name": "dev",
+          "kind": "script",
+          "command": "tauri dev",
+          "evidencePath": "apps/desktop/package.json"
+        },
+        {
+          "order": 3,
+          "id": "typecheck",
+          "name": "typecheck",
+          "kind": "script",
+          "command": "echo \"@vectis/desktop: no TS sources\"",
+          "evidencePath": "apps/desktop/package.json"
+        }
+      ]
+    },
+    {
+      "id": "script:apps/web",
+      "kind": "script",
+      "name": "@new-start/web scripts",
+      "sourcePath": "apps/web/package.json",
+      "packagePath": "apps/web",
+      "trigger": null,
+      "steps": [
+        {
+          "order": 1,
+          "id": "build",
+          "name": "build",
+          "kind": "script",
+          "command": "next build",
+          "evidencePath": "apps/web/package.json"
+        },
+        {
+          "order": 2,
+          "id": "dev",
+          "name": "dev",
+          "kind": "script",
+          "command": "next dev",
+          "evidencePath": "apps/web/package.json"
+        },
+        {
+          "order": 3,
+          "id": "start",
+          "name": "start",
+          "kind": "script",
+          "command": "next start",
+          "evidencePath": "apps/web/package.json"
+        },
+        {
+          "order": 4,
+          "id": "typecheck",
+          "name": "typecheck",
+          "kind": "script",
+          "command": "tsc -p tsconfig.json --noEmit",
+          "evidencePath": "apps/web/package.json"
+        }
+      ]
+    },
+    {
+      "id": "script:root",
+      "kind": "script",
+      "name": "vectis-workspace scripts",
+      "sourcePath": "package.json",
+      "packagePath": null,
+      "trigger": null,
+      "steps": [
+        {
+          "order": 1,
+          "id": "brand:icons",
+          "name": "brand:icons",
+          "kind": "script",
+          "command": "pnpm --filter @vectis/desktop exec tauri icon assets/icon.svg -o src-tauri/icons",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 2,
+          "id": "build",
+          "name": "build",
+          "kind": "script",
+          "command": "pnpm --filter @new-start/sdk-ts build && pnpm --filter @new-start/web build",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 3,
+          "id": "build:desktop",
+          "name": "build:desktop",
+          "kind": "script",
+          "command": "pnpm --filter @vectis/desktop build",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 4,
+          "id": "dev:desktop",
+          "name": "dev:desktop",
+          "kind": "script",
+          "command": "pnpm --filter @vectis/desktop dev",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 5,
+          "id": "dev:web",
+          "name": "dev:web",
+          "kind": "script",
+          "command": "pnpm --filter @new-start/sdk-ts build && pnpm --filter @new-start/web dev",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 6,
+          "id": "r2:backup",
+          "name": "r2:backup",
+          "kind": "script",
+          "command": "node ./scripts/r2-backup.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 7,
+          "id": "r2:deploy-smoke",
+          "name": "r2:deploy-smoke",
+          "kind": "script",
+          "command": "node ./scripts/r2-deploy-smoke.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 8,
+          "id": "r2:evidence-export",
+          "name": "r2:evidence-export",
+          "kind": "script",
+          "command": "node ./scripts/r2-evidence-export.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 9,
+          "id": "r2:evidence-pack",
+          "name": "r2:evidence-pack",
+          "kind": "script",
+          "command": "node ./scripts/r2-evidence-pack.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 10,
+          "id": "r2:exchange-drill",
+          "name": "r2:exchange-drill",
+          "kind": "script",
+          "command": "node ./scripts/r2-exchange-drill.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 11,
+          "id": "r2:restore-drill",
+          "name": "r2:restore-drill",
+          "kind": "script",
+          "command": "node ./scripts/r2-restore-drill.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 12,
+          "id": "r4:client-audit",
+          "name": "r4:client-audit",
+          "kind": "script",
+          "command": "node ./scripts/r4-client-audit.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 13,
+          "id": "typecheck",
+          "name": "typecheck",
+          "kind": "script",
+          "command": "pnpm -r --filter \"@new-start/*\" --filter \"@vectis/desktop\" typecheck",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 14,
+          "id": "v1:artifact-prune-plan",
+          "name": "v1:artifact-prune-plan",
+          "kind": "script",
+          "command": "node ./scripts/v1-artifact-prune-plan.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 15,
+          "id": "v1:build-release",
+          "name": "v1:build-release",
+          "kind": "script",
+          "command": "node ./scripts/build-release.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 16,
+          "id": "v1:docker-smoke",
+          "name": "v1:docker-smoke",
+          "kind": "script",
+          "command": "node ./scripts/docker-smoke.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 17,
+          "id": "v1:evidence-manifest",
+          "name": "v1:evidence-manifest",
+          "kind": "script",
+          "command": "node ./scripts/v1-evidence-manifest.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 18,
+          "id": "v1:export-audit-log-plan",
+          "name": "v1:export-audit-log-plan",
+          "kind": "script",
+          "command": "node ./scripts/v1-export-audit-log-plan.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 19,
+          "id": "v1:export-audit-log-plan:smoke",
+          "name": "v1:export-audit-log-plan:smoke",
+          "kind": "script",
+          "command": "node ./scripts/v1-export-audit-log-plan-smoke.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 20,
+          "id": "v1:ga6-drill",
+          "name": "v1:ga6-drill",
+          "kind": "script",
+          "command": "node ./scripts/v1-ga6-drill.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 21,
+          "id": "v1:ga6-drill:release",
+          "name": "v1:ga6-drill:release",
+          "kind": "script",
+          "command": "node ./scripts/v1-ga6-drill-release.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 22,
+          "id": "v1:lane-fixtures",
+          "name": "v1:lane-fixtures",
+          "kind": "script",
+          "command": "node ./scripts/v1-lane-fixture-check.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 23,
+          "id": "v1:lane-fixtures:readiness",
+          "name": "v1:lane-fixtures:readiness",
+          "kind": "script",
+          "command": "node ./scripts/v1-lane-fixture-check.mjs --with-typecheck",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 24,
+          "id": "v1:preflight",
+          "name": "v1:preflight",
+          "kind": "script",
+          "command": "node ./scripts/v1-preflight.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 25,
+          "id": "v1:readiness",
+          "name": "v1:readiness",
+          "kind": "script",
+          "command": "node ./scripts/v1-preflight.mjs --with-typecheck",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 26,
+          "id": "v1:resolve-release",
+          "name": "v1:resolve-release",
+          "kind": "script",
+          "command": "node ./scripts/resolve-release-binary.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 27,
+          "id": "v2:compute-receipt",
+          "name": "v2:compute-receipt",
+          "kind": "script",
+          "command": "node ./scripts/v2-compute-receipt.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 28,
+          "id": "v2:compute-receipt:smoke",
+          "name": "v2:compute-receipt:smoke",
+          "kind": "script",
+          "command": "node ./scripts/v2-compute-receipt.mjs --smoke",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 29,
+          "id": "v3:discovery-bridge:e2e",
+          "name": "v3:discovery-bridge:e2e",
+          "kind": "script",
+          "command": "node ./scripts/v3-discovery-bridge-e2e.mjs",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 30,
+          "id": "v3:discovery-bridge:smoke",
+          "name": "v3:discovery-bridge:smoke",
+          "kind": "script",
+          "command": "node ./scripts/v3-discovery-bridge.mjs --smoke",
+          "evidencePath": "package.json"
+        },
+        {
+          "order": 31,
+          "id": "verify:desktop",
+          "name": "verify:desktop",
+          "kind": "script",
+          "command": "cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml",
+          "evidencePath": "package.json"
+        }
+      ]
+    },
+    {
+      "id": "script:packages/sdk-ts",
+      "kind": "script",
+      "name": "@new-start/sdk-ts scripts",
+      "sourcePath": "packages/sdk-ts/package.json",
+      "packagePath": "packages/sdk-ts",
+      "trigger": null,
+      "steps": [
+        {
+          "order": 1,
+          "id": "build",
+          "name": "build",
+          "kind": "script",
+          "command": "tsc -p tsconfig.json",
+          "evidencePath": "packages/sdk-ts/package.json"
+        },
+        {
+          "order": 2,
+          "id": "typecheck",
+          "name": "typecheck",
+          "kind": "script",
+          "command": "tsc -p tsconfig.json --noEmit",
+          "evidencePath": "packages/sdk-ts/package.json"
+        }
+      ]
+    }
+  ]
+}

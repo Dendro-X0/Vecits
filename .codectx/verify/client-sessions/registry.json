@@ -1,0 +1,26 @@
+{
+  "schema": "client.session.registry@1.0.0",
+  "updatedAt": "2026-07-03T08:15:23.142906700+00:00",
+  "sessions": [
+    {
+      "sessionId": "csess-b1143894e972",
+      "windowLabel": "main",
+      "targetId": "91F3540C0AC2BEE19E7D82461884B42B",
+      "cdpPort": 9222,
+      "url": "http://127.0.0.1:5173/verify/monitor",
+      "provider": "webview2-cdp",
+      "proofTier": "t3",
+      "updatedAt": "2026-07-03T08:15:23.142006100+00:00"
+    },
+    {
+      "sessionId": "csess-3f9df05a3ef8",
+      "windowLabel": "main",
+      "targetId": "91F3540C0AC2BEE19E7D82461884B42B",
+      "cdpPort": 9222,
+      "url": "http://127.0.0.1:5173/verify/monitor",
+      "provider": "webview2-cdp",
+      "proofTier": "t3",
+      "updatedAt": "2026-07-03T08:15:00.910529700+00:00"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[package]
+name = "cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "cli"
+path = "src/main.rs"
+
+[[bin]]
+name = "vectis-node"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+ed25519-dalek.workspace = true
+hex.workspace = true
+node = { path = "../../crates/node" }
+protocol-core = { path = "../../crates/protocol-core" }
+policy = { path = "../../crates/policy" }
+rand.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+state-engine = { path = "../../crates/state-engine" }
+tokio.workspace = true

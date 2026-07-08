@@ -1,0 +1,319 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - link "V Vectis Official marketplace client" [ref=e6] [cursor=pointer]:
+            - /url: /marketplace
+            - generic [ref=e7]: V
+            - generic [ref=e8]:
+              - paragraph [ref=e9]: Vectis
+              - paragraph [ref=e10]: Official marketplace client
+          - navigation [ref=e11]:
+            - link "Marketplace" [ref=e12] [cursor=pointer]:
+              - /url: /marketplace
+              - img [ref=e13]
+              - text: Marketplace
+            - link "Dashboard" [ref=e16] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e17]
+              - text: Dashboard
+            - link "Explore" [ref=e22] [cursor=pointer]:
+              - /url: /explorer
+              - img [ref=e23]
+              - text: Explore
+            - link "Settings" [ref=e26] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e27]
+              - text: Settings
+        - generic [ref=e30]:
+          - 'button "Theme: system. Switch to light." [ref=e31]':
+            - img
+          - link "Operator" [ref=e32] [cursor=pointer]:
+            - /url: /operator
+          - link "Sign in" [ref=e33] [cursor=pointer]:
+            - /url: /sign-in
+    - main [ref=e34]:
+      - generic [ref=e36]:
+        - img [ref=e37]
+        - generic [ref=e40]: Viewing marketplace on http://127.0.0.1:7878
+        - generic [ref=e42]: Credits are in-protocol coordination units — not fiat money. No ads. Ranking by alignment, not traffic games.
+        - generic [ref=e44]: Showcase listings — connect a node for live kernel data
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]:
+            - img [ref=e50]
+            - text: Freelance work & mutual aid on-protocol
+          - heading "Find aligned work. Settle with confidence." [level=1] [ref=e53]
+          - paragraph [ref=e54]: Browse services and community maintenance without ads or platform traffic games. Exchange value through escrow milestones and kernel-confirmed settlement — not traditional currency.
+          - generic [ref=e55]:
+            - link "Browse listings" [ref=e56] [cursor=pointer]:
+              - /url: "#listings"
+            - link "Mutual aid" [ref=e57] [cursor=pointer]:
+              - /url: /marketplace/mutual-aid
+              - img [ref=e58]
+              - text: Mutual aid
+        - generic [ref=e63]:
+          - paragraph [ref=e64]: How this marketplace differs
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - img [ref=e67]
+              - text: Matching by alignment between your needs and provider history — not promoted slots.
+            - listitem [ref=e69]:
+              - img [ref=e70]
+              - text: Settlement rules live in the protocol kernel, not operator discretion.
+            - listitem [ref=e72]:
+              - img [ref=e73]
+              - text: Guest browsing is open. Sign in with a local key to post offers and start exchanges.
+      - generic [ref=e75]:
+        - generic [ref=e77]:
+          - img [ref=e78]
+          - paragraph [ref=e80]: "Kernel truth: Discovery rankings are informational scores from kernel replay. They are not payment guarantees or off-platform trust endorsements."
+        - generic [ref=e81]: fetch failed
+        - generic [ref=e82]:
+          - complementary [ref=e83]:
+            - generic [ref=e84]:
+              - paragraph [ref=e85]: Browse
+              - generic [ref=e86]:
+                - link "All listings" [ref=e87] [cursor=pointer]:
+                  - /url: /marketplace
+                  - generic [ref=e88]: All listings
+                - link "Mutual aid" [ref=e89] [cursor=pointer]:
+                  - /url: /marketplace/mutual-aid
+                  - generic [ref=e90]: Mutual aid
+            - generic [ref=e91]:
+              - paragraph [ref=e92]: Categories
+              - generic [ref=e94]:
+                - link "Software Fixes" [ref=e95] [cursor=pointer]:
+                  - /url: /marketplace/lanes/software-fixes
+                  - generic [ref=e96]: Software Fixes
+                - link "Feature Work" [ref=e97] [cursor=pointer]:
+                  - /url: /marketplace/lanes/feature-work
+                  - generic [ref=e98]: Feature Work
+                - link "Documentation" [ref=e99] [cursor=pointer]:
+                  - /url: /marketplace/lanes/documentation
+                  - generic [ref=e100]: Documentation
+                - link "Translation" [ref=e101] [cursor=pointer]:
+                  - /url: /marketplace/lanes/translation
+                  - generic [ref=e102]: Translation
+                - link "Testing" [ref=e103] [cursor=pointer]:
+                  - /url: /marketplace/lanes/testing
+                  - generic [ref=e104]: Testing
+                - link "Research" [ref=e105] [cursor=pointer]:
+                  - /url: /marketplace/lanes/research
+                  - generic [ref=e106]: Research
+                - link "Project Maintenance Aid" [ref=e107] [cursor=pointer]:
+                  - /url: /marketplace/lanes/project-maintenance
+                  - generic [ref=e108]: Project Maintenance
+                  - generic [ref=e109]: Aid
+                - link "Compute Jobs" [ref=e110] [cursor=pointer]:
+                  - /url: /marketplace/lanes/compute-job
+                  - generic [ref=e111]: Compute Jobs
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - heading "Listings" [level=2] [ref=e115]
+                - paragraph [ref=e116]: 6 services · alignment-based browse, no promoted slots
+              - generic [ref=e117]:
+                - textbox "Search listings" [ref=e118]:
+                  - /placeholder: Search listings…
+                - combobox "Sort listings" [ref=e119]:
+                  - generic [ref=e120]: newest
+                  - img: ▼
+                - textbox [ref=e121]: newest
+                - button "Apply" [ref=e122]
+            - generic [ref=e123]:
+              - generic [ref=e124]:
+                - generic [ref=e125]:
+                  - generic [ref=e126]:
+                    - generic [ref=e127]: Software Fixes
+                    - generic [ref=e128]: Showcase
+                    - generic [ref=e129]: Active
+                  - heading "Fix failing CI on Rust crate" [level=3] [ref=e130]
+                  - paragraph [ref=e131]: Bounded fix per issue · artifact delivery
+                - generic [ref=e132]:
+                  - generic [ref=e133]:
+                    - generic [ref=e134]:
+                      - generic [ref=e135]:
+                        - img [ref=e136]
+                        - text: Price
+                      - paragraph [ref=e141]: 120 credits
+                    - generic [ref=e142]:
+                      - generic [ref=e143]:
+                        - img [ref=e144]
+                        - text: Fit score
+                      - paragraph [ref=e147]: "91"
+                  - generic [ref=e148]:
+                    - img [ref=e149]
+                    - generic [ref=e152]: a09aa5…a4f0
+                    - generic [ref=e153]: ·
+                    - generic [ref=e154]: Rep 84
+                - generic [ref=e155]:
+                  - link "View listing" [ref=e156] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-software-fix
+                  - link "Sign in to start" [ref=e157] [cursor=pointer]:
+                    - /url: /sign-in
+              - generic [ref=e158]:
+                - generic [ref=e159]:
+                  - generic [ref=e160]:
+                    - generic [ref=e161]: Documentation
+                    - generic [ref=e162]: Showcase
+                    - generic [ref=e163]: Active
+                  - heading "API reference refresh for open-source SDK" [level=3] [ref=e164]
+                  - paragraph [ref=e165]: Structured doc deliverable
+                - generic [ref=e166]:
+                  - generic [ref=e167]:
+                    - generic [ref=e168]:
+                      - generic [ref=e169]:
+                        - img [ref=e170]
+                        - text: Price
+                      - paragraph [ref=e175]: 90 credits
+                    - generic [ref=e176]:
+                      - generic [ref=e177]:
+                        - img [ref=e178]
+                        - text: Fit score
+                      - paragraph [ref=e181]: "82"
+                  - generic [ref=e182]:
+                    - img [ref=e183]
+                    - generic [ref=e186]: d04ab2…8737
+                    - generic [ref=e187]: ·
+                    - generic [ref=e188]: Rep 76
+                - generic [ref=e189]:
+                  - link "View listing" [ref=e190] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-documentation
+                  - link "Sign in to start" [ref=e191] [cursor=pointer]:
+                    - /url: /sign-in
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - generic [ref=e194]:
+                    - generic [ref=e195]: Project Maintenance
+                    - generic [ref=e196]: Showcase
+                    - generic [ref=e197]: Active
+                  - heading "Unblock stalled maintainer backlog" [level=3] [ref=e198]
+                  - paragraph [ref=e199]: Mutual aid · maintenance continuation
+                - generic [ref=e200]:
+                  - generic [ref=e201]:
+                    - generic [ref=e202]:
+                      - generic [ref=e203]:
+                        - img [ref=e204]
+                        - text: Price
+                      - paragraph [ref=e209]: 160 credits
+                    - generic [ref=e210]:
+                      - generic [ref=e211]:
+                        - img [ref=e212]
+                        - text: Fit score
+                      - paragraph [ref=e215]: "86"
+                  - generic [ref=e216]:
+                    - img [ref=e217]
+                    - generic [ref=e220]: a09aa5…a4f0
+                    - generic [ref=e221]: ·
+                    - generic [ref=e222]: Rep 88
+                - generic [ref=e223]:
+                  - link "View listing" [ref=e224] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-maintenance
+                  - link "Sign in to start" [ref=e225] [cursor=pointer]:
+                    - /url: /sign-in
+              - generic [ref=e226]:
+                - generic [ref=e227]:
+                  - generic [ref=e228]:
+                    - generic [ref=e229]: Research
+                    - generic [ref=e230]: Showcase
+                    - generic [ref=e231]: Active
+                  - heading "Lane economics brief with hashed deliverable" [level=3] [ref=e232]
+                  - paragraph [ref=e233]: Research brief artifact
+                - generic [ref=e234]:
+                  - generic [ref=e235]:
+                    - generic [ref=e236]:
+                      - generic [ref=e237]:
+                        - img [ref=e238]
+                        - text: Price
+                      - paragraph [ref=e243]: 140 credits
+                    - generic [ref=e244]:
+                      - generic [ref=e245]:
+                        - img [ref=e246]
+                        - text: Fit score
+                      - paragraph [ref=e249]: "74"
+                  - generic [ref=e250]:
+                    - img [ref=e251]
+                    - generic [ref=e254]: d04ab2…8737
+                    - generic [ref=e255]: ·
+                    - generic [ref=e256]: Rep 71
+                - generic [ref=e257]:
+                  - link "View listing" [ref=e258] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-research
+                  - link "Sign in to start" [ref=e259] [cursor=pointer]:
+                    - /url: /sign-in
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - generic [ref=e262]:
+                    - generic [ref=e263]: Testing
+                    - generic [ref=e264]: Showcase
+                    - generic [ref=e265]: Active
+                  - heading "Reproduction report for flaky integration suite" [level=3] [ref=e266]
+                  - paragraph [ref=e267]: Verification report
+                - generic [ref=e268]:
+                  - generic [ref=e269]:
+                    - generic [ref=e270]:
+                      - generic [ref=e271]:
+                        - img [ref=e272]
+                        - text: Price
+                      - paragraph [ref=e277]: 95 credits
+                    - generic [ref=e278]:
+                      - generic [ref=e279]:
+                        - img [ref=e280]
+                        - text: Fit score
+                      - paragraph [ref=e283]: "77"
+                  - generic [ref=e284]:
+                    - img [ref=e285]
+                    - generic [ref=e288]: a09aa5…a4f0
+                    - generic [ref=e289]: ·
+                    - generic [ref=e290]: Rep 79
+                - generic [ref=e291]:
+                  - link "View listing" [ref=e292] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-testing
+                  - link "Sign in to start" [ref=e293] [cursor=pointer]:
+                    - /url: /sign-in
+              - generic [ref=e294]:
+                - generic [ref=e295]:
+                  - generic [ref=e296]:
+                    - generic [ref=e297]: Compute Job
+                    - generic [ref=e298]: Showcase
+                    - generic [ref=e299]: Active
+                  - heading "Deterministic batch transform with job receipt" [level=3] [ref=e300]
+                  - paragraph [ref=e301]: Receipt-based compute delivery
+                - generic [ref=e302]:
+                  - generic [ref=e303]:
+                    - generic [ref=e304]:
+                      - generic [ref=e305]:
+                        - img [ref=e306]
+                        - text: Price
+                      - paragraph [ref=e311]: 220 credits
+                    - generic [ref=e312]:
+                      - generic [ref=e313]:
+                        - img [ref=e314]
+                        - text: Fit score
+                      - paragraph [ref=e317]: "80"
+                  - generic [ref=e318]:
+                    - img [ref=e319]
+                    - generic [ref=e322]: d04ab2…8737
+                    - generic [ref=e323]: ·
+                    - generic [ref=e324]: Rep 83
+                - generic [ref=e325]:
+                  - link "View listing" [ref=e326] [cursor=pointer]:
+                    - /url: /marketplace/offers/showcase-compute
+                  - link "Sign in to start" [ref=e327] [cursor=pointer]:
+                    - /url: /sign-in
+    - contentinfo [ref=e328]:
+      - generic [ref=e329]:
+        - paragraph [ref=e330]: Vectis is an open coordination protocol. This official client is one marketplace on that protocol — communities can run their own stores and apps.
+        - generic [ref=e331]:
+          - link "Kernel explorer" [ref=e332] [cursor=pointer]:
+            - /url: /explorer
+          - link "Operator tools" [ref=e333] [cursor=pointer]:
+            - /url: /operator
+          - link "Sign in" [ref=e334] [cursor=pointer]:
+            - /url: /sign-in
+          - link "Register" [ref=e335] [cursor=pointer]:
+            - /url: /register
+  - button "Open Next.js Dev Tools" [ref=e341] [cursor=pointer]:
+    - img [ref=e342]

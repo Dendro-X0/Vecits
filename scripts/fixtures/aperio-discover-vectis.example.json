@@ -1,0 +1,16 @@
+{
+  "profiles": [
+    {
+      "id": "vectis-maintainer",
+      "name": "Vectis maintainer",
+      "intent": "oss maintenance, software fixes, bounded digital delivery",
+      "negativeSignals": ["crypto", "nft", "unpaid", "equity only", "exposure only"],
+      "sourceHints": ["github_issues", "hackernews", "rss"]
+    }
+  ],
+  "keywords": ["rust", "typescript", "maintenance", "ci"],
+  "negativeSignals": ["crypto", "nft", "unpaid", "equity only"],
+  "sourceHints": ["github_issues", "hackernews", "rss"],
+  "maxResults": 25,
+  "lane": "warm"
+}

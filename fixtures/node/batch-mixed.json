@@ -1,0 +1,14 @@
+{
+  "events": [
+    {
+      "version": "v0",
+      "eventId": "bad",
+      "authorPubKey": "abc",
+      "createdAt": "2026-03-01T00:00:00Z",
+      "kind": "UnknownKind",
+      "policyVersion": "v0-default",
+      "payload": {},
+      "sig": "00"
+    }
+  ]
+}

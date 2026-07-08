@@ -1,0 +1,311 @@
+[
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-1",
+      "title": "Help wanted: revive stalled repo",
+      "url": "https://example.com/1",
+      "dedupeKey": "d1",
+      "discoveredAt": "2026-07-01T00:00:00Z",
+      "tags": [
+        "help-wanted"
+      ]
+    },
+    "expectedLane": "project-maintenance",
+    "expectedSignalId": "95df4199bc10658308a563e4469db88fabd65e2321da36396d4756ff3f3894e8"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-2",
+      "title": "Maintenance backlog triage",
+      "url": "https://example.com/2",
+      "dedupeKey": "d2",
+      "discoveredAt": "2026-07-01T00:01:00Z",
+      "tags": [
+        "maintenance"
+      ]
+    },
+    "expectedLane": "project-maintenance",
+    "expectedSignalId": "33615015ac821e6b744ba5053224d32c1fcb80a98ecc88c494138f88f4065d67"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-3",
+      "title": "GPU batch inference job",
+      "url": "https://example.com/3",
+      "dedupeKey": "d3",
+      "discoveredAt": "2026-07-01T00:02:00Z",
+      "tags": [
+        "compute"
+      ]
+    },
+    "expectedLane": "compute-job",
+    "expectedSignalId": "32424ea90a1cba8a9c46bc284fba9f9ca8edb82eb6d92376c1ef85299498c473"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "hn",
+      "externalId": "hn-1",
+      "title": "Research analysis on sync protocols",
+      "url": "https://example.com/4",
+      "dedupeKey": "d4",
+      "discoveredAt": "2026-07-01T00:03:00Z",
+      "tags": []
+    },
+    "expectedLane": "research",
+    "expectedSignalId": "45c921135c368c67430f1936dd408f4164ab50bf5722d7715b333ebb2ce7f540"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "rss",
+      "externalId": "rss-1",
+      "title": "Benchmark study for replay engines",
+      "url": "https://example.com/5",
+      "dedupeKey": "d5",
+      "discoveredAt": "2026-07-01T00:04:00Z",
+      "tags": []
+    },
+    "expectedLane": "research",
+    "expectedSignalId": "95b94c6ae62ebd7568c96cd2c08d7e1cf7ecc2407182a7c672082cb757cbfb98"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-4",
+      "title": "Update README and changelog docs",
+      "url": "https://example.com/6",
+      "dedupeKey": "d6",
+      "discoveredAt": "2026-07-01T00:05:00Z",
+      "tags": []
+    },
+    "expectedLane": "documentation",
+    "expectedSignalId": "d7476037bf1f14abfb465db5cf691ee2a108edf3729c9c582dab6eca5c5eb3cb"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-5",
+      "title": "Fix failing CI flake in tests",
+      "url": "https://example.com/7",
+      "dedupeKey": "d7",
+      "discoveredAt": "2026-07-01T00:06:00Z",
+      "tags": []
+    },
+    "expectedLane": "testing",
+    "expectedSignalId": "a1922c23fda9fb54d21b8ba270efe71296dad325c9e82a551dbbae04aaba0a36"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-6",
+      "title": "Patch null pointer in parser",
+      "url": "https://example.com/8",
+      "dedupeKey": "d8",
+      "discoveredAt": "2026-07-01T00:07:00Z",
+      "tags": [
+        "bug"
+      ]
+    },
+    "expectedLane": "software-fixes",
+    "expectedSignalId": "daa31b4c26175be56b96e15be5f069e5afe79c468c4adc2842bb0c12c169f28e"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-7",
+      "title": "CUDA compute pipeline optimization",
+      "url": "https://example.com/9",
+      "dedupeKey": "d9",
+      "discoveredAt": "2026-07-01T00:08:00Z",
+      "tags": []
+    },
+    "expectedLane": "compute-job",
+    "expectedSignalId": "35982a72d0fffa5b5ab0c5441a556c255c051bb2a1d40944a40df07b2dc6e888"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-8",
+      "title": "Documentation cleanup for API",
+      "url": "https://example.com/10",
+      "dedupeKey": "d10",
+      "discoveredAt": "2026-07-01T00:09:00Z",
+      "tags": []
+    },
+    "expectedLane": "documentation",
+    "expectedSignalId": "78e27185821cc50c7faff785b6f11d4397fa75be96ca77e29d143b0eebb6a2a6"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-9",
+      "title": "Translation package for onboarding",
+      "url": "https://example.com/11",
+      "dedupeKey": "d11",
+      "discoveredAt": "2026-07-01T00:10:00Z",
+      "tags": [
+        "translation"
+      ]
+    },
+    "expectedLane": "software-fixes",
+    "expectedSignalId": "11bd2070728acb8e444f744849e93b72d5dac360f77681d4a09693d0a54d32c5"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-10",
+      "title": "Regression repro for milestone timeout",
+      "url": "https://example.com/12",
+      "dedupeKey": "d12",
+      "discoveredAt": "2026-07-01T00:11:00Z",
+      "tags": []
+    },
+    "expectedLane": "testing",
+    "expectedSignalId": "bffeec1a681537946c846610ac447e278eb41473158b701deb961779b4d736c2"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-11",
+      "title": "Small feature increment for explorer",
+      "url": "https://example.com/13",
+      "dedupeKey": "d13",
+      "discoveredAt": "2026-07-01T00:12:00Z",
+      "tags": []
+    },
+    "expectedLane": "software-fixes",
+    "expectedSignalId": "44abbac9e96170388f5a121d0321ca06d686ac396ff2ec54d0905fc60a4ab64c"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "hn",
+      "externalId": "hn-2",
+      "title": "Survey of deterministic marketplaces",
+      "url": "https://example.com/14",
+      "dedupeKey": "d14",
+      "discoveredAt": "2026-07-01T00:13:00Z",
+      "tags": []
+    },
+    "expectedLane": "research",
+    "expectedSignalId": "f1ef0d177bb448862204a6da8f9b5b2894054218c0a71fef4eb5ea1200a42600"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-12",
+      "title": "Training job receipt validation",
+      "url": "https://example.com/15",
+      "dedupeKey": "d15",
+      "discoveredAt": "2026-07-01T00:14:00Z",
+      "tags": [
+        "training"
+      ]
+    },
+    "expectedLane": "compute-job",
+    "expectedSignalId": "751c99ca1ed7c29bbc014369b9d7c8ebb7683286478a56ba92d65d10a1bd26ca"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-13",
+      "title": "Project maintenance: dependency refresh",
+      "url": "https://example.com/16",
+      "dedupeKey": "d16",
+      "discoveredAt": "2026-07-01T00:15:00Z",
+      "tags": [
+        "maintenance",
+        "help-wanted"
+      ]
+    },
+    "expectedLane": "project-maintenance",
+    "expectedSignalId": "5fd9eb8bfbfbcbf084005a2734aa283e9343090b5e668c2a7d2f6f0c6217c706"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-14",
+      "title": "Changelog documentation pass",
+      "url": "https://example.com/17",
+      "dedupeKey": "d17",
+      "discoveredAt": "2026-07-01T00:16:00Z",
+      "tags": []
+    },
+    "expectedLane": "documentation",
+    "expectedSignalId": "07e433884b8c97f1f03e4e64ff1b818e655c27471a3075764bc6c0fe435e635a"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-15",
+      "title": "Fix broken test suite on Windows",
+      "url": "https://example.com/18",
+      "dedupeKey": "d18",
+      "discoveredAt": "2026-07-01T00:17:00Z",
+      "tags": []
+    },
+    "expectedLane": "testing",
+    "expectedSignalId": "03a9313768bb54fc8e2bddbacb02104c725dd15461bac4cbf7c69051373ad0f1"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-16",
+      "title": "Research brief on escrow policy",
+      "url": "https://example.com/19",
+      "dedupeKey": "d19",
+      "discoveredAt": "2026-07-01T00:18:00Z",
+      "tags": []
+    },
+    "expectedLane": "software-fixes",
+    "expectedSignalId": "7f1ed7af74259e4fc5f41191f7422707db29ae5d401f3cbf239f14b028ec8457"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-17",
+      "title": "General bugfix in settlement reducer",
+      "url": "https://example.com/20",
+      "dedupeKey": "d20",
+      "discoveredAt": "2026-07-01T00:19:00Z",
+      "tags": []
+    },
+    "expectedLane": "software-fixes",
+    "expectedSignalId": "5d45094c5906b2bcc2b6c8177b8db07e1a0d31566134e77d0f02ffc7d571c793"
+  },
+  {
+    "input": {
+      "schemaVersion": "discovery-signal-v1",
+      "source": "github-issues",
+      "externalId": "gh-18",
+      "title": "Batch compute job for fixture replay",
+      "url": "https://example.com/21",
+      "dedupeKey": "d21",
+      "discoveredAt": "2026-07-01T00:20:00Z",
+      "tags": []
+    },
+    "expectedLane": "compute-job",
+    "expectedSignalId": "255219dc7f2d929c89614f89560cd3887f94591d3c4f7938e471f0c674f88290"
+  }
+]

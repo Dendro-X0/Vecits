@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "snapshot_id": "snap-corrupt",
+    "as_of": "2026-03-01T00:00:00Z",
+    "event_seq": 1,
+    "state_hash": "deadbeef",
+    "created_at": "2026-03-01T00:00:00Z"
+  },
+  "state": {
+    "invalid": true
+  }
+}

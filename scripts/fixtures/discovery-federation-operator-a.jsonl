@@ -1,0 +1,2 @@
+{"schemaVersion":"discovery-signal-v1","source":"github-issues","externalId":"fed-gh-1","title":"Help wanted: revive stalled repo","url":"https://example.com/fed/1","dedupeKey":"fed-d1","discoveredAt":"2026-07-01T00:00:00Z","tags":["help-wanted"]}
+{"schemaVersion":"discovery-signal-v1","source":"github-issues","externalId":"fed-gh-2","title":"Maintenance backlog triage","url":"https://example.com/fed/2","dedupeKey":"fed-d2","discoveredAt":"2026-07-01T00:01:00Z","tags":["maintenance"]}

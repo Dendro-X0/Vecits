@@ -1,0 +1,51 @@
+{
+  "profiles": [
+    {
+      "id": "vectis-maintainer",
+      "name": "Vectis maintainer",
+      "intent": "oss maintenance, software fixes, bounded digital delivery",
+      "negativeSignals": ["crypto", "nft", "unpaid", "equity only", "exposure only"],
+      "sourceHints": ["github_issues", "hackernews", "rss"]
+    }
+  ],
+  "keywords": ["rust", "typescript", "maintenance", "ci"],
+  "negativeSignals": ["crypto", "nft", "unpaid", "equity only"],
+  "sourceHints": ["github_issues", "hackernews", "rss"],
+  "maxResults": 25,
+  "lane": "warm",
+  "fixtureSources": {
+    "github_issues": [
+      {
+        "source": "github_issues",
+        "externalId": "owner/repo#42",
+        "title": "Help wanted: revive stalled maintenance repo",
+        "description": "Looking for contributors to triage open issues and fix CI flakes.",
+        "url": "https://github.com/owner/repo/issues/42",
+        "postedAt": "2026-07-01T12:00:01Z",
+        "tags": ["help-wanted", "maintenance"]
+      }
+    ],
+    "hackernews": [
+      {
+        "source": "hackernews",
+        "externalId": "12345",
+        "title": "Need GPU batch inference pipeline",
+        "description": "Seeking someone to run cuda batch jobs and return job receipts.",
+        "url": "https://news.ycombinator.com/item?id=12345",
+        "postedAt": "2026-07-01T12:00:02Z",
+        "tags": ["compute"]
+      }
+    ],
+    "rss": [
+      {
+        "source": "rss",
+        "externalId": "spam-1",
+        "title": "Crypto NFT airdrop — work for exposure",
+        "description": "Unpaid equity only token launch",
+        "url": "https://example.com/spam",
+        "postedAt": "2026-07-01T12:00:03Z",
+        "tags": []
+      }
+    ]
+  }
+}

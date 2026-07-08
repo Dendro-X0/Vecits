@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "codactrl-studio": {
+      "command": "node",
+      "args": [
+        "E:/Experimental projects/codactrl/packages/mcp/dist/server.js"
+      ],
+      "env": {
+        "CODACTRL_WORKSPACE_ROOT": "E:/Experimental projects/vectis"
+      }
+    }
+  }
+}

@@ -1,0 +1,363 @@
+{
+  "schema": "studio.repo.profile@1.0.0",
+  "exploreId": "re-c06139f8ea77",
+  "exploreSnapshotHash": "sha256:c06139f8ea77263147162a45ee9b0fa1ce858178f51d4084b26290e5e37f0403",
+  "scanSnapshotHash": "sha256:1dac977025b93f57f686dd3297b5429e2046da518e4ed00ad653572a84896543",
+  "generatedAt": "2026-07-03T06:24:03.210019800+00:00",
+  "repoRoot": "E:/Experimental projects/vectis",
+  "roots": {
+    "monorepoTool": "pnpm",
+    "workspaces": [
+      {
+        "id": "@vectis/desktop",
+        "kind": "app",
+        "path": "apps/desktop",
+        "name": "@vectis/desktop",
+        "language": "ts/js",
+        "stackHint": "tauri"
+      },
+      {
+        "id": "@new-start/web",
+        "kind": "app",
+        "path": "apps/web",
+        "name": "@new-start/web",
+        "language": "ts/js",
+        "stackHint": "next"
+      },
+      {
+        "id": "node",
+        "kind": "crate",
+        "path": "crates/node",
+        "name": "node",
+        "language": "rust",
+        "stackHint": null
+      },
+      {
+        "id": "policy",
+        "kind": "crate",
+        "path": "crates/policy",
+        "name": "policy",
+        "language": "rust",
+        "stackHint": null
+      },
+      {
+        "id": "protocol-core",
+        "kind": "crate",
+        "path": "crates/protocol-core",
+        "name": "protocol-core",
+        "language": "rust",
+        "stackHint": null
+      },
+      {
+        "id": "reputation",
+        "kind": "crate",
+        "path": "crates/reputation",
+        "name": "reputation",
+        "language": "rust",
+        "stackHint": null
+      },
+      {
+        "id": "state-engine",
+        "kind": "crate",
+        "path": "crates/state-engine",
+        "name": "state-engine",
+        "language": "rust",
+        "stackHint": null
+      },
+      {
+        "id": "@new-start/sdk-ts",
+        "kind": "package",
+        "path": "packages/sdk-ts",
+        "name": "@new-start/sdk-ts",
+        "language": "ts/js",
+        "stackHint": null
+      }
+    ]
+  },
+  "stack": {
+    "primaryFramework": "tauri",
+    "runtimes": [
+      "node",
+      "rust"
+    ],
+    "signals": [
+      {
+        "id": "rust",
+        "label": "Rust",
+        "path": "Cargo.toml"
+      },
+      {
+        "id": "tauri",
+        "label": "tauri",
+        "path": "apps/desktop/package.json"
+      },
+      {
+        "id": "next",
+        "label": "next",
+        "path": "apps/web/package.json"
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "name": "@tauri-apps/cli",
+      "version": "^2.11.3",
+      "resolvedVersion": "2.11.4",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/desktop"
+    },
+    {
+      "name": "@base-ui/react",
+      "version": "^1.6.0",
+      "resolvedVersion": "1.6.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@new-start/sdk-ts",
+      "version": "workspace:*",
+      "resolvedVersion": null,
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.1",
+      "resolvedVersion": "0.7.1",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "clsx",
+      "version": "^2.1.1",
+      "resolvedVersion": "2.1.1",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "lucide-react",
+      "version": "^1.23.0",
+      "resolvedVersion": "1.23.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "next",
+      "version": "^16.0.1",
+      "resolvedVersion": "16.2.10",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "react",
+      "version": "^19.2.0",
+      "resolvedVersion": "19.2.7",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "react-dom",
+      "version": "^19.2.0",
+      "resolvedVersion": "19.2.7",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "shadcn",
+      "version": "^4.12.0",
+      "resolvedVersion": "4.12.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^3.6.0",
+      "resolvedVersion": "3.6.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "tw-animate-css",
+      "version": "^1.4.0",
+      "resolvedVersion": "1.4.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@tailwindcss/postcss",
+      "version": "^4.3.2",
+      "resolvedVersion": "4.3.2",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@types/node",
+      "version": "^24.10.0",
+      "resolvedVersion": "24.13.2",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@types/react",
+      "version": "^19.2.4",
+      "resolvedVersion": "19.2.17",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "^19.2.3",
+      "resolvedVersion": "19.2.3",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "postcss",
+      "version": "^8.5.16",
+      "resolvedVersion": "8.5.16",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "tailwindcss",
+      "version": "^4.3.2",
+      "resolvedVersion": "4.3.2",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.9.3",
+      "resolvedVersion": "5.9.3",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "apps/web"
+    },
+    {
+      "name": "@noble/ed25519",
+      "version": "^3.0.0",
+      "resolvedVersion": "3.1.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "packages/sdk-ts"
+    },
+    {
+      "name": "json-canonicalize",
+      "version": "^2.0.0",
+      "resolvedVersion": "2.0.0",
+      "scope": "dependencies",
+      "manager": "pnpm",
+      "packagePath": "packages/sdk-ts"
+    },
+    {
+      "name": "typescript",
+      "version": "^5.9.3",
+      "resolvedVersion": "5.9.3",
+      "scope": "devDependencies",
+      "manager": "pnpm",
+      "packagePath": "packages/sdk-ts"
+    }
+  ],
+  "entrypoints": [
+    {
+      "packageId": "@new-start/sdk-ts",
+      "path": "packages/sdk-ts/dist/index.js",
+      "source": "main"
+    }
+  ],
+  "stats": {
+    "fileCount": 328,
+    "dirCount": 86,
+    "extensionCounts": [
+      {
+        "extension": "md",
+        "count": 74
+      },
+      {
+        "extension": "tsx",
+        "count": 73
+      },
+      {
+        "extension": "jsonl",
+        "count": 37
+      },
+      {
+        "extension": "mjs",
+        "count": 33
+      },
+      {
+        "extension": "ts",
+        "count": 28
+      },
+      {
+        "extension": "json",
+        "count": 26
+      },
+      {
+        "extension": "rs",
+        "count": 19
+      },
+      {
+        "extension": "toml",
+        "count": 8
+      },
+      {
+        "extension": "(none)",
+        "count": 5
+      },
+      {
+        "extension": "png",
+        "count": 3
+      },
+      {
+        "extension": "sh",
+        "count": 3
+      },
+      {
+        "extension": "yml",
+        "count": 3
+      }
+    ]
+  },
+  "lockfile": {
+    "manager": "pnpm",
+    "path": "pnpm-lock.yaml",
+    "resolvedDependencyCount": 21
+  },
+  "evidence": [
+    {
+      "claim": "fileCount=328",
+      "path": ".codectx/index.json"
+    },
+    {
+      "claim": "lockfileResolved=21/pnpm",
+      "path": "pnpm-lock.yaml"
+    },
+    {
+      "claim": "monorepoTool=pnpm",
+      "path": "pnpm-workspace.yaml"
+    },
+    {
+      "claim": "primaryFramework=tauri",
+      "path": "apps/desktop/package.json"
+    }
+  ]
+}

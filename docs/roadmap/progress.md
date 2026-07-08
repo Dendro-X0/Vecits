@@ -1,0 +1,1291 @@
+# Progress
+
+This file tracks high-level progress over time.
+
+## 2026-07
+
+- Restart kickoff after post–Phase 1 dormancy:
+  - created canonical restart roadmap `docs/roadmap/restart-roadmap.md` with phases R0–R6, tracks, and gates `RG-1`..`RG-6`
+  - created pre-implementation spec pack under `docs/specs/`:
+    - `restart-decisions.md` (12 locked decisions)
+    - `kernel-boundary-spec.md` (sacred invariants K-01..K-08, refactor targets R1-K1..K-5)
+    - `deployment-distribution-spec.md` (operator install, backup, upgrade, gates RDG-1..RDG-5)
+    - `security-resilience-spec.md` (AB baseline + social threats SOC-01..SOC-08, resilience RES-01..RES-07)
+    - `discovery-bridge-spec.md` (Aperio signal schema, lane classifier, offer draft pipeline)
+  - executed R0 spec lock via `docs/roadmap/r0-spec-lock-execution-plan.md`:
+    - cross-spec coherence review (Workstream B) — pass
+    - codebase alignment audit (Workstream C) — pass; kernel spec updated with discovery + economics API routes
+    - v0 baseline verification (Workstream D) — pass
+    - gate `RG-1` — pass
+  - updated `docs/README.md` and `docs/roadmap/working-context-log.md` for restart era
+  - R0 complete; R1 authorized; first slice: `R1-K4` (`GET /health`)
+  - verified checks:
+    - `cargo test`
+    - `cargo run --bin cli -- fixtures run` (21 valid, 14 invalid)
+    - `npm run v1:readiness`
+    - `npm run v1:ga6-drill`
+- R1 kernel slices:
+  - `R1-K4`: added `GET /health` with kernel version info and data-dir status; AB-13 test ensures no peers.json secret leakage
+  - `R1-K5`: write `manifest.json` on first data-dir boot; `node db inspect` includes kernel + manifest
+  - `R1-K1`: added `docs/specs/kernel-public-api.md` per-crate public API index
+  - `R1-D2`: added `node init --data-dir`, `LocalNode::initialize`, idempotent manifest creation
+  - `R1-D1`: added `vectis-node` binary alias, `scripts/build-release.mjs`, `.github/workflows/release-build.yml`, `docs/runbooks/operator-quickstart.md`
+  - `R1-D3`: added `Dockerfile`, `docker-compose.yml`, `docker/entrypoint.sh`, `npm run v1:docker-smoke`
+  - `R1-K3`: consolidated reject mapping via `protocol_core::reason_code_for_protocol_error`
+  - `R1-D4`: added `scripts/install.sh`, docker section in operator quickstart
+  - `R1-D5`: refactored GA6 drill core; added `npm run v1:ga6-drill:release` using release `vectis-node` binary (RDG-5)
+  - verified checks:
+    - `npm run v1:ga6-drill:release` → `target/tmp/runbook-release-dryrun-*/ga6-drill-summary.json`
+    - `npm run v1:ga6-drill` (cargo path regression)
+- R1-K2 + R1 closeout:
+  - added `replay_raw_events` and `replay_raw_events_with_checkpoint` in `state-engine`
+  - added `crates/state-engine/tests/in_memory_replay.rs`
+  - created `docs/roadmap/r2-deployment-proof-execution-plan.md`
+  - verified checks:
+    - `cargo test -p state-engine --test in_memory_replay`
+  - verified checks:
+    - `cargo test -p node --test api api_health`
+    - `cargo test -p node --test runtime initialize_creates_manifest_and_is_idempotent`
+    - `cargo test -p node`
+    - `npm run v1:build-release`
+- R2 first deployment proof (**complete**, July 2026):
+  - production data dir: `./vectis-data-r2` (17 events, 0 invalid replay at `as_of=2026-07-02T00:15:00Z`)
+  - `R2-P1`: persistent deployment runbook + `npm run r2:deploy-smoke -- --with-backup`
+  - `R2-P2`: `project-maintenance` exchange via HTTP (`npm run r2:exchange-drill`); order `r2-p2-1782943524039-order` closed
+  - `R2-P3`/`R2-P4`: evidence pack + RDG-3 restore drill (`npm run r2:evidence-pack`)
+  - `R2-P5`: evidence linked below (this file)
+  - **canonical evidence archive:** `target/r2-evidence-archive/r2-evidence-1782944591949/`
+    - pack summary: `evidence-pack-summary.json`
+    - export summary: `evidence-summary.json`
+    - restore drill: `restore-drill-summary.json` (RDG-3 pass)
+    - replay hash: `dd84889550d23b827c7a5dba56a1bf65c1eb923b7e6288ce8c8cb1cdb6d6e80d` (`replay-state-hash.txt`)
+    - operator notes: `operator-notes.md`
+    - artifacts: `events.log`, `manifest.json`, `snapshot.json`, `health.json`, `db-inspect.json`, `replay-state.json`, `evidence-manifest.json`
+  - gates: `RG-2` pass (R1 release install), `RG-3` pass (first exchange evidence)
+  - docs: `docs/runbooks/r2-persistent-deployment-runbook.md`, `docs/runbooks/r2-exchange-runbook.md`, `docs/roadmap/r2-deployment-proof-execution-plan.md`, `docs/runbooks/operator-backup-runbook.md`
+  - standing verification:
+    - `npm run r2:exchange-drill -- --data-dir ./vectis-data-r2`
+    - `npm run r2:deploy-smoke -- --with-backup`
+    - `npm run r2:evidence-pack`
+- R4 client shell hardening (C1–C4 complete):
+  - `R4-C1`: `packages/sdk-ts/STABILITY.md` semver + stable surface
+  - `R4-C2`: `docs/v0/r4-client-kernel-audit.md` + `npm run r4:client-audit`
+  - `R4-C3`: `KernelTruthNotice` in explorer + marketplace session checklist (AB-15)
+  - `R4-C4`: SOC-01 off-protocol payment warning in onboarding + `docs/runbooks/operator-security-guide.md`
+  - verified: `npm run r4:client-audit`, `npm run v1:preflight`
+- R3 discovery bridge (partial):
+  - `R3-B2`/`R3-B3`/`R3-B4`: golden classifier, draft validation, sign→ingest e2e
+  - verified checks:
+    - `npm run v3:discovery-bridge:smoke`
+    - `npm run v3:discovery-bridge:e2e`
+- R7 mobile client band (July 2026):
+  - `R7-M2`: remote pinned node wiring complete — spec locked, kernel-unreachable notice, `pnpm r7:mobile:readiness`
+  - `R7-M1`: Android scaffold complete; iOS tooling + runbooks ready (macOS host for `tauri ios init`)
+  - docs: `docs/specs/r7-m2-remote-pinned-node-wiring-spec.md`, `docs/runbooks/mobile-remote-pinned-node-operator-runbook.md`
+  - verified checks:
+    - `pnpm r7:mobile:readiness`
+    - `pnpm v1:readiness`
+- R6-PD post-deployment community lane proof (July 2026, in progress):
+  - `R6-PD-A`: readiness bundle — `pnpm r6:post-deployment:readiness` (pass)
+  - `R6-PD-B`: solo HTTP exchange drill — `pnpm r6:post-deployment:drill -- --lane documentation --no-build` (pass)
+  - `R6-PD-B2`: all seven community artifact lanes — `pnpm r6:post-deployment:multi-lane-drill -- --no-build` (pass)
+  - `R6-PD-C`: human counterparty tooling — `pnpm r6:post-deployment:phase-c:smoke` (maintainer smoke pass); field proof pending
+  - docs: `docs/specs/r6-post-deployment-proof-spec.md`, `docs/runbooks/r6-post-deployment-proof-runbook.md`
+
+## 2026-04
+
+- Refreshed long-term planning docs:
+  - `docs/archive/roadmap.md` now defines a long-term north star, permanent product pillars, and horizon checkpoints (`protocol credibility`, `deployable marketplace product`, `federation and trust portability`)
+  - `docs/archive/vision.md` now aligns core goals with deterministic settlement, portable trust, and deployable local operations
+  - `docs/foundation/project-thesis.md` now frames the system as a non-monetary settlement protocol with deployability and convergence goals
+  - `docs/README.md` now reflects the five-pillar long-term direction in the current-status summary
+  - verification: documentation-only planning update; no runtime checks required
+- Aligned v0 execution docs with the long-term framing:
+  - `docs/v0/v0-roadmap.md` now positions v0 as the first execution horizon focused on protocol credibility, determinism, auditability, and deployability
+  - `docs/architecture/v0-foundation.md` now explicitly frames v0 as the base layer for later commerce, trust, resolution, and operations growth
+  - verification: documentation-only planning update; no runtime checks required
+- Added closed-alpha workflow launchers and builder starters:
+  - `apps/web/app/page.tsx` now exposes direct launcher cards for onboarding, discovery, marketplace accept/dispute starters, project-maintenance starter, and contribution flows
+  - `apps/web/app/components/marketplace-event-builder.tsx` now accepts `builder_starter` query state and preconfigures real builder workflows for `alpha-accept`, `alpha-timeout`, and `project-maintenance`
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added lane-specific marketplace starters:
+  - `apps/web/app/page.tsx` now exposes direct `Lane Starters` for software fixes, feature work, documentation, translation, testing, research, and project maintenance
+  - `apps/web/app/components/marketplace-event-builder.tsx` now accepts `builder_lane` and `builder_flow` query state and preconfigures the builder for specific alpha lanes
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added dispute-path alpha lane starters:
+  - `apps/web/app/page.tsx` now exposes direct `Dispute Path Starters` for software fixes, testing, research, and project maintenance
+  - gives operators direct timeout/deadlock rehearsal entry points instead of requiring manual lane/path switching in the builder
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added fixture-backed alpha workflow bundles:
+  - `apps/web/app/components/fixture-quickstart.tsx` now exposes copyable end-to-end command bundles for accepted exchange, timeout/auto-refund, and dispute settlement flows
+  - each bundle now pairs exact local node/fixture commands with a matching UI launcher path
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added direct derived-state shortcuts to workflow bundles:
+  - `apps/web/app/components/fixture-quickstart.tsx` now includes direct offer/order/milestone explorer links for each workflow bundle
+  - operators can now move from bundle execution to the most relevant derived-state views without manual explorer navigation
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added trust/ranking shortcuts to workflow bundles:
+  - `apps/web/app/components/fixture-quickstart.tsx` now includes discovery and provider-reputation links for each workflow bundle
+  - operators can validate ranking and trust surfaces immediately after fixture ingest, not just marketplace state
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added manual lane bundles for non-software alpha starters:
+  - `apps/web/app/components/fixture-quickstart.tsx` now exposes `Manual Lane Bundles` for feature work, documentation, translation, testing, research, and project maintenance
+  - each bundle provides local-node startup, direct lane launcher, and lane-relevant inspection links even where dedicated fixture coverage is partial
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added dispute-mode manual bundles plus bundle-set copy actions:
+  - `apps/web/app/components/fixture-quickstart.tsx` now exposes `Manual Dispute Bundles` for feature work, documentation, translation, testing, research, and project maintenance
+  - `Fixture Quickstart` now also provides `Copy All Manual Bundles` and `Copy All Dispute Bundles` actions so operators can lift whole lane-testing sets at once
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added lane inspection presets plus preset-set copy action:
+  - `apps/web/app/components/fixture-quickstart.tsx` now exposes `Lane Inspection Presets` for each non-software manual lane
+  - presets group discovery, reputation, accept-starter, and dispute-starter links, and `Copy All Inspection Presets` exports the full set in one action
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added direct lane starter controls inside the marketplace builder:
+  - `apps/web/app/components/marketplace-event-builder.tsx` now exposes one-click `Lane accept starters` and `Lane dispute starters` for all current alpha lanes
+  - builders can now be reconfigured in-place without going back through the home-page launcher surface
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Strengthened non-software lane starter presets inside the builder:
+  - `apps/web/app/components/marketplace-event-builder.tsx` lane starters now prefill deterministic IDs, parties, timestamps, escrow nonce, evidence hashes/URLs, terms hash, and lane-specific dispute defaults
+  - non-software lanes now open closer to a reproducible workflow instead of a mostly blank form
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added in-builder current-lane inspection and sharing shortcuts:
+  - `apps/web/app/components/marketplace-event-builder.tsx` now exposes direct links to current-lane discovery and reputation views plus a copyable deep link for the current lane starter state
+  - operators can now launch, inspect, and share the active lane context from the builder itself
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+
+## 2026-01
+
+- Established design goals:
+  - non-transferable credits
+  - demurrage + expiration
+  - web-of-trust onboarding
+  - service marketplace with escrow sinks
+  - no-arbitration disputes (deadlock)
+- Wrote v0 documentation:
+  - vision
+  - glossary
+  - protocol-v0
+  - marketplace-v0
+  - roadmap
+
+## 2026-03
+
+- Implemented V0 Phase 1 reference core:
+  - Rust workspace with `protocol-core`, `policy`, `state-engine`, and CLI crates
+  - deterministic signed-event replay for identity, vouch, claim, attest, mint, and spend flows
+  - embedded default policy for replay and validation
+  - CLI commands for key generation, event signing, log validation, replay, state inspection, and fixture execution
+  - checked-in JSONL fixtures for valid and invalid replay scenarios
+- Implemented V0 Phase 2 local runtime:
+  - added `node` crate with append-only JSONL event storage and SQLite indexes/materialized query tables
+  - added local HTTP API for event ingestion, event listing, state replay/identity/balance reads, and snapshot endpoints
+  - added CLI `node` command group for serve/ingest/snapshot/db workflows
+  - added snapshot creation and replay-equivalence checks with optional `as_of` semantics
+- Started Track 4.0 transport:
+  - added node-to-node pull replication (`node sync pull`) with static peer config (`peers.json`)
+  - added per-peer SQLite cursor state and sync status/reset workflows
+  - added idempotent duplicate ingest contract and optional bearer-token protection for `GET /events`
+- Implemented Track 4.1 runtime sync operations:
+  - added background pull worker to `node serve` (immediate run + interval cycles)
+  - added per-peer failure backoff (`next_attempt_at`) with 300s cap and hot-reloaded `peers.json`
+  - extended `peer_sync_state` with runtime observability fields and additive migration
+  - added read-only sync endpoints (`/sync/status`, `/sync/peers`) and CLI wrappers (`node sync runtime`, `node sync peers`)
+- Implemented Track 4.2 snapshot bootstrap replication:
+  - added manual bootstrap operation (`node sync bootstrap`) that imports a peer snapshot then pulls delta events
+  - added `GET /snapshots/latest` and applied `read_token` auth boundary to snapshot replication reads
+  - added imported snapshot provenance metadata and integrity checks (format/checkpoint/hash/self-consistency)
+  - aligned local event sequence floor to seeded remote cursor for deterministic snapshot-plus-delta replay
+- Added economics-layer specification:
+  - drafted `economic-protocol-v1.md` to define anti-financial invariants, P2H direction, anti-abuse threat model, and protocol-level evaluation metrics
+- Implemented economics controls EC-1 telemetry baseline:
+  - added deterministic economics metrics read model on node replay output
+  - added `GET /state/economics/metrics` with standard replay metadata (`as_of`, `source`, `snapshot_id`)
+  - added CLI command `node economics metrics --data-dir <path> [--as-of <rfc3339>]`
+  - added API tests validating deterministic metrics and snapshot-plus-delta equivalence
+- Implemented economics controls EC-2 issuance throughput enforcement:
+  - extended policy snapshot schema and runtime policy with rolling-window issuance controls and diversity threshold
+  - added deterministic replay enforcement for issuance paths with stable reject codes (`ERR_ISSUANCE_RATE_LIMIT_EXCEEDED`, `ERR_ISSUANCE_DIVERSITY_VIOLATION`)
+  - checkpointed issuance control context for deterministic resume/replay
+  - bumped checkpoint-capable snapshot acceleration to format `5` to preserve replay equivalence guarantees
+  - added protocol/policy/state-engine tests for validation invariants and pre/post-policy effective behavior
+- Implemented economics controls EC-3 P2H risk observability:
+  - added deterministic per-identity P2H read model with balanced components (bilateral loop intensity, diversity weakness, short-cycle dispute/settlement anomaly, attestation clustering)
+  - added endpoints `GET /state/economics/p2h/:id` and `GET /state/economics/p2h/:id/history` with standard replay metadata (`as_of`, `source`, `snapshot_id`)
+  - added CLI commands `node economics p2h` and `node economics p2h-history`
+  - added API tests for profile/history correctness and snapshot-plus-delta equivalence
+- Implemented economics controls EC-4 optional soft gating:
+  - extended policy snapshot/runtime policy with optional economic eligibility fields (`minGlobalReputationScore`, `minLaneReputationScore`, `maxP2hRiskBand`)
+  - added deterministic replay enforcement on issuance-sensitive paths (contribution mint + provider reward issuance) with stable reject code `ERR_ECONOMIC_ELIGIBILITY_VIOLATION`
+  - added protocol/policy/state-engine tests for boundary behavior, policy-effective transitions, and disabled-threshold regression compatibility
+- Started economics controls EC-5 offline lane templates (slice 1):
+  - added constrained offline service templates (`local-resource-exchange`, `physical-handoff`) with deterministic `deliveryMode` + `allowedEvidenceFormats` requirements
+  - added deterministic delivery evidence checks (`local-resource-receipt-v1` requires >=1 artifact hash, `physical-handoff-ack-dual-v1` requires >=2 artifact hashes)
+  - extended default policy lane allowlist with both offline templates
+  - extended economics telemetry with `offline_lane_templates` metrics grouped by lane/template and status counters
+  - added protocol/state-engine/node API tests for template enforcement and telemetry contract stability
+- Advanced EC-5 with offline templates (slice 2):
+  - strengthened `physical-handoff-ack-dual-v1` schema to require exactly two distinct artifact hashes, mandatory `notesHash`, and no `urls`
+  - added physical-handoff acceptance guard (`acceptedAt >= deliveredAt`) for deterministic dual-confirmation sequencing
+  - expanded offline lane telemetry with dispute/abuse indicators (`unresolved_dispute_count`, `dispute_rate_bps`, `auto_refund_rate_bps`, and lane-scoped invalid-event counters)
+  - added regression coverage for strict dual-ack schema and offline telemetry rate calculations
+- Advanced EC-5 with offline templates (slice 3):
+  - hardened `local-resource-receipt-v1` schema with mandatory `notesHash` and unique artifact-hash requirements
+  - added deterministic offline-lane alert derivation in economics metrics (`offline_lane_alerts`) for unresolved disputes, high auto-refund behavior, and repeated invalid attempts
+  - added API + reducer regression coverage for offline alert output and stricter local-resource evidence enforcement
+- Advanced EC-5 with offline templates (slice 4):
+  - added policy timeline fields for offline alert threshold tuning (`offlineAlertUnresolvedDisputeCountThreshold`, `offlineAlertAutoRefundRateBpsThreshold`, `offlineAlertAutoRefundMinDisputes`, `offlineAlertInvalidPayloadCountThreshold`, `offlineAlertPolicyViolationCountThreshold`)
+  - switched node offline alert derivation to use effective policy values at replay `as_of` instead of hard-coded constants
+  - added protocol/policy validation for threshold bounds (including bps range checks) and node regression tests proving threshold tuning behavior
+- Advanced EC-5 with offline templates (slice 5):
+  - added `offlineAlertLaneOverrides[]` policy snapshot support for lane-specific offline alert threshold/min-dispute/severity overrides
+  - added deterministic lane override merge in economics metrics alert derivation (effective policy at `as_of`, then global defaults, then lane override)
+  - added protocol/policy/node regression coverage for lane override validation and runtime alert behavior
+- Advanced EC-5 with offline templates (slice 6):
+  - added policy fields for offline dispute-rate alerts (`offlineAlertDisputeRateBpsThreshold`, `offlineAlertDisputeRateMinOrders`, `offlineAlertDisputeRateSeverity`)
+  - extended lane overrides with dispute-rate controls (`disputeRateBpsThreshold`, `disputeRateMinOrders`, `disputeRateSeverity`)
+  - added deterministic `OFFLINE_HIGH_DISPUTE_RATE` alert derivation and validation guardrails for dispute-rate threshold bounds (`0..=10000`)
+- Advanced EC-5 with offline templates (slice 7):
+  - added deterministic `offline_lane_alert_rollup` metrics output with total count, highest severity, per-severity/per-code counts, and affected service-type list
+  - added stable sort/ranking rules for rollup fields (`critical > warn > info`, lexicographic code ordering, sorted unique service types)
+  - added node unit/API regression coverage to ensure rollup output stays deterministic across replay paths
+- Advanced EC-5 with offline templates (slice 8):
+  - extended `offline_lane_alert_rollup` with action/readiness fields (`action_required`, `top_alert_code`, `service_summaries`)
+  - added deterministic per-service alert summaries (count, highest severity, sorted per-code breakdown)
+  - added node unit/API regression coverage for action flag behavior and service-level rollup contract
+- Advanced EC-5 with offline templates (slice 9):
+  - extended `offline_lane_alert_rollup` with deterministic machine-triage fields (`action_level`, `deterministic_fingerprint`, `critical_service_types`)
+  - added strict severity-to-action mapping (`none/watch/intervene`) derived from highest rollup severity
+  - added node unit/API regression coverage for fingerprint determinism and action-level contract stability
+- Advanced EC-5 with offline templates (slice 10):
+  - extended per-service offline alert summaries with deterministic triage fields (`action_required`, `action_level`, `top_alert_code`, `deterministic_fingerprint`)
+  - added stable per-service action mapping and hashing from sorted summary components
+  - added node unit/API regression coverage for per-service action semantics and fingerprint contract stability
+- Advanced EC-5 with offline templates (slice 11):
+  - extended rollup output with service-level action distribution (`by_action_level`) and deterministic top-affected service (`top_service_type`)
+  - added stable ranking/selection rules for action distribution ordering and top-service tie-break behavior
+  - updated node unit/API coverage and rollup fingerprint input to keep replay outputs deterministic across sources
+- Advanced EC-5 with offline templates (slice 12):
+  - added deterministic `prioritized_services[]` queue output for lane triage (`rank`, `service_type`, `alert_count`, `action_level`, `highest_severity`, `top_alert_code`)
+  - implemented stable priority ordering (`action rank` → `alert_count desc` → `service_type`) with explicit 1-based ranks
+  - extended node unit/API coverage and rollup fingerprint inputs to preserve deterministic priority-queue contracts across replay sources
+- Advanced EC-5 with offline templates (slice 13):
+  - added deterministic queue-head fields (`priority_head_service_type`, `priority_head_action_level`) derived from ranked triage queue
+  - added `priority_queue_fingerprint` for efficient machine polling of queue-state changes
+  - extended node unit/API regression coverage for head/null semantics and queue fingerprint stability
+- Advanced EC-5 with offline templates (slice 14):
+  - extended rollup output with deterministic queue-health fields (`priority_queue_size`, `priority_queue_health`, and per-action queue counts)
+  - added stable queue-health classification (`empty`, `stable`, `attention`, `critical`) derived from prioritized queue composition
+  - extended node unit/API regression coverage and rollup fingerprint inputs for queue-health contract stability
+- Advanced EC-5 with offline templates (slice 15):
+  - extended rollup output with deterministic queue-pressure fields (`priority_queue_actionable_bps`, `priority_queue_critical_bps`, `priority_queue_load_level`)
+  - added stable pressure/load classification from queue composition and queue-size bands
+  - extended node unit/API regression coverage and rollup fingerprint inputs for pressure/load contract stability
+- Advanced EC-5 with offline templates (slice 16):
+  - extended rollup output with deterministic queue-change fingerprints (`priority_queue_membership_fingerprint`, `priority_queue_order_fingerprint`, `priority_queue_pressure_fingerprint`)
+  - added stable fingerprint semantics for queue membership-set changes, ranked order changes, and pressure profile changes
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable machine diffing contracts
+- Advanced EC-5 with offline templates (slice 17):
+  - extended rollup output with deterministic queue dominance/concentration fields (`priority_tail_service_type`, `priority_queue_dominant_action_level`, `priority_queue_dominant_action_bps`, `priority_queue_top_service_alert_share_bps`)
+  - added stable dominance tie-break semantics and empty-queue defaults for machine-readable operational triage
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable concentration monitoring
+- Advanced EC-5 with offline templates (slice 18):
+  - extended rollup output with deterministic concentration metrics (`priority_queue_top2_service_alert_share_bps`, `priority_queue_service_concentration_hhi_bps`, `priority_queue_concentration_level`)
+  - added stable top-2 share and HHI semantics for queue concentration visibility across replay sources
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable concentration diffing
+- Advanced EC-5 with offline templates (slice 19):
+  - extended rollup output with deterministic leader/runner concentration metrics (`priority_queue_leader_alert_share_bps`, `priority_queue_runner_up_alert_share_bps`, `priority_queue_leader_gap_bps`)
+  - added stable count-ranked leader/runner selection and replay-safe share/gap semantics
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable concentration triage
+- Advanced EC-5 with offline templates (slice 20):
+  - extended rollup output with deterministic concentration-diversity metrics (`priority_queue_long_tail_alert_share_bps`, `priority_queue_effective_service_count_milli`, `priority_queue_leader_dominance_level`)
+  - added stable long-tail share, inverse-concentration effective-service count, and leader-dominance classification semantics
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable breadth-vs-concentration monitoring
+- Advanced EC-5 with offline templates (slice 21):
+  - extended rollup output with deterministic queue-coverage metrics (`priority_queue_coverage_50_count`, `priority_queue_coverage_80_count`, `priority_queue_coverage_95_count`, `priority_queue_coverage_profile`)
+  - added stable ranked cumulative-coverage semantics and coverage-profile classification for concentration readability
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable coverage diffing
+- Advanced EC-5 with offline templates (slice 22):
+  - extended rollup output with deterministic queue-risk triage metrics (`priority_queue_risk_score_bps`, `priority_queue_risk_band`, `priority_queue_response_sla_seconds`)
+  - added stable weighted risk scoring, risk-band thresholds, and deterministic SLA mapping for automation-friendly response contracts
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable risk orchestration diffing
+- Advanced EC-5 with offline templates (slice 23):
+  - extended rollup output with deterministic distribution-shape metrics (`priority_queue_inequality_gini_bps`, `priority_queue_evenness_milli`, `priority_queue_distribution_profile`)
+  - added stable Gini/evenness calculations and deterministic distribution-profile classification thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable queue-shape diffing
+- Advanced EC-5 with offline templates (slice 24):
+  - extended rollup output with deterministic actionable-mix escalation metrics (`priority_queue_actionable_count`, `priority_queue_intervene_within_actionable_bps`, `priority_queue_watch_within_actionable_bps`, `priority_queue_action_escalation_profile`)
+  - added stable within-actionable mix semantics and explicit escalation profile classification for automation-friendly triage
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable escalation-mode diffing
+- Advanced EC-5 with offline templates (slice 25):
+  - extended rollup output with deterministic SLA-pressure metrics (`priority_queue_sla_multiplier_bps`, `priority_queue_effective_response_sla_seconds`, `priority_queue_sla_slippage_bps`, `priority_queue_sla_pressure_profile`)
+  - added stable load-level multiplier semantics and deterministic effective-SLA/slippage profile classification
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable response-capacity diffing
+- Advanced EC-5 with offline templates (slice 26):
+  - extended rollup output with deterministic weighted-action throughput metrics (`priority_queue_action_weighted_units`, `priority_queue_action_weighted_pressure_bps`, `priority_queue_action_weighted_per_service_milli`, `priority_queue_action_weighted_profile`)
+  - added stable fixed action-weight semantics and deterministic weighted-pressure/profile classification
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable weighted-load diffing
+- Advanced EC-5 with offline templates (slice 27):
+  - extended rollup output with deterministic action-polarization metrics (`priority_queue_action_polarization_bps`, `priority_queue_action_balance_score_bps`, `priority_queue_action_polarization_profile`)
+  - added stable actionable gap/balance semantics and deterministic polarization-profile classification
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable intervention-balance diffing
+- Advanced EC-5 with offline templates (slice 28):
+  - extended rollup output with deterministic SLA-adjusted posture metrics (`priority_queue_sla_adjusted_risk_bps`, `priority_queue_sla_risk_delta_bps`, `priority_queue_operational_posture`)
+  - added stable adjusted-risk uplift semantics and deterministic operational-posture classification thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable risk-to-operations diffing
+- Advanced EC-5 with offline templates (slice 29):
+  - extended rollup output with deterministic attention-index metrics (`priority_queue_attention_index_bps`, `priority_queue_attention_delta_bps`, `priority_queue_attention_profile`)
+  - added stable attention-index synthesis from adjusted risk + weighted pressure with deterministic focus-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable triage-focus diffing
+- Advanced EC-5 with offline templates (slice 30):
+  - extended rollup output with deterministic readiness metrics (`priority_queue_readiness_score_bps`, `priority_queue_readiness_delta_bps`, `priority_queue_readiness_profile`)
+  - added stable readiness-score synthesis and deterministic readiness-profile thresholds for execution capacity
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable execution-readiness diffing
+- Advanced EC-5 with offline templates (slice 31):
+  - extended rollup output with deterministic stability metrics (`priority_queue_stability_index_bps`, `priority_queue_stability_delta_bps`, `priority_queue_stability_profile`)
+  - added stable readiness-dampening semantics and deterministic stability-profile thresholds for execution continuity
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable execution-stability diffing
+- Advanced EC-5 with offline templates (slice 32):
+  - extended rollup output with deterministic resilience metrics (`priority_queue_resilience_score_bps`, `priority_queue_resilience_delta_bps`, `priority_queue_resilience_profile`)
+  - added stable resilience-score synthesis from stability/balance/inequality and deterministic resilience-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable recovery-capacity diffing
+- Advanced EC-5 with offline templates (slice 33):
+  - extended rollup output with deterministic coherence metrics (`priority_queue_coherence_score_bps`, `priority_queue_coherence_delta_bps`, `priority_queue_coherence_profile`)
+  - added stable coherence-score synthesis from resilience/stability/readiness and deterministic coherence-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable alignment-capacity diffing
+- Advanced EC-5 with offline templates (slice 34):
+  - extended rollup output with deterministic adaptability metrics (`priority_queue_adaptability_score_bps`, `priority_queue_adaptability_delta_bps`, `priority_queue_adaptability_profile`)
+  - added stable adaptability-score synthesis from coherence/diversity/non-critical pressure and deterministic adaptability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable flexibility-capacity diffing
+- Advanced EC-5 with offline templates (slice 35):
+  - extended rollup output with deterministic sustainability metrics (`priority_queue_sustainability_score_bps`, `priority_queue_sustainability_delta_bps`, `priority_queue_sustainability_profile`)
+  - added stable sustainability-score synthesis from adaptability/inverse-coherence-spread/inverse-attention signals and deterministic sustainability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable endurance-capacity diffing
+- Advanced EC-5 with offline templates (slice 36):
+  - extended rollup output with deterministic continuity metrics (`priority_queue_continuity_score_bps`, `priority_queue_continuity_delta_bps`, `priority_queue_continuity_profile`)
+  - added stable continuity-score synthesis from sustainability/inverse-SLA-slippage/inverse-leader-gap signals and deterministic continuity-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable service-continuity diffing
+- Advanced EC-5 with offline templates (slice 37):
+  - extended rollup output with deterministic recoverability metrics (`priority_queue_recoverability_score_bps`, `priority_queue_recoverability_delta_bps`, `priority_queue_recoverability_profile`)
+  - added stable recoverability-score synthesis from continuity/action-balance/inverse-attention signals and deterministic recoverability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable repair-capacity diffing
+- Advanced EC-5 with offline templates (slice 38):
+  - extended rollup output with deterministic regeneration metrics (`priority_queue_regeneration_score_bps`, `priority_queue_regeneration_delta_bps`, `priority_queue_regeneration_profile`)
+  - added stable regeneration-score synthesis from recoverability/sustainability/inverse-critical-pressure signals and deterministic regeneration-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable renewal-capacity diffing
+- Advanced EC-5 with offline templates (slice 39):
+  - extended rollup output with deterministic restoration metrics (`priority_queue_restoration_score_bps`, `priority_queue_restoration_delta_bps`, `priority_queue_restoration_profile`)
+  - added stable restoration-score synthesis from regeneration/continuity/inverse-weighted-action-pressure signals and deterministic restoration-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable restoration-capacity diffing
+- Advanced EC-5 with offline templates (slice 40):
+  - extended rollup output with deterministic stewardship metrics (`priority_queue_stewardship_score_bps`, `priority_queue_stewardship_delta_bps`, `priority_queue_stewardship_profile`)
+  - added stable stewardship-score synthesis from restoration/recoverability/inverse-SLA-adjusted-risk signals and deterministic stewardship-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable governance-capacity diffing
+- Advanced EC-5 with offline templates (slice 41):
+  - extended rollup output with deterministic guardianship metrics (`priority_queue_guardianship_score_bps`, `priority_queue_guardianship_delta_bps`, `priority_queue_guardianship_profile`)
+  - added stable guardianship-score synthesis from stewardship/restoration/inverse-leader-gap signals and deterministic guardianship-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable protection-capacity diffing
+- Advanced EC-5 with offline templates (slice 42):
+  - extended rollup output with deterministic assurance metrics (`priority_queue_assurance_score_bps`, `priority_queue_assurance_delta_bps`, `priority_queue_assurance_profile`)
+  - added stable assurance-score synthesis from guardianship/stewardship/inverse-SLA-risk-delta signals and deterministic assurance-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable confidence-capacity diffing
+- Advanced EC-5 with offline templates (slice 43):
+  - extended rollup output with deterministic vigilance metrics (`priority_queue_vigilance_score_bps`, `priority_queue_vigilance_delta_bps`, `priority_queue_vigilance_profile`)
+  - added stable vigilance-score synthesis from assurance/guardianship/inverse-action-polarization signals and deterministic vigilance-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable vigilance-capacity diffing
+- Advanced EC-5 with offline templates (slice 44):
+  - extended rollup output with deterministic oversight metrics (`priority_queue_oversight_score_bps`, `priority_queue_oversight_delta_bps`, `priority_queue_oversight_profile`)
+  - added stable oversight-score synthesis from vigilance/assurance/inverse-concentration signals and deterministic oversight-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable oversight-capacity diffing
+- Advanced EC-5 with offline templates (slice 45):
+  - extended rollup output with deterministic accountability metrics (`priority_queue_accountability_score_bps`, `priority_queue_accountability_delta_bps`, `priority_queue_accountability_profile`)
+  - added stable accountability-score synthesis from vigilance/assurance/inverse-concentration signals and deterministic accountability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable accountability-capacity diffing
+- Advanced EC-5 with offline templates (slice 46):
+  - extended rollup output with deterministic verifiability metrics (`priority_queue_verifiability_score_bps`, `priority_queue_verifiability_delta_bps`, `priority_queue_verifiability_profile`)
+  - added stable verifiability-score synthesis from accountability/oversight/inverse-SLA-risk-delta signals and deterministic verifiability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable verifiability-capacity diffing
+- Advanced EC-5 with offline templates (slice 47):
+  - extended rollup output with deterministic auditability metrics (`priority_queue_auditability_score_bps`, `priority_queue_auditability_delta_bps`, `priority_queue_auditability_profile`)
+  - added stable auditability-score synthesis from verifiability/accountability/inverse-coherence-spread signals and deterministic auditability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable auditability-capacity diffing
+- Advanced EC-5 with offline templates (slice 48):
+  - extended rollup output with deterministic transparency metrics (`priority_queue_transparency_score_bps`, `priority_queue_transparency_delta_bps`, `priority_queue_transparency_profile`)
+  - added stable transparency-score synthesis from auditability/verifiability/inverse-inequality signals and deterministic transparency-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable transparency-capacity diffing
+- Advanced EC-5 with offline templates (slice 49):
+  - extended rollup output with deterministic legibility metrics (`priority_queue_legibility_score_bps`, `priority_queue_legibility_delta_bps`, `priority_queue_legibility_profile`)
+  - added stable legibility-score synthesis from transparency/auditability/evenness signals and deterministic legibility-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable legibility-capacity diffing
+- Advanced EC-5 with offline templates (slice 50):
+  - extended rollup output with deterministic navigability metrics (`priority_queue_navigability_score_bps`, `priority_queue_navigability_delta_bps`, `priority_queue_navigability_profile`)
+  - added stable navigability-score synthesis from legibility/readiness/inverse-leader-gap signals and deterministic navigability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable navigability-capacity diffing
+- Advanced EC-5 with offline templates (slice 51):
+  - extended rollup output with deterministic interpretability metrics (`priority_queue_interpretability_score_bps`, `priority_queue_interpretability_delta_bps`, `priority_queue_interpretability_profile`)
+  - added stable interpretability-score synthesis from navigability/transparency/inverse-coherence-spread signals and deterministic interpretability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable interpretability-capacity diffing
+- Advanced EC-5 with offline templates (slice 52):
+  - extended rollup output with deterministic explainability metrics (`priority_queue_explainability_score_bps`, `priority_queue_explainability_delta_bps`, `priority_queue_explainability_profile`)
+  - added stable explainability-score synthesis from interpretability/legibility/inverse-action-polarization signals and deterministic explainability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable explainability-capacity diffing
+- Advanced EC-5 with offline templates (slice 53):
+  - extended rollup output with deterministic clarity metrics (`priority_queue_clarity_score_bps`, `priority_queue_clarity_delta_bps`, `priority_queue_clarity_profile`)
+  - added stable clarity-score synthesis from explainability/interpretability/inverse-coherence-spread signals and deterministic clarity-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable clarity-capacity diffing
+- Advanced EC-5 with offline templates (slice 54):
+  - extended rollup output with deterministic comprehensibility metrics (`priority_queue_comprehensibility_score_bps`, `priority_queue_comprehensibility_delta_bps`, `priority_queue_comprehensibility_profile`)
+  - added stable comprehensibility-score synthesis from clarity/explainability/inverse-attention-delta signals and deterministic comprehensibility-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable comprehensibility-capacity diffing
+- Advanced EC-5 with offline templates (slice 55):
+  - extended rollup output with deterministic intelligibility metrics (`priority_queue_intelligibility_score_bps`, `priority_queue_intelligibility_delta_bps`, `priority_queue_intelligibility_profile`)
+  - added stable intelligibility-score synthesis from comprehensibility/clarity/inverse-attention-index signals and deterministic intelligibility-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable intelligibility-capacity diffing
+- Advanced EC-5 with offline templates (slice 56):
+  - extended rollup output with deterministic communicability metrics (`priority_queue_communicability_score_bps`, `priority_queue_communicability_delta_bps`, `priority_queue_communicability_profile`)
+  - added stable communicability-score synthesis from intelligibility/comprehensibility/inverse-sla-risk-delta signals and deterministic communicability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable communicability-capacity diffing
+- Advanced EC-5 with offline templates (slice 57):
+  - extended rollup output with deterministic articulability metrics (`priority_queue_articulability_score_bps`, `priority_queue_articulability_delta_bps`, `priority_queue_articulability_profile`)
+  - added stable articulability-score synthesis from communicability/intelligibility/inverse-action-polarization signals and deterministic articulability-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable articulability-capacity diffing
+- Advanced EC-5 with offline templates (slice 58):
+  - extended rollup output with deterministic expressivity metrics (`priority_queue_expressivity_score_bps`, `priority_queue_expressivity_delta_bps`, `priority_queue_expressivity_profile`)
+  - added stable expressivity-score synthesis from articulability/communicability/inverse-inequality signals and deterministic expressivity-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable expressivity-capacity diffing
+- Advanced EC-5 with offline templates (slice 59):
+  - extended rollup output with deterministic eloquence metrics (`priority_queue_eloquence_score_bps`, `priority_queue_eloquence_delta_bps`, `priority_queue_eloquence_profile`)
+  - added stable eloquence-score synthesis from expressivity/articulability/inverse-attention-delta signals and deterministic eloquence-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable eloquence-capacity diffing
+- Advanced EC-5 with offline templates (slice 60):
+  - extended rollup output with deterministic lucidity metrics (`priority_queue_lucidity_score_bps`, `priority_queue_lucidity_delta_bps`, `priority_queue_lucidity_profile`)
+  - added stable lucidity-score synthesis from eloquence/intelligibility/inverse-action-polarization signals and deterministic lucidity-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable lucidity-capacity diffing
+- Advanced EC-5 with offline templates (slice 61):
+  - extended rollup output with deterministic illumination metrics (`priority_queue_illumination_score_bps`, `priority_queue_illumination_delta_bps`, `priority_queue_illumination_profile`)
+  - added stable illumination-score synthesis from lucidity/transparency/inverse-attention-index signals and deterministic illumination-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable illumination-capacity diffing
+- Advanced EC-5 with offline templates (slice 62):
+  - extended rollup output with deterministic clarion metrics (`priority_queue_clarion_score_bps`, `priority_queue_clarion_delta_bps`, `priority_queue_clarion_profile`)
+  - added stable clarion-score synthesis from illumination/eloquence/inverse-attention-delta signals and deterministic clarion-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable clarion-capacity diffing
+- Advanced EC-5 with offline templates (slice 63):
+  - extended rollup output with deterministic resonance metrics (`priority_queue_resonance_score_bps`, `priority_queue_resonance_delta_bps`, `priority_queue_resonance_profile`)
+  - added stable resonance-score synthesis from clarion/communicability/inverse-sla-risk-delta signals and deterministic resonance-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable resonance-capacity diffing
+- Advanced EC-5 with offline templates (slice 64):
+  - extended rollup output with deterministic cadence metrics (`priority_queue_cadence_score_bps`, `priority_queue_cadence_delta_bps`, `priority_queue_cadence_profile`)
+  - added stable cadence-score synthesis from resonance/eloquence/inverse-attention-delta signals and deterministic cadence-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable cadence-capacity diffing
+- Advanced EC-5 with offline templates (slice 65):
+  - extended rollup output with deterministic harmony metrics (`priority_queue_harmony_score_bps`, `priority_queue_harmony_delta_bps`, `priority_queue_harmony_profile`)
+  - added stable harmony-score synthesis from cadence/resonance/communicability signals and deterministic harmony-profile thresholds
+  - extended node unit/API regression coverage and rollup fingerprint inputs for replay-stable harmony-capacity diffing
+
+## 2026-04
+
+- Started v0 Phase 0 roadmap lock execution:
+  - added canonical tracker `docs/v0/v0-phase0-execution-plan.md` for open Track 5, cross-cutting, and v0 exit tasks
+  - aligned roadmap status references to point at the Phase 0 execution tracker
+  - reconciled economics controls EC-5 status text to reflect slices implemented through 65
+  - extracted initial Track 5 slice backlog (`T5-S1`..`T5-S8`) with module mapping and closed-alpha readiness gates
+- Advanced Phase 0 cross-cutting and readiness planning:
+  - added fixture-backed scenario matrix `docs/v0/v0-scenario-fixture-matrix.md`
+  - added abuse/gaming deterministic test matrix `docs/v0/v0-abuse-gaming-test-matrix.md`
+  - added docs synchronization checklist `docs/meta/docs-sync-checklist.md`
+  - added event versioning strategy `docs/architecture/event-versioning-strategy.md`
+  - added v0 exit evidence matrix `docs/v0/v0-exit-evidence-matrix.md`
+- Hardened onboarding wizard reliability (Track 5 prep):
+  - added workspace persistence for onboarding inputs with explicit reset control
+  - normalized identity key handling for pubkey/secret consistency checks
+  - excluded self-sponsor entries from request drafts/status matching with explicit UI warning
+  - added copy-action guardrails requiring identity event reference and valid sponsor set
+  - limited identity reference reuse to accepted/already-present ingest outcomes (or refreshed node status), avoiding failed-submit draft references
+  - added vouch draft `createdAt` template validation (RFC3339 or explicit placeholder token)
+- Started Track 5 lane-template hardening in marketplace builder:
+  - added service-lane template selector for initial digital lanes and constrained offline lanes
+  - added strict preflight lane-constraint checks for offline templates (`local-resource-exchange`, `physical-handoff`)
+  - added order autofill propagation of offer lane fields (`serviceType`, `deliveryMode`, `allowedEvidenceFormats`) to reduce mismatch risk
+- Started Track 5 milestone-first flow guardrail evidence (`T5-S3`):
+  - added node API integration coverage for deterministic accept path transitions (`Offer -> Order -> Escrow -> Delivery -> Accept`)
+  - validated read-side state contracts for `/state/order`, `/state/milestone`, `/state/balance`, and `/state/replay` after accept completion
+  - added repeat-read determinism check for milestone endpoint at fixed `as_of`
+- Advanced Track 5 dispute/timeout flow hardening (`T5-S4`):
+  - added node API integration coverage for deterministic dispute settlement handshake outcomes (`Disputed -> SettlementPending -> Settled`)
+  - added node API integration coverage for deterministic timeout transition (`Disputed -> AutoRefunded`) using fixed early/late `as_of` checks
+  - validated replay/read-side contracts (`/state/order`, `/state/milestone`, `/state/balance`, `/state/replay`) for both settle and timeout paths
+  - added deadlock-edge reject-path coverage for same-actor double-settlement attempts with deterministic `InvalidStateTransition` replay reason and snapshot parity checks
+  - added missing-dispute-reference settlement reject-path coverage with deterministic `MissingReference` replay reason and timeout convergence checks
+- Started Track 5 discovery default hardening (`T5-S5`):
+  - discovery explorer now applies policy-aligned lane filtering by default for alpha (`alpha_defaults=1`)
+  - default lane scope is constrained to alpha initial lanes intersected with policy `allowed_service_types`
+  - added explicit query override (`alpha_defaults=0`) for policy-wide lane discovery without changing deterministic ranking tie-breaks
+  - added deterministic node endpoint `GET /state/discovery` with policy-aligned lane filtering and stable ranking/page semantics
+  - added SDK support for discovery queries/results and switched web discovery explorer to consume node-ranked discovery output
+  - added node API coverage for alpha-default lane behavior and repeated-query determinism
+- Completed Track 5 multi-node convergence checks (`T5-S6`):
+  - added sync regression coverage for alpha marketplace fixture bundles (`marketplace-accept`, `marketplace-dispute-settle`, `marketplace-timeout-autorefund`)
+  - validated source/sink convergence for each bundle on deterministic replay hash at fixed `as_of`
+  - validated source/sink convergence for each bundle on deterministic discovery-view hash (`alpha_defaults=true`) at fixed `as_of`
+- Completed Track 5 alpha operations runbook delivery (`T5-S7`):
+  - added `docs/runbooks/alpha-operations-runbook.md` with docs-only ingest, sync, snapshot bootstrap, incident triage, and evidence-capture workflow
+  - linked the runbook in `docs/README.md` and advanced Phase 0 tracker status to `completed`
+  - completed full clean docs-only dry run at `target/tmp/runbook-dryrun-1775537368434` (three-bundle ingest, sync pull, sync status, snapshot bootstrap, and node DB checks)
+- Started Track 5 closed-alpha readiness packet assembly (`T5-S8`):
+  - added `docs/v0/v0-closed-alpha-readiness-report.md` with `GA1`..`GA6` evidence mapping and explicit current go/no-go status
+  - promoted `T5-S8` in the Phase 0 tracker to `in_progress`
+  - captured blockers for final sign-off (`GA1` onboarding evidence, `GA2`/`GA3` lane-coverage evidence)
+- Completed Track 5 onboarding + lane-template evidence closure (`T5-S1`, `T5-S2`):
+  - added `api_onboarding_guardrails_reject_self_vouch_and_duplicate_active_vouch` to prove deterministic replay/snapshot parity for sponsor-vouch guardrails
+  - added `api_marketplace_offline_lane_template_mismatch_rejections_are_deterministic` to prove deterministic replay/snapshot parity for offline lane-template mismatch reject paths
+  - advanced readiness packet gate `GA1` to completed and narrowed current go/no-go blockers to `GA2`/`GA3`
+- Completed Track 5 lane-coverage closure and readiness sign-off (`T5-S8`):
+  - added `api_marketplace_accept_flow_covers_initial_digital_lanes` to cover accepted-path outcomes across initial digital alpha lanes
+  - added `api_marketplace_dispute_timeout_covers_initial_digital_lanes` to cover deterministic dispute-timeout outcomes across the same lanes
+  - advanced readiness packet gates `GA2` and `GA3` to completed and moved current closed-alpha decision to `go`
+- Started Phase 1 recurring preflight/regression packaging:
+  - added repeatable GA runner `scripts/v1-preflight.mjs` and root commands `npm run v1:preflight` / `npm run v1:readiness`
+  - added `docs/runbooks/phase1-preflight-checklist.md` with gate-to-command mapping for `GA1`..`GA6`
+  - updated readiness report/roadmap docs to point to recurring preflight checks
+- Advanced v0 exit evidence closure:
+  - added `docs/architecture/stalled-project-support-flow.md` with explicit `project-maintenance` lane template and scenario flow
+  - promoted `docs/v0/v0-exit-evidence-matrix.md` criteria for deterministic core, non-author usability, and stalled-project modeling to `completed`
+  - promoted sign-off gates `G1`, `G2`, `G3`, and `G5` to `pass`; kept `G4` pending for additional abuse-matrix closure
+- Advanced abuse-gate closure work (`G4` in progress):
+  - added API regression coverage for duplicate nonce reason-code + snapshot parity (`api_duplicate_nonce_rejected_with_stable_reason_and_snapshot_parity`)
+  - added API regression coverage for unauthorized `PolicyUpdate` timeline no-op behavior (`api_policy_update_unauthorized_rejected_and_timeline_noops`)
+  - added API regression coverage for policy activation-boundary mismatch behavior (`api_policy_version_activation_boundary_rejects_stale_policy_version`)
+  - added sync regression coverage for mixed duplicate/new peer-pull replay (`sync_pull_reset_reports_mixed_duplicate_and_new_events`)
+  - hardened corrupted bootstrap regression with explicit error contract assertion (`sync_bootstrap_rejects_corrupted_remote_snapshot`)
+- Completed abuse-matrix closure and promoted `G4` to `pass`:
+  - added API regression coverage for bad-signature reject code (`api_bad_signature_fixture_rejected_with_stable_reason_and_snapshot_parity`)
+  - added API regression coverage for broader missing-reference parity (`api_missing_reference_fixtures_preserve_reason_code_parity_across_replay_sources`)
+  - added API regression coverage for unauthorized second-settlement actor path (`api_marketplace_second_settlement_signature_from_unauthorized_actor_rejects_deterministically`)
+  - added API regression coverage for combined overfund + stale-policy precedence (`api_marketplace_overfund_with_stale_policy_version_rejects_with_policy_violation`)
+  - added state-engine economics boundary coverage for window recovery and cross-lane diversity (`replay_issuance_rate_limit_recovers_after_window_advance`, `replay_issuance_diversity_allows_cross_lane_counterparty_recovery`)
+  - updated `docs/v0/v0-abuse-gaming-test-matrix.md` and `docs/v0/v0-exit-evidence-matrix.md` to mark abuse row `completed` and sign-off gate `G4=pass`
+- Added scripted GA6 runbook drill and operations cadence artifacts:
+  - added automation wrapper `npm run v1:ga6-drill` (`scripts/v1-ga6-drill.mjs`) for runbook sections 1-7
+  - validated scripted drill output at `target/tmp/runbook-dryrun-1775558664380/ga6-drill-summary.json`
+  - added recurring operations cadence doc `docs/runbooks/phase1-operations-cadence.md` and linked it from docs index/roadmap status
+- Hardened GA6 drill summary validation semantics:
+  - `scripts/v1-ga6-drill.mjs` now validates replay invalid-event counts and replay/discovery parity across node A/B/C
+  - verified enhanced summary output at `target/tmp/runbook-dryrun-1775560430460/ga6-drill-summary.json`
+- Started Phase 1 operations UX slice in web shell:
+  - added a `Phase 1 Operations` panel to `apps/web/app/page.tsx`
+  - panel now surfaces recurring operations commands and reads the latest GA6 summary artifact from `target/tmp/runbook-dryrun-*/ga6-drill-summary.json`
+  - exposes quick visibility for invalid-event counts and replay/discovery parity across node A/B/C
+- Advanced Phase 1 operations workflow hardening:
+  - `scripts/v1-preflight.mjs` now writes machine-readable run summaries to `target/tmp/preflight-<timestamp>/preflight-summary.json` with per-gate pass/fail + duration metadata
+  - `scripts/v1-ga6-drill.mjs` now validates and records `applied_event_count` plus cross-node parity booleans (`node_a_vs_node_b`, `node_a_vs_node_c`)
+  - `apps/web/app/page.tsx` now reads latest preflight summary and GA6 applied-event parity fields in the `Phase 1 Operations` panel
+  - verified artifacts:
+    - `target/tmp/preflight-1775561450232/preflight-summary.json`
+    - `target/tmp/preflight-1775561719645/preflight-summary.json`
+    - `target/tmp/runbook-dryrun-1775561486270/ga6-drill-summary.json`
+- Advanced Phase 1 operations UX for failure handling:
+  - `apps/web/app/page.tsx` now renders recent preflight/GA6 run history from summary artifacts (`target/tmp/preflight-*`, `target/tmp/runbook-dryrun-*`)
+  - operations panel now includes deterministic failure-triage command shortcuts that activate when latest preflight or GA6 checks fail
+  - GA6 history rendering now requires complete parity fields (`invalid_event_count`, `applied_event_count`, `applied_event_count_equal`, `replay_state_equal`, `discovery_equal`) to avoid partial/legacy summary misreads
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Advanced Phase 1 artifact lifecycle controls in operations UX:
+  - `apps/web/app/page.tsx` now computes preflight/GA6 freshness status against cadence-aligned staleness windows and marks stale runs in history output
+  - operations panel now detects pin markers (`.pinned`, `.keep`, `PINNED.md`) and annotates pinned runs
+  - operations panel now derives prune candidates (excluding pinned + newest retained runs) and provides explicit PowerShell preview/remove command templates (`-WhatIf`)
+  - added runbook shortcut command block for rapid access to incident/cadence/gate checklist docs
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Extended Phase 1 artifact lifecycle controls with incident annotation and archive guidance:
+  - operations panel now reads optional per-run note/tag metadata from artifact directories (`OPERATIONS_NOTE.txt`, `INCIDENT_TAGS.txt`) and renders annotations in history rows
+  - lifecycle summary now tracks noted/tagged run counts alongside pinned/prune metrics
+  - lifecycle command templates now include note/tag write commands and archive bundle creation (`Compress-Archive`) for latest preflight/GA6 runs
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added deterministic operations evidence manifest export:
+  - added script `scripts/v1-evidence-manifest.mjs` and command `npm run v1:evidence-manifest`
+  - script scans preflight/GA6 artifacts, applies deterministic contract parsing, and exports consolidated status/failure/pin/note/tag/prune evidence to JSON
+  - script supports `--as-of` to keep age/stale classification reproducible for a fixed analysis time
+  - latest generated artifact: `target/tmp/operations-evidence-manifest.json`
+  - verified checks:
+    - `npm.cmd run v1:evidence-manifest`
+    - `node ./scripts/v1-evidence-manifest.mjs --as-of 2026-04-07T15:00:00Z --out target/tmp/operations-evidence-manifest-asof.json`
+- Added policy-bounded artifact prune planner export:
+  - added script `scripts/v1-artifact-prune-plan.mjs` and command `npm run v1:artifact-prune-plan`
+  - planner computes deterministic prune candidates per lane (`preflight`, `ga6`) with explicit exclusion reasons:
+    - keep-recent window
+    - within retention window
+    - pinned
+    - note/tag annotated
+    - status not eligible
+  - planner emits preview/dry-run/apply command templates but does not execute deletion
+  - latest generated artifact: `target/tmp/operations-artifact-prune-plan.json`
+  - verified checks:
+    - `npm.cmd run v1:artifact-prune-plan`
+    - `node ./scripts/v1-artifact-prune-plan.mjs --as-of 2026-04-07T15:00:00Z --out target/tmp/operations-artifact-prune-plan-asof.json`
+- Surfaced evidence exports in Phase 1 operations web panel:
+  - `apps/web/app/page.tsx` now loads latest `operations-evidence-manifest*.json` and `operations-artifact-prune-plan*.json` artifacts from `target/tmp`
+  - panel now shows evidence/prune artifact paths, `analysis_as_of`, status/candidate summaries, and copy-ready command outputs derived from current artifact contents
+  - this closes the planned wiring step for item 3 (web visibility + actionable commands from manifest and prune plan)
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added export-freshness warnings and explicit refresh triggers in web operations panel:
+  - `apps/web/app/page.tsx` now computes export staleness against latest run artifacts and a 24h freshness window
+  - panel now flags stale manifest/prune-plan exports with concrete refresh reasons (`older than window`, `predates latest run artifacts`)
+  - panel now always includes explicit refresh commands (`npm run v1:evidence-manifest`, `npm run v1:artifact-prune-plan`) and deduplicates generated command list
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added explicit in-panel refresh workflow controls for export operations:
+  - added client component `apps/web/app/components/operations-command-tools.tsx` with copy-command actions and status-view refresh control
+  - wired `apps/web/app/page.tsx` Evidence Exports section to use `OperationsCommandTools` for command execution workflow (`v1:evidence-manifest`, `v1:artifact-prune-plan`) and post-run view refresh
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Wired readiness packet exports into closed-alpha status report:
+  - updated `docs/v0/v0-closed-alpha-readiness-report.md` verification index to include:
+    - `npm run v1:evidence-manifest`
+    - `npm run v1:artifact-prune-plan`
+  - added `Operations evidence exports (Phase 1 carry-forward)` section with canonical artifact paths and upkeep rule
+  - extended post-go actions to require export refresh before readiness sign-off updates
+- Added allowlisted in-panel export execution workflow:
+  - added `apps/web/app/api/operations/exports/route.ts` to execute only approved export refresh actions (`refresh_evidence_manifest`, `refresh_artifact_prune_plan`)
+  - upgraded `apps/web/app/components/operations-command-tools.tsx` with `Run Now` controls that call the allowlisted route and optionally refresh status view after completion
+  - wired runnable action metadata from `apps/web/app/page.tsx` command rows so export refresh commands can be executed directly in panel workflows
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added per-run export execution audit visibility in web panel:
+  - `apps/web/app/api/operations/exports/route.ts` now appends JSONL audit rows to `target/tmp/operations-export-execution-log.jsonl` for each in-panel export run with action/timestamps/duration/status/exit code and artifact-path hints
+  - `apps/web/app/page.tsx` now loads and renders recent export execution audit rows in `Evidence Exports`
+  - `apps/web/app/page.tsx` runbook shortcuts now include export-audit log tail command for operator handoff
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added export execution audit rollups and failure alerting:
+  - `apps/web/app/page.tsx` now computes per-action latest status, failure streak, and last-success timestamp from the export execution audit log
+  - `Evidence Exports` now surfaces an explicit alert when the latest run for any export action is failing
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added policy-bounded export-audit retention/rotation planning:
+  - added script + command `npm run v1:export-audit-log-plan` (`scripts/v1-export-audit-log-plan.mjs`)
+  - planner writes `target/tmp/operations-export-audit-log-plan.json` with size/retention policy summary, prune candidates, reproducibility command, and apply-cleanup command path (`--apply` archives pruned lines before rewrite)
+  - extended web operations panel (`apps/web/app/page.tsx`) with `Export Audit Log Cleanup Plan` preview, stale warnings, size-policy indicators, and cleanup command visibility
+  - extended allowlisted route/action wiring so panel `Run Now` can refresh export-audit cleanup plan (`refresh_export_audit_log_plan`)
+  - verified checks:
+    - `npm.cmd run v1:export-audit-log-plan`
+    - `node ./scripts/v1-export-audit-log-plan.mjs --as-of 2026-04-07T15:00:00Z --out target/tmp/operations-export-audit-log-plan-asof.json`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added deterministic apply-mode smoke harness for export-audit planner:
+  - added `scripts/v1-export-audit-log-plan-smoke.mjs` + command `npm run v1:export-audit-log-plan:smoke`
+  - harness uses isolated temp workspace fixtures to verify:
+    - prune candidate selection invariants
+    - apply-mode archive path creation + archived-line contract
+    - rewritten log invariants after cleanup
+  - added matching web runbook shortcut command in `apps/web/app/page.tsx` for operator access
+  - verified checks:
+    - `npm.cmd run v1:export-audit-log-plan:smoke` (pass; required escalated run due sandbox `spawn EPERM`)
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added closed-alpha UX readiness focus checklist in operations panel:
+  - `apps/web/app/page.tsx` now renders a focused checklist view for:
+    - onboarding guardrails (`GA1`) from latest preflight checks
+    - discovery determinism (`GA5`) from latest preflight checks
+    - GA6 parity status from latest drill output
+    - evidence-export freshness across manifest/prune/audit planning artifacts
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added targeted triage commands for non-pass readiness checklist rows:
+  - `apps/web/app/page.tsx` now renders row-specific triage command sets under non-pass `Closed-Alpha UX Readiness Focus` items (`GA1`, `GA5`, `GA6`, evidence export freshness)
+  - checklist rows now direct operators to gate-specific reruns before generic triage shortcuts
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added non-pass readiness deep-link shortcuts in operations panel:
+  - `apps/web/app/page.tsx` now adds direct shortcut links under non-pass `Closed-Alpha UX Readiness Focus` rows to jump to relevant surfaces:
+    - onboarding guardrails (`#onboarding-wizard`, `#ops-failure-triage`)
+    - discovery determinism (`/explorer/discovery`, `#ops-failure-triage`)
+    - GA6 parity (`#ops-recent-history`, `#ops-runbook-shortcuts`)
+    - evidence freshness (`#ops-evidence-exports`, `#ops-export-execution-audit`)
+  - panel headings/sections now expose stable anchors for triage navigation (`phase1-operations`, run history/evidence/export-audit/runbook/failure-triage sections)
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Upgraded non-pass readiness rows to reusable command-tool blocks:
+  - `apps/web/app/page.tsx` now renders `OperationsCommandTools` directly under non-pass `Closed-Alpha UX Readiness Focus` rows
+  - row-level triage commands now support copy-first command handling and allowlisted `Run Now` actions where runnable metadata exists
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added readiness focus status summary counters for fast triage scanning:
+  - `apps/web/app/page.tsx` now renders pass/attention/fail counts above `Closed-Alpha UX Readiness Focus`
+  - counter values are derived from the same deterministic checklist status model used by row rendering
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added row-level age context in readiness checklist summaries:
+  - `apps/web/app/page.tsx` now includes latest run age in `GA1`/`GA5` summaries (from latest preflight run timestamp)
+  - `GA6` summary now includes latest drill run age for both passing and failing parity states
+  - evidence freshness summary now includes manifest/prune-plan/audit-plan ages alongside stale-reason output
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added stale-age threshold labels and emphasis in readiness checklist rows:
+  - `apps/web/app/page.tsx` now renders row age-context badges with threshold labels (`<=24h`, `>24h`, `>7d`, `unknown`)
+  - age badges use emphasis colors to surface stale-but-passing rows during triage
+  - evidence-export row now surfaces per-artifact badge ages for manifest/prune-plan/audit-plan
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added quick checklist filters for operations triage focus:
+  - `apps/web/app/page.tsx` now supports `focus_filter` URL filters for `all`, `non-pass only`, and `stale only`
+  - `Closed-Alpha UX Readiness Focus` now renders filter links and applies server-side row filtering without client-state coupling
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added `stale + non-pass` checklist filter intersection:
+  - `apps/web/app/page.tsx` now supports `focus_filter=stale-non-pass` to isolate non-pass rows with stale age badges
+  - filter controls now include an explicit `stale + non-pass` link for one-pass regression/staleness triage
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added filter-preserving row shortcut routing for checklist navigation:
+  - `apps/web/app/page.tsx` now rewrites row shortcut links with the active `focus_filter` context
+  - in-page anchors and cross-route shortcuts (for example `/explorer/discovery`) now retain current checklist filter state in generated hrefs
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact per-filter counts in checklist filter controls:
+  - `apps/web/app/page.tsx` now computes and renders row counts beside `all`, `non-pass`, `stale`, and `stale + non-pass` filter links
+  - filter count values are derived from the same checklist dataset used by row rendering and stale detection
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added per-row `why stale` hints in readiness checklist:
+  - `apps/web/app/page.tsx` now renders explicit stale-reason hints when row age badges are in warn/critical bands
+  - hints include stale source context (`run age` vs `export artifact age`) and threshold reason details
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added export-row stale severity rollup in readiness focus:
+  - `apps/web/app/page.tsx` now computes `severity: ok/watch/critical` for evidence export freshness from badge tones
+  - evidence freshness summary now includes severity rollup alongside age and stale-reason details
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added filter-preset triage entry links in runbook shortcuts:
+  - `apps/web/app/page.tsx` now includes one-click links to `/` with `focus_filter` presets and `#phase1-operations` anchor (`non-pass`, `stale`, `stale + non-pass`)
+  - this provides direct runbook entry into focused checklist triage states without manual filter selection
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added active filter view label in readiness checklist header:
+  - `apps/web/app/page.tsx` now renders `view: <filter>` with filtered row count under `Closed-Alpha UX Readiness Focus`
+  - improves screenshot/handoff clarity by making current filter context explicit
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added copyable checklist view-link controls for async handoff:
+  - `apps/web/app/page.tsx` now renders `Checklist View Links` with copy actions for current/non-pass/stale/stale+non-pass URLs (`#phase1-operations` anchored)
+  - reuses existing `OperationsCommandTools` copy workflow for deterministic URL sharing
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added stale-impact counter breakdown in readiness checklist header:
+  - `apps/web/app/page.tsx` now renders stale-row status counts (`pass`, `attention`, `fail`) alongside overall checklist summary
+  - enables faster prioritization of stale regressions versus stale-but-passing signals
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added `critical stale only` checklist filter mode:
+  - `apps/web/app/page.tsx` now supports `focus_filter=critical-stale` (`>7d`) across parsing, filtering, counts, labels, and shareable links
+  - runbook preset links and checklist view-link copy controls now include the critical-stale view
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added critical-stale urgent triage command rollup:
+  - `apps/web/app/page.tsx` now renders a consolidated `Critical Stale Urgent Triage Commands` block when `focus_filter=critical-stale`
+  - rollup aggregates non-pass row triage commands into one command-tool list for faster copy/run workflows
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added critical-stale rollup impact summary:
+  - `apps/web/app/page.tsx` now shows critical-stale rollup scope (`unique commands`, `runnable actions`) before the command block
+  - provides quick execution planning signal before operators run/copy triage commands
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added deterministic priority ordering for critical-stale rollup commands:
+  - `apps/web/app/page.tsx` now sorts critical-stale rollup commands with runnable actions first, then by label/command alphabetically
+  - reduces operator decision overhead by surfacing executable actions before copy-only commands
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added row-origin labels to critical-stale rollup commands:
+  - `apps/web/app/page.tsx` now aggregates duplicate commands across rows and annotates each rollup entry with full source row list (`[from: ...]`)
+  - origin lists are deterministically sorted so shared-command provenance is stable across reloads
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added command-group separators in critical-stale rollup:
+  - `apps/web/app/page.tsx` now renders separate command-tool blocks for runnable and copy-only critical-stale commands
+  - grouping keeps executable actions isolated from copy-only commands to speed execution scanning
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added quick toggle for critical-stale copy-only command visibility:
+  - `apps/web/app/page.tsx` now supports `critical_copy=hide` and renders show/hide controls in critical-stale mode
+  - operators can hide the copy-only group to focus on runnable urgent commands during incidents
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added stable critical-stale hidden-copy share links:
+  - `apps/web/app/page.tsx` now includes explicit critical-stale links with `critical_copy=hide` in runbook presets and checklist view-link copy controls
+  - improves incident-mode handoff by preserving hidden copy-only state in shared URLs
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added explicit copy-only visibility mode badge:
+  - `apps/web/app/page.tsx` now displays `copy-only visibility: shown/hidden` in the critical-stale command area
+  - improves screenshot/handoff clarity for incident-mode command execution context
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added critical-stale no-non-pass warning guardrail:
+  - `apps/web/app/page.tsx` now warns when `critical stale only` view has zero non-pass rows but still has critical-stale pass rows
+  - reduces false “all clear” interpretation in stale-evidence situations
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added critical-stale urgent triage sequence cue:
+  - `apps/web/app/page.tsx` now renders `Critical Stale Urgent Sequence` as a command-tool block in critical-stale view
+  - sequence keeps the fixed 3-step order (`refresh exports`, `rerun readiness`, `verify GA6 parity`) while making commands directly copyable
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added visible current-view incident share shortcut:
+  - `apps/web/app/page.tsx` now shows `share this incident view` directly in critical-stale mode using the current combined `focus_filter=critical-stale` and `critical_copy` state
+  - reduces handoff friction by exposing the exact incident-mode URL near the urgent command block
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added inline copyable critical-stale share controls:
+  - `apps/web/app/page.tsx` now renders `Critical Stale Incident Share Links` beside the visible incident URL
+  - block provides copy actions for the current incident view URL and the hidden-copy variant without relying on browser navigation
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added active-state marker in inline incident-share controls:
+  - `apps/web/app/page.tsx` now labels the current incident-share URL with the active `critical_copy` mode (`shown` or `hidden`)
+  - makes it explicit which copied URL matches the current incident view state
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added complementary inactive-state marker for alternate incident-share URL:
+  - `apps/web/app/page.tsx` now labels the non-active inline share URL as the inactive alternate preset
+  - fixed the prior duplicate-link edge case by deriving explicit current and alternate critical-stale URLs for `shown` and `hidden` modes
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact incident-mode summary near share controls:
+  - `apps/web/app/page.tsx` now shows a one-line `incident mode` summary combining `focus_filter=critical-stale` and current `critical_copy` visibility state
+  - improves screenshot parsing by keeping mode context adjacent to the inline share URL
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added incident-mode summary to inline share-control labels/title:
+  - `apps/web/app/page.tsx` now includes the current critical-stale mode summary in the inline share-control block title and copy labels
+  - copied handoff URLs now remain self-describing outside the original screenshot or page context
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added visible recommended-handoff URL line:
+  - `apps/web/app/page.tsx` now shows `recommended handoff link` beside the critical-stale inline share controls
+  - surfaces the preferred current incident URL without requiring command-label inspection
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added copyable recommended-handoff control:
+  - `apps/web/app/page.tsx` now renders `Recommended Handoff Link` as a dedicated command-tool block beside the preferred critical-stale URL
+  - lets operators copy the recommended incident link directly without scanning the larger share-control set
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added active-state marker to recommended-handoff control:
+  - `apps/web/app/page.tsx` now marks the preferred critical-stale handoff line and command-tool block as the active current-share control
+  - reduces ambiguity between the recommended handoff action and the broader incident-share link set
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added fallback marker to broader incident-share block:
+  - `apps/web/app/page.tsx` now labels the general critical-stale incident-share area as the fallback/alternate preset block
+  - alternate incident-share copy controls now use `fallback alternate` wording to distinguish them from the active recommended handoff control
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact handoff hierarchy summary:
+  - `apps/web/app/page.tsx` now shows a one-line hierarchy cue in critical-stale mode that spells out `active recommended` vs `fallback alternate presets`
+  - keeps preferred and secondary handoff paths visible together without relying on surrounding labels
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added hierarchy cue to incident-share block title:
+  - `apps/web/app/page.tsx` now embeds the handoff hierarchy directly in the `Critical Stale Incident Share Links` title
+  - keeps cropped screenshots of the share-control block self-explanatory without requiring the adjacent hierarchy line
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added matching hierarchy cue to recommended-handoff block title:
+  - `apps/web/app/page.tsx` now embeds the recommended block's `active recommended current-share control` role directly in the `Recommended Handoff Link` title
+  - keeps the preferred handoff control self-describing even when viewed without surrounding context
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added explicit fallback-usage helper under recommended handoff:
+  - `apps/web/app/page.tsx` now shows a short helper line beneath the recommended control telling operators to use the fallback share block only when they intentionally need an alternate preset
+  - reduces accidental drift from the preferred current-share path during incident handoff
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added matching helper near fallback share block:
+  - `apps/web/app/page.tsx` now shows a short helper line beside the fallback incident-share area clarifying that those links are alternate presets and not the default current-share handoff path
+  - reinforces the preferred-vs-fallback distinction from both sides of the critical-stale handoff UI
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added shared-note alignment cue across handoff helpers:
+  - `apps/web/app/page.tsx` now shows a compact shared note stating that the recommended-side and fallback-side helper cues follow the same handoff rule
+  - keeps either side trustworthy when only part of the critical-stale handoff area is visible
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added concise legend tokens to share-block titles:
+  - `apps/web/app/page.tsx` now labels `Recommended Handoff Link` with `[recommended]` and `Critical Stale Incident Share Links` with `[fallback]`
+  - keeps the preferred-vs-fallback hierarchy scannable even when helper text lines are collapsed or out of frame
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added matching legend tokens to visible handoff-link paragraphs:
+  - `apps/web/app/page.tsx` now labels the visible recommended URL line with `[recommended]` and the visible fallback incident-share URL line with `[fallback]`
+  - keeps both URLs distinguishable even when command-block titles are not visible
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact legend key for handoff tokens:
+  - `apps/web/app/page.tsx` now shows a one-line legend mapping `[recommended]` to the preferred current-share path and `[fallback]` to the alternate preset path
+  - makes the title and paragraph tokens self-explanatory without requiring prior context
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added copied-link note for preserved legend tokens:
+  - `apps/web/app/page.tsx` now shows a compact note that `[recommended]` and `[fallback]` are preserved in copy labels
+  - clarifies that pasted handoff artifacts remain self-describing outside the page
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added scan/copy alignment note for handoff tokens:
+  - `apps/web/app/page.tsx` now shows a short note that the visible URL lines and copy actions intentionally use the same legend tokens
+  - keeps scan-time and copy-time interpretation aligned across the critical-stale handoff area
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added shared-current-context note for recommended vs fallback URLs:
+  - `apps/web/app/page.tsx` now shows a concise note that the recommended and fallback URLs point to the same current incident context
+  - clarifies that the difference is handoff role and preset framing, not incident target
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added fallback-selection note for alternate preset use:
+  - `apps/web/app/page.tsx` now shows a short note explaining when the fallback preset should be preferred despite the shared incident context
+  - clarifies that fallback is for intentionally different handoff framing such as copy-only-hidden incident sharing
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added recommended-path note for default handoff choice:
+  - `apps/web/app/page.tsx` now shows a short note explaining when operators should stay on the recommended current-share path
+  - clarifies that the recommended path is the default when alternate preset framing is not needed
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Replaced non-software manual quickstart bundles with checked-in fixture bundles:
+  - added reproducible non-software lane fixtures under `fixtures/valid/` for `feature-work`, `documentation`, `translation`, `testing`, `research`, and `project-maintenance` in both accept and dispute/timeout paths
+  - updated `scripts/v1-generate-lane-fixture.mjs` to emit past-dated deterministic logs aligned with current replay/discovery timelines and to keep dispute fixtures on the timeout path instead of a partial settlement draft
+  - updated `apps/web/app/components/fixture-quickstart.tsx` to consume checked-in lane fixtures directly, include `--data-dir` in copyable ingest commands, and expose lane-specific offer/order/milestone result links
+  - corrected non-software discovery links from `alpha_only` to the supported `alpha_defaults` query key in quickstart and current-lane shortcuts
+  - added fixture-backed regression coverage in `crates/node/tests/api.rs` for all new non-software lane bundles and registered the scenario family in `docs/v0/v0-scenario-fixture-matrix.md`
+  - verified checks:
+    - `cargo test -p node --test api api_checked_in_non_software_lane_fixture_bundles_replay_cleanly`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Extended sync convergence coverage to the checked-in non-software lane fixtures:
+  - added `sync_pull_non_software_lane_fixture_bundles_converge_on_replay_and_discovery_views` in `crates/node/tests/sync.rs`
+  - the new sync regression covers accept and dispute/timeout bundles for `feature-work`, `documentation`, `translation`, `testing`, `research`, and `project-maintenance`
+  - each case now proves source/sink convergence for both replay output and lane-scoped discovery queries using the checked-in fixture logs
+  - verified checks:
+    - `cargo test -p node --test sync sync_pull_non_software_lane_fixture_bundles_converge_on_replay_and_discovery_views`
+- Added direct home-page launchers for the checked-in non-software lane fixtures:
+  - `apps/web/app/page.tsx` now includes an `Open fixture bundles` workflow launcher and a dedicated `Checked-In Lane Fixture Bundles` section under the closed-alpha launcher surface
+  - each non-software lane card now exposes:
+    - accept starter
+    - dispute starter
+    - bundle-commands deep link to `#fixture-quickstart`
+    - direct accept/dispute result shortcuts plus discovery link
+  - `apps/web/app/components/fixture-quickstart.tsx` now exposes a stable `#fixture-quickstart` anchor for those deep links
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added a dedicated non-software lane fixture regression command:
+  - added `scripts/v1-lane-fixture-check.mjs` to run the checked-in non-software lane API replay regression plus sync convergence regression, with optional web typecheck support
+  - added workspace commands:
+    - `npm run v1:lane-fixtures`
+    - `npm run v1:lane-fixtures:readiness`
+  - updated `docs/runbooks/phase1-preflight-checklist.md` and `docs/runbooks/phase1-operations-cadence.md` so the new command is documented as an optional targeted regression path instead of being folded into the default preflight loop
+  - verified checks:
+    - `npm.cmd run v1:lane-fixtures`
+    - `npm.cmd run v1:lane-fixtures:readiness`
+- Integrated lane-fixture artifacts into evidence and operations surfaces:
+  - updated `scripts/v1-evidence-manifest.mjs` so `operations-evidence-manifest.json` now includes `lane_fixtures`, `latest_lane_fixture_status`, and lane-fixture prune-command slots
+  - updated `apps/web/app/page.tsx` so the Phase 1 operations view now surfaces:
+    - latest lane-fixture run summary
+    - lane-fixture lifecycle counts
+    - lane-fixture evidence status inside `Evidence Exports`
+    - lane-fixture failure triage commands in the readiness checklist path
+  - updated `docs/runbooks/phase1-operations-cadence.md` to treat lane-fixture status as part of evidence review
+  - verified checks:
+    - `npm.cmd run v1:evidence-manifest`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Extended operations review and prune planning for lane-fixture runs:
+  - updated `apps/web/app/page.tsx` to show `Latest lane fixture runs` in `Recent Run History`
+  - updated `scripts/v1-artifact-prune-plan.mjs` so `operations-artifact-prune-plan.json` now includes `lane_fixtures` and `lane_fixture_candidates`
+  - updated the operations panel to expose lane-fixture prune preview/dry-run/apply commands beside the existing preflight/GA6 prune commands
+  - updated `docs/runbooks/phase1-operations-cadence.md` so weekly review now explicitly checks lane-fixture history and lane-fixture prune planning
+  - verified checks:
+    - `npm.cmd run v1:artifact-prune-plan`
+    - `npm.cmd run v1:evidence-manifest`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added in-panel runnable controls for lane-fixture checks:
+  - updated `apps/web/app/api/operations/exports/route.ts` allowlist to support `run_lane_fixture_checks`
+  - updated `apps/web/app/components/operations-command-tools.tsx` runnable-action type to include the lane-fixture runner
+  - updated `apps/web/app/page.tsx` so lane-fixture commands now use the same `Run Now` execution path available for evidence/prune refresh commands
+  - updated `docs/runbooks/phase1-operations-cadence.md` to document the allowlisted in-panel lane-fixture rerun path
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+    - `npm.cmd run v1:lane-fixtures`
+- Tightened checklist/audit semantics for lane-fixture operations:
+  - updated `apps/web/app/page.tsx` so stale-but-passing lane-fixture coverage now shows as `attention` in `Closed-Alpha UX Readiness Focus` instead of remaining quietly `pass`
+  - lane-fixture readiness rows now include direct shortcut back to `Recent Run History`
+  - renamed the operations audit section to `Allowlisted Execution Audit` and its alert text now reflects both export refreshes and lane-fixture reruns
+  - updated `docs/runbooks/phase1-operations-cadence.md` to match the new stale-lane-fixture and allowlisted-audit wording
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added direct lane-fixture summary hints to allowlisted audit rows:
+  - updated `apps/web/app/api/operations/exports/route.ts` so `run_lane_fixture_checks` resolves the exact latest `lane-fixture-check-summary.json` path and stores it in `artifact_path_hints`
+  - updated `apps/web/app/page.tsx` audit summaries to display each action's latest artifact hints, making the lane-fixture summary path visible without scanning raw rows
+  - updated `docs/runbooks/phase1-operations-cadence.md` to call out using those artifact hints when reviewing panel-triggered lane-fixture runs
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+    - `npm.cmd run v1:lane-fixtures`
+- Added a dedicated lane-fixture stale rollup in the operations checklist:
+  - updated `apps/web/app/page.tsx` so stale lane-fixture coverage now renders its own `Lane Fixture Stale Rollup` command block in the checklist area
+  - added a compact `lane fixture audit` summary line to `Allowlisted Execution Audit` so recent panel-triggered lane-fixture activity is easier to scan
+  - updated `docs/runbooks/phase1-operations-cadence.md` to reference both the new stale-rollup block and the lane-fixture audit summary line
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Improved run-history navigation and audit-summary readability:
+  - updated `apps/web/app/page.tsx` so `Recent Run History` now includes direct anchors for `preflight`, `GA6`, and `lane fixtures`
+  - updated allowlisted audit rendering to collapse long artifact-path lists into a compact `primary path (+N more)` summary while keeping the latest lane-fixture summary hint visible
+  - updated `docs/runbooks/phase1-operations-cadence.md` so operators know to use the history anchors and the compact artifact-hint style during triage
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added a recent-history focus filter for targeted run review:
+  - updated `apps/web/app/page.tsx` so `Recent Run History` now supports `history_focus=all|preflight|ga6|lane-fixtures`
+  - lane-fixture checklist shortcuts now deep-link into the lane-fixture-only history view
+  - updated `docs/runbooks/phase1-operations-cadence.md` to call out the new history-focus filter for targeted review
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Promoted lane-fixture review into a real history workflow:
+  - `apps/web/app/page.tsx` now uses the `history_focus` query param to actually filter the `Recent Run History` section instead of only offering anchor navigation
+  - lane-fixture review can now be isolated directly from the checklist via `history_focus=lane-fixtures`
+  - updated `docs/runbooks/phase1-operations-cadence.md` to reference the lane-fixture-focused history view for larger session reviews
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact path rendering for operations-heavy views:
+  - updated `apps/web/app/page.tsx` with a shared compact-path helper for long absolute paths
+  - applied compact path rendering to noisy operations-panel fields such as:
+    - run directories
+    - evidence/prune/audit artifact paths
+    - audit log paths
+    - archive-path mentions
+  - preserved the full underlying value in the rendered title attributes while making the panel more scannable by default
+  - updated `docs/runbooks/phase1-operations-cadence.md` to note the compact-path reading pattern
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compact previews for long operations commands:
+  - updated `apps/web/app/components/operations-command-tools.tsx` so long single-line commands now render as compact previews instead of always dumping the full string inline
+  - multi-line commands still render in full, while copy/run behavior continues to use the full underlying command text
+  - updated `docs/runbooks/phase1-operations-cadence.md` to reflect the compact-preview scanning pattern for command blocks
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added per-block expand/compact control for command groups:
+  - updated `apps/web/app/components/operations-command-tools.tsx` with a `Show Full Commands` / `Compact Commands` toggle when a block contains compacted single-line commands
+  - this keeps dense command groups compact by default while still allowing inline full-command inspection without affecting copy/run fidelity
+  - updated `docs/runbooks/phase1-operations-cadence.md` so operators know to use the per-block toggle when deeper inspection is needed
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Applied collapsed-by-default rendering to dense operations blocks:
+  - updated `apps/web/app/page.tsx` so high-density command groups such as:
+    - `Export Commands`
+    - `Checklist View Links`
+    - critical-stale share/triage command blocks
+    now start collapsed by default
+  - this keeps the operations panel compact until those command sets are actually needed, while preserving the new per-block full-command toggle after expansion
+  - updated `docs/runbooks/phase1-operations-cadence.md` to reflect that some dense blocks now start collapsed
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added a dedicated collapsible lane-fixture history subsection:
+  - updated `apps/web/app/page.tsx` so the lane-fixture area inside `Recent Run History` now renders as a collapsible `details` subsection
+  - the subsection opens automatically for `history_focus=lane-fixtures` and includes focused review links back to the lane-fixture-only history view and fixture bundles
+  - updated `docs/runbooks/phase1-operations-cadence.md` to reflect the new day-to-day scan path versus the dedicated focused-history path
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added lightweight per-entry actions inside lane-fixture history:
+  - updated `apps/web/app/page.tsx` so each lane-fixture history row now has a small `Actions` disclosure with:
+    - `Inspect this summary`
+    - `Run lane fixture checks`
+    - `Run lane fixture readiness checks`
+  - updated `docs/runbooks/phase1-operations-cadence.md` so operators know they can act on a specific lane-fixture run directly from the subsection
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Extended per-entry history actions to preflight and GA6:
+  - updated `apps/web/app/page.tsx` so preflight history rows now include an `Actions` disclosure with:
+    - `Inspect this summary`
+    - `Run full preflight`
+    - `Run full readiness`
+  - GA6 history rows now include:
+    - `Inspect this summary`
+    - `Rerun GA6 drill`
+  - updated `docs/runbooks/phase1-operations-cadence.md` so the row-level action pattern is now documented across preflight, GA6, and lane-fixture histories
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Started Phase 2 with a compute-only templated job lane:
+  - added strict templated-lane protocol support for:
+    - `serviceType=compute-job`
+    - `deliveryMode=receipt`
+    - `allowedEvidenceFormats=["job-receipt-v1"]`
+  - `job-receipt-v1` delivery now requires at least one artifact hash, unique artifact hashes, and non-empty `notesHash`
+  - updated default policy allowlist to include `compute-job`
+  - added a strict `compute-job` lane template to the web marketplace builder
+  - extended the lane-fixture generator and checked in:
+    - `fixtures/valid/marketplace-compute-job-accept.jsonl`
+    - `fixtures/valid/marketplace-compute-job-dispute.jsonl`
+  - extended checked-in lane-fixture coverage and the `v1:lane-fixtures` runner to include the compute lane plus deterministic template-mismatch guards
+  - updated roadmap/spec/fixture docs to record the compute-only Phase 2 kickoff
+  - verified checks:
+    - `cargo test -p protocol-core static_validation_rejects_compute_job_offer_with_wrong_schema`
+    - `cargo test -p protocol-core static_validation_rejects_compute_job_delivery_without_notes_hash`
+    - `cargo test -p node --test api api_marketplace_compute_job_lane_template_mismatch_rejections_are_deterministic`
+    - `cargo test -p node --test sync sync_pull_non_software_lane_fixture_bundles_converge_on_replay_and_discovery_views`
+    - `npm.cmd run v1:lane-fixtures`
+    - `npm.cmd run -w @new-start/web typecheck`
+- Completed Phase 1 closeout and status flip:
+  - updated roadmap/status/readiness docs so the original Phase 1 closed-alpha market is explicitly complete
+  - clarified that recurring Phase 1 operations cadence remains active as carry-forward operating practice, not unfinished Phase 1 scope
+  - clarified that the `compute-job` lane is Phase 2 kickoff work and excluded from the Phase 1 completion basis
+  - refreshed closure evidence artifacts and recorded the new artifact paths in `docs/roadmap/working-context-log.md`
+  - updated web-shell copy so `Phase 1 Operations` reads as carry-forward operations work and fixture quickstart explicitly separates the Phase 2 compute lane from the completed Phase 1 baseline
+  - verified checks:
+    - `npm.cmd run v1:preflight`
+    - `npm.cmd run v1:readiness`
+    - `npm.cmd run v1:ga6-drill`
+    - `npm.cmd run v1:evidence-manifest`
+    - `npm.cmd run v1:artifact-prune-plan`
+    - `npm.cmd run v1:export-audit-log-plan`
+    - `npm.cmd run -w @new-start/web typecheck`
+- Added a dedicated Phase 2 compute-job launcher/preview surface:
+  - updated `apps/web/app/page.tsx` to add a `Phase 2 Compute Preview` section on the home page
+  - the new section exposes:
+    - compute accept starter
+    - compute dispute starter
+    - compute discovery link
+    - compute fixture-bundle shortcut
+    - direct result links for the checked-in compute accept/dispute fixture IDs
+  - the section also documents the current strict template contract inline (`deliveryMode=receipt`, `allowedEvidenceFormats=[job-receipt-v1]`, receipt requires artifact hashes + `notesHash`)
+  - verified checks:
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added provider-oriented compute receipt tooling:
+  - added `scripts/v2-compute-receipt.mjs`
+  - added workspace commands:
+    - `npm run v2:compute-receipt`
+    - `npm run v2:compute-receipt:smoke`
+  - the generator now emits:
+    - `job-receipt-v1.json`
+    - `job-receipt-v1.sha256`
+    - `job-receipt-v1-notes.sha256`
+    - `job-receipt-v1-delivery-hints.json`
+  - updated `apps/web/app/page.tsx` Phase 2 section with a copy-first provider tooling block
+  - added `docs/architecture/phase2-compute-job-lane.md` and indexed it from `docs/README.md`
+  - verified checks:
+    - `npm.cmd run v2:compute-receipt:smoke`
+    - `npm.cmd run v1:lane-fixtures`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
+- Added compute delivery-hints import into the builder workflow:
+  - updated `apps/web/app/components/marketplace-event-builder.tsx` so compute-job delivery mode now includes a `Compute Receipt Delivery Hints` helper
+  - providers can paste `job-receipt-v1-delivery-hints.json` and apply it directly into:
+    - `evidenceFormat`
+    - `artifactHashes`
+    - `urls`
+    - `notesHash`
+  - updated `docs/architecture/phase2-compute-job-lane.md` to document the new paste-and-apply path
+  - verified checks:
+    - `npm.cmd run v2:compute-receipt:smoke`
+    - `npm.cmd run v1:lane-fixtures`
+    - `npm.cmd run -w @new-start/web typecheck`
+    - `npm.cmd run typecheck`
