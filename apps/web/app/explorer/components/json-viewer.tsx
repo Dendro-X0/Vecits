@@ -35,15 +35,17 @@ export function JsonViewer(props: { title: string; value: unknown | null }) {
     copyState === "copied" ? "Copied JSON" : copyState === "failed" ? "Copy failed" : "Copy JSON";
 
   return (
-    <section style={{ marginTop: "0.8rem" }}>
-      <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", alignItems: "center" }}>
-        <strong>{props.title}</strong>
-        <button type="button" style={buttonStyle} onClick={() => setPretty(value => !value)}>
-          {pretty ? "Compact" : "Pretty"}
-        </button>
-        <button type="button" style={buttonStyle} onClick={copyJson}>
-          {copyLabel}
-        </button>
+    <section className="mt-4 rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <strong className="text-sm font-semibold text-foreground">{props.title}</strong>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" style={buttonStyle} onClick={() => setPretty(value => !value)}>
+            {pretty ? "Compact view" : "Pretty print"}
+          </button>
+          <button type="button" style={buttonStyle} onClick={copyJson}>
+            {copyLabel}
+          </button>
+        </div>
       </div>
       <pre style={jsonStyle}>{text}</pre>
     </section>
@@ -51,19 +53,21 @@ export function JsonViewer(props: { title: string; value: unknown | null }) {
 }
 
 const buttonStyle = {
-  background: "#1a2f66",
-  color: "#dbe7ff",
-  border: "1px solid #3651a1",
-  borderRadius: 8,
-  padding: "0.38rem 0.64rem",
+  background: "var(--surface-control)",
+  color: "var(--surface-control-foreground)",
+  border: "1px solid var(--surface-control-border)",
+  borderRadius: 999,
+  padding: "0.42rem 0.78rem",
   cursor: "pointer"
 } as const;
 
 const jsonStyle = {
-  marginTop: "0.6rem",
-  border: "1px solid #2a3458",
-  borderRadius: 10,
-  padding: "0.75rem",
-  background: "#0b122b",
-  whiteSpace: "pre-wrap"
+  marginTop: "0.85rem",
+  border: "1px solid var(--surface-inset-border)",
+  borderRadius: 14,
+  padding: "0.9rem 1rem",
+  background: "var(--surface-code)",
+  color: "var(--surface-code-foreground)",
+  whiteSpace: "pre-wrap",
+  overflowX: "auto"
 } as const;

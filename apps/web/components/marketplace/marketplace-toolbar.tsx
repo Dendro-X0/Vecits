@@ -25,7 +25,7 @@ export function MarketplaceToolbar({
       <div>
         <h2 className="text-2xl font-semibold tracking-tight">Listings</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          {total} {total === 1 ? "service" : "services"} · alignment-based browse, no promoted slots
+          {total} {total === 1 ? "service" : "services"} · no paid placement, no promoted slots
         </p>
       </div>
 

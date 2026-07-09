@@ -4,6 +4,11 @@ This file tracks high-level progress over time.
 
 ## 2026-07
 
+- **Frontend Phase 1 deal loop (complete):**
+  - guided Publish & transact flow with compensation modes, milestone terms, terms lock, delivery evidence guards, submit lifecycle, dispute deep links, transactions queue + builder handoff
+  - dashboard shell refinement, settings general/advanced split, explorer + marketplace polish
+  - docs: `docs/frontend-spec.md`, `docs/frontend-phase1-completion.md`, `docs/frontend-phase2-plan.md`
+  - verified: `cd apps/web && pnpm typecheck`
 - Restart kickoff after post–Phase 1 dormancy:
   - created canonical restart roadmap `docs/roadmap/restart-roadmap.md` with phases R0–R6, tracks, and gates `RG-1`..`RG-6`
   - created pre-implementation spec pack under `docs/specs/`:

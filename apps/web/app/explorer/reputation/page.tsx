@@ -105,68 +105,95 @@ export default async function ReputationExplorerPage() {
           Query `GET /state/reputation/:id` and `GET /state/reputation/:id/history`.
         </p>
         <ExamplePresets items={presetLinks} />
-        <form>
-          <label>
-            Identity Pubkey
-            <input
-              name="id"
-              defaultValue={identity}
-              style={identityError ? invalidInputStyle : inputStyle}
-              placeholder="identity pubkey"
-            />
-          </label>
-          {identityError ? <p style={fieldErrorStyle}>{identityError}</p> : null}
-          <label>
-            as_of (optional RFC3339)
-            <input
-              name="as_of"
-              defaultValue={asOf}
-              style={asOfError ? invalidInputStyle : inputStyle}
-              placeholder="2026-03-01T00:00:00Z"
-            />
-          </label>
-          {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
-          <p style={helperTextStyle}>Format hint: `YYYY-MM-DDTHH:MM:SSZ`</p>
-          <label>
-            lane (optional)
-            <input
-              name="lane"
-              defaultValue={lane}
-              style={inputStyle}
-              placeholder="software-fixes"
-            />
-          </label>
-          <label>
-            limit (optional)
-            <input
-              name="limit"
-              defaultValue={limitRaw}
-              style={limitParse.error ? invalidInputStyle : inputStyle}
-              placeholder="20"
-            />
-          </label>
-          {limitParse.error ? <p style={fieldErrorStyle}>{limitParse.error}</p> : null}
-          <label>
-            cursor (optional)
-            <input
-              name="cursor"
-              defaultValue={cursorRaw}
-              style={cursorParse.error ? invalidInputStyle : inputStyle}
-              placeholder="0"
-            />
-          </label>
-          {cursorParse.error ? <p style={fieldErrorStyle}>{cursorParse.error}</p> : null}
-          <label>
-            base_url (optional)
-            <input
-              name="base_url"
-              defaultValue={baseUrlInput}
-              style={baseUrlError ? invalidInputStyle : inputStyle}
-              placeholder={baseUrl}
-            />
-          </label>
-          {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
-          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap" }}>
+        <form className="space-y-4">
+          <div className="rounded-2xl border border-border/70 bg-card/70 p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Core query
+            </p>
+            <div className="mt-3 space-y-3">
+              <label>
+                Identity public key
+                <input
+                  name="id"
+                  defaultValue={identity}
+                  style={identityError ? invalidInputStyle : inputStyle}
+                  placeholder="identity pubkey"
+                />
+              </label>
+              {identityError ? <p style={fieldErrorStyle}>{identityError}</p> : null}
+            </div>
+
+            <details className="mt-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-foreground">
+                Context & node
+              </summary>
+              <div className="mt-3 space-y-3">
+                <label>
+                  As-of timestamp (optional)
+                  <input
+                    name="as_of"
+                    defaultValue={asOf}
+                    style={asOfError ? invalidInputStyle : inputStyle}
+                    placeholder="2026-03-01T00:00:00Z"
+                  />
+                </label>
+                {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
+                <p style={helperTextStyle}>Use RFC3339 format: `YYYY-MM-DDTHH:MM:SSZ`</p>
+
+                <label>
+                  Service lane (optional)
+                  <input
+                    name="lane"
+                    defaultValue={lane}
+                    style={inputStyle}
+                    placeholder="software-fixes"
+                  />
+                </label>
+
+                <label>
+                  Node URL override (optional)
+                  <input
+                    name="base_url"
+                    defaultValue={baseUrlInput}
+                    style={baseUrlError ? invalidInputStyle : inputStyle}
+                    placeholder={baseUrl}
+                  />
+                </label>
+                {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
+              </div>
+            </details>
+
+            <details className="mt-3 rounded-xl border border-border/70 bg-muted/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-foreground">
+                Limits & paging
+              </summary>
+              <div className="mt-3 space-y-3">
+                <label>
+                  Result limit (optional)
+                  <input
+                    name="limit"
+                    defaultValue={limitRaw}
+                    style={limitParse.error ? invalidInputStyle : inputStyle}
+                    placeholder="20"
+                  />
+                </label>
+                {limitParse.error ? <p style={fieldErrorStyle}>{limitParse.error}</p> : null}
+
+                <label>
+                  Cursor offset (optional)
+                  <input
+                    name="cursor"
+                    defaultValue={cursorRaw}
+                    style={cursorParse.error ? invalidInputStyle : inputStyle}
+                    placeholder="0"
+                  />
+                </label>
+                {cursorParse.error ? <p style={fieldErrorStyle}>{cursorParse.error}</p> : null}
+              </div>
+            </details>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", alignItems: "center" }}>
             <button type="submit" style={buttonStyle}>
               Fetch Reputation
             </button>

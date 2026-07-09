@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Assign a stable dev port for the Vectis web client (4100–4899).
- * Persists to .dev/web-port on first run; writes apps/web/.env.local (PORT=).
+ * Persists to .dev/web-port and rotates automatically if the saved port is busy.
+ * Writes apps/web/.env.local (PORT=).
  */
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import net from "node:net";
@@ -34,7 +35,8 @@ async function canBind(port) {
 		server.once("listening", () => {
 			server.close(() => resolve(true));
 		});
-		server.listen(port, "127.0.0.1");
+		// Match Next.js dev-server binding behavior (all interfaces / IPv6-aware).
+		server.listen(port);
 	});
 }
 
@@ -58,7 +60,7 @@ async function pickNewPort() {
 
 async function resolvePort() {
 	const persisted = await readPersistedPort();
-	if (persisted !== null) {
+	if (persisted !== null && (await canBind(persisted))) {
 		return persisted;
 	}
 	const port = await pickNewPort();

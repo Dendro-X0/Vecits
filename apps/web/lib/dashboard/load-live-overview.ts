@@ -13,6 +13,11 @@ export type LiveOverviewStats = {
   nodeLabel: string;
 };
 
+export type LiveOverviewState =
+  | { kind: "live"; stats: LiveOverviewStats }
+  | { kind: "empty"; nodeLabel: string; asOf?: string }
+  | { kind: "error"; nodeLabel: string; message: string };
+
 function readPubkeyField(payload: Record<string, unknown>, ...keys: string[]): string | undefined {
   for (const key of keys) {
     const value = payload[key];
@@ -23,7 +28,7 @@ function readPubkeyField(payload: Record<string, unknown>, ...keys: string[]): s
   return undefined;
 }
 
-export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveOverviewStats | null> {
+export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveOverviewState> {
   try {
     const client = new NodeClient({ baseUrl: DEFAULT_NODE });
 
@@ -53,6 +58,17 @@ export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveO
       laneCounts.set(offer.service_type, (laneCounts.get(offer.service_type) ?? 0) + 1);
     }
 
+    const totalActiveOffers = myOffers.filter((offer) => offer.status === "active").length;
+    const totalActivity = authored.length + inboundOrders.length;
+
+    if (totalActivity === 0 && totalActiveOffers === 0) {
+      return {
+        kind: "empty",
+        nodeLabel: DEFAULT_NODE,
+        asOf: discoveryView.as_of
+      };
+    }
+
     const kpis: OverviewKpi[] = [
       {
         label: "Completed projects",
@@ -68,7 +84,7 @@ export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveO
       },
       {
         label: "Open offers",
-        value: String(myOffers.filter((offer) => offer.status === "active").length),
+        value: String(totalActiveOffers),
         delta: `${myOffers.length} total listings`,
         hint: "Live discovery rows for your identity"
       },
@@ -115,13 +131,20 @@ export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveO
       });
 
     return {
-      kpis,
-      laneBars,
-      activity,
-      asOf: discoveryView.as_of,
-      nodeLabel: DEFAULT_NODE
+      kind: "live",
+      stats: {
+        kpis,
+        laneBars,
+        activity,
+        asOf: discoveryView.as_of,
+        nodeLabel: DEFAULT_NODE
+      }
     };
-  } catch {
-    return null;
+  } catch (error) {
+    return {
+      kind: "error",
+      nodeLabel: DEFAULT_NODE,
+      message: error instanceof Error ? error.message : "Unable to load dashboard activity."
+    };
   }
 }

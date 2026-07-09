@@ -12,17 +12,25 @@ export function ExamplePresets(props: { title?: string; items: ExamplePreset[] }
   }
 
   return (
-    <section style={containerStyle}>
-      <strong>{props.title ?? "Example Presets"}</strong>
-      <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", marginTop: "0.55rem" }}>
+    <section className="mt-4 rounded-2xl border border-border/70 bg-muted/25 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <strong className="text-sm font-semibold text-foreground">{props.title ?? "Example presets"}</strong>
+        <span className="text-xs text-muted-foreground">{props.items.length} ready-made queries</span>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
         {props.items.map(item => (
-          <Link key={item.href} href={item.href} style={buttonStyle} title={item.description}>
+          <Link
+            key={item.href}
+            href={item.href}
+            className="inline-flex rounded-full border border-border bg-card/80 px-3 py-2 text-sm text-foreground transition hover:border-primary/20 hover:bg-muted/45"
+            title={item.description}
+          >
             {item.label}
           </Link>
         ))}
       </div>
       {props.items.some(item => item.description) ? (
-        <ul style={listStyle}>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
           {props.items.map(item =>
             item.description ? <li key={`${item.href}-hint`}>{item.label}: {item.description}</li> : null
           )}
@@ -31,27 +39,3 @@ export function ExamplePresets(props: { title?: string; items: ExamplePreset[] }
     </section>
   );
 }
-
-const containerStyle = {
-  marginTop: "0.8rem",
-  border: "1px solid #2a3458",
-  borderRadius: 10,
-  padding: "0.75rem",
-  background: "#0d1633"
-} as const;
-
-const buttonStyle = {
-  display: "inline-block",
-  padding: "0.38rem 0.6rem",
-  borderRadius: 8,
-  border: "1px solid #3558a8",
-  background: "#14224a",
-  color: "#cfe1ff",
-  textDecoration: "none"
-} as const;
-
-const listStyle = {
-  marginTop: "0.65rem",
-  marginBottom: 0,
-  opacity: 0.85
-} as const;

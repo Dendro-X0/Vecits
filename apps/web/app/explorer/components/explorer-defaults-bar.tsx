@@ -4,6 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { validateAsOf, validateBaseUrl } from "../lib";
+import {
+  legacyButtonStyle,
+  legacyInputStyle,
+  legacyInvalidInputStyle
+} from "@/lib/ui/theme-surfaces";
 
 const BASE_URL_KEY = "new-start.explorer.base_url";
 const AS_OF_KEY = "new-start.explorer.as_of";
@@ -128,43 +133,65 @@ export function ExplorerDefaultsBar() {
   const statusText = status === "saved" ? "Saved" : status === "applied" ? "Applied" : "Defaults";
 
   return (
-    <section style={sectionStyle}>
-      <h3 style={{ marginTop: 0, marginBottom: "0.65rem" }}>Explorer Defaults</h3>
-      <p style={{ marginTop: 0, opacity: 0.85 }}>
-        Persist `base_url` and `as_of`, then jump across explorer pages with the same context.
-      </p>
+    <section className="mt-4 rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm sm:p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">Shared explorer context</h2>
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Save a node URL and optional point-in-time snapshot, then carry that same context
+            across every explorer surface.
+          </p>
+        </div>
+        <span className="inline-flex rounded-full border border-border bg-muted/40 px-3 py-1 text-xs text-muted-foreground">
+          {statusText}
+        </span>
+      </div>
 
-      <label>
-        base_url
-        <input
-          value={baseUrl}
-          onChange={event => setBaseUrl(event.target.value)}
-          style={baseUrlError ? invalidInputStyle : inputStyle}
-          placeholder="http://127.0.0.1:7878"
-        />
-      </label>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(260px,0.9fr)]">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block text-sm font-medium text-foreground">
+            Node URL
+            <input
+              value={baseUrl}
+              onChange={event => setBaseUrl(event.target.value)}
+              style={baseUrlError ? invalidInputStyle : inputStyle}
+              placeholder="http://127.0.0.1:7878"
+            />
+          </label>
+          <label className="block text-sm font-medium text-foreground">
+            As of time (optional)
+            <input
+              value={asOf}
+              onChange={event => setAsOf(event.target.value)}
+              style={asOfError ? invalidInputStyle : inputStyle}
+              placeholder="2026-03-01T00:00:00Z"
+            />
+          </label>
+        </div>
+
+        <div className="rounded-xl border border-border/70 bg-muted/30 p-3">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            Format and behavior
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Use RFC3339 time like <code>YYYY-MM-DDTHH:MM:SSZ</code>. Saved defaults stay on this
+            device; applying them updates the current URL so the view can be shared.
+          </p>
+        </div>
+      </div>
+
       {baseUrlError ? <p style={errorTextStyle}>{baseUrlError}</p> : null}
-      <label>
-        as_of (optional RFC3339)
-        <input
-          value={asOf}
-          onChange={event => setAsOf(event.target.value)}
-          style={asOfError ? invalidInputStyle : inputStyle}
-          placeholder="2026-03-01T00:00:00Z"
-        />
-      </label>
-      <p style={{ marginTop: "-0.25rem", marginBottom: "0.65rem", opacity: 0.72, fontSize: "0.9rem" }}>
-        Format hint: `YYYY-MM-DDTHH:MM:SSZ`
-      </p>
+      {asOfError ? <p style={errorTextStyle}>{asOfError}</p> : null}
+      {errorMessage ? <p style={errorTextStyle}>{errorMessage}</p> : null}
 
-      <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", marginTop: "0.2rem" }}>
+      <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
           style={buttonStyle}
           onClick={persistDefaults}
           disabled={Boolean(asOfError || baseUrlError)}
         >
-          Save Defaults
+          Save defaults
         </button>
         <button
           type="button"
@@ -174,70 +201,29 @@ export function ExplorerDefaultsBar() {
         >
           Apply to URL
         </button>
-        <span style={{ opacity: 0.85, paddingTop: "0.35rem" }}>{statusText}</span>
       </div>
-      {asOfError ? <p style={errorTextStyle}>{asOfError}</p> : null}
-      {errorMessage ? (
-        <p style={errorTextStyle}>{errorMessage}</p>
-      ) : null}
 
-      <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", marginTop: "0.85rem" }}>
-        {scopedLinks.map(target => (
-          <Link key={target.href} href={target.href} style={linkStyle}>
-            {target.label}
-          </Link>
-        ))}
+      <div className="mt-4">
+        <p className="mb-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          Jump with this context
+        </p>
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {scopedLinks.map(target => (
+            <Link key={target.href} href={target.href} className="inline-flex shrink-0 rounded-full border border-border bg-muted/35 px-3 py-2 text-sm text-foreground transition hover:border-primary/20 hover:bg-muted/50">
+              {target.label}
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
-
-const sectionStyle = {
-  marginTop: "0.95rem",
-  border: "1px solid #2a3458",
-  borderRadius: 10,
-  padding: "0.85rem",
-  background: "#0d1633"
-} as const;
-
-const inputStyle = {
-  display: "block",
-  width: "100%",
-  marginTop: "0.35rem",
-  marginBottom: "0.55rem",
-  background: "#0b122b",
-  color: "#dbe7ff",
-  border: "1px solid #2a3458",
-  borderRadius: 8,
-  padding: "0.58rem 0.7rem"
-} as const;
-
-const invalidInputStyle = {
-  ...inputStyle,
-  border: "1px solid #b85274"
-} as const;
-
-const buttonStyle = {
-  background: "#1a2f66",
-  color: "#dbe7ff",
-  border: "1px solid #3651a1",
-  borderRadius: 8,
-  padding: "0.45rem 0.72rem",
-  cursor: "pointer"
-} as const;
-
-const linkStyle = {
-  display: "inline-block",
-  padding: "0.38rem 0.6rem",
-  borderRadius: 8,
-  border: "1px solid #3558a8",
-  background: "#14224a",
-  color: "#cfe1ff",
-  textDecoration: "none"
-} as const;
+const inputStyle = { ...legacyInputStyle, marginBottom: "0.55rem" };
+const invalidInputStyle = legacyInvalidInputStyle;
+const buttonStyle = { ...legacyButtonStyle, padding: "0.45rem 0.72rem" };
 
 const errorTextStyle = {
   marginTop: "0.55rem",
   marginBottom: 0,
-  color: "#ff9aae"
+  color: "var(--destructive)"
 } as const;

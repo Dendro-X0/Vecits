@@ -1,8 +1,4 @@
-import type { QueryParams } from "@/app/explorer/lib";
-import { CategorySidebar } from "@/components/marketplace/category-sidebar";
-import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
-import { ListingGridWithSession } from "@/components/marketplace/listing-grid-with-session";
-import { MarketplaceToolbar } from "@/components/marketplace/marketplace-toolbar";
+import { MarketplaceListingsSection } from "@/components/marketplace/marketplace-listings-section";
 import { loadMarketplaceListings, prepareListings } from "@/lib/marketplace/load";
 import { MarketplaceTrustBar } from "@/components/shell/marketplace-trust-bar";
 import { getLaneById } from "@/lib/marketplace/lanes";
@@ -31,7 +27,7 @@ export default async function LaneMarketplacePage({
       <MarketplaceTrustBar
         nodeLabel={loaded.baseUrl}
         asOf={loaded.asOf}
-        showcase={loaded.showcase}
+        mockMode={loaded.mockMode}
       />
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -47,25 +43,13 @@ export default async function LaneMarketplacePage({
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <KernelTruthBanner variant="discovery" />
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <CategorySidebar searchParams={query} activeLane={lane} />
-          <div className="space-y-6">
-            <MarketplaceToolbar
-              searchParams={query}
-              total={listings.length}
-              pathname={`/marketplace/lanes/${lane}`}
-            />
-            <ListingGridWithSession
-              listings={listings}
-              searchParams={query}
-              emptyMessage={`No ${laneMeta?.label?.toLowerCase() ?? "lane"} listings on this node yet.`}
-            />
-          </div>
-        </div>
+        <MarketplaceListingsSection
+          searchParams={query}
+          listings={listings}
+          loaded={loaded}
+          activeLane={lane}
+          toolbarPathname={`/marketplace/lanes/${lane}`}
+        />
       </section>
     </>
   );

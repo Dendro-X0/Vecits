@@ -29,6 +29,7 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+const MOCK_MODE_ENABLED = process.env.NEXT_PUBLIC_VECTIS_MOCK_MODE === "1";
 
 type OfferDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -39,7 +40,9 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
   const query = STATIC_QUERY_PARAMS;
   const baseUrl = getNodeBaseUrl(query);
   const asOf = getOptionalParam(query, "as_of");
-  const showcase = SHOWCASE_LISTINGS.find((listing) => listing.offer_id === id);
+  const showcase = MOCK_MODE_ENABLED
+    ? SHOWCASE_LISTINGS.find((listing) => listing.offer_id === id)
+    : undefined;
 
   let offer: Record<string, unknown> | null = null;
   let error: string | null = null;
@@ -106,9 +109,8 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
       <div className="mb-6 space-y-4">
         <KernelTruthBanner variant="offProtocol" />
         {showcase ? (
-          <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-50">
-            Showcase listing preview — connect a live node or ingest fixture data for kernel-backed
-            terms.
+          <div className="rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-foreground">
+            Mock mode enabled — showing showcase listing preview.
           </div>
         ) : null}
         {error ? (

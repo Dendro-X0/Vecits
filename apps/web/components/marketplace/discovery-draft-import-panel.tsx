@@ -6,6 +6,13 @@ import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import {
   discoveryDraftImportNote,
   parseDiscoveryDraftJsonl,
   type DiscoveryOfferDraft
@@ -96,7 +103,7 @@ export function DiscoveryDraftImportPanel({
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <Upload className="h-4 w-4 text-primary" />
-          <p className="font-medium">Import discovery offer draft</p>
+          <p className="font-medium">Import a discovery draft</p>
         </div>
         <p className="text-sm text-muted-foreground">{discoveryDraftImportNote()}</p>
       </div>
@@ -139,18 +146,24 @@ export function DiscoveryDraftImportPanel({
         <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-3 text-sm">
           <div className="space-y-2">
             <Label htmlFor="discoveryDraftSelect">Draft to import</Label>
-            <select
-              id="discoveryDraftSelect"
-              value={selectedIndex}
-              onChange={(event) => setSelectedIndex(Number(event.target.value))}
-              className="h-10 w-full rounded-lg border border-border bg-background px-3"
+            <Select
+              value={String(selectedIndex)}
+              onValueChange={(value) => {
+                if (!value) return;
+                setSelectedIndex(Number(value));
+              }}
             >
-              {pendingDrafts.map((draft, index) => (
-                <option key={`${draft.provenance.signalId}-${index}`} value={index}>
-                  {draft.provenance.suggestedLane} · {draft.payload.title}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="discoveryDraftSelect" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="start">
+                {pendingDrafts.map((draft, index) => (
+                  <SelectItem key={`${draft.provenance.signalId}-${index}`} value={String(index)}>
+                    {draft.provenance.suggestedLane} · {draft.payload.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {pendingDrafts[selectedIndex] ? (
             <div className="space-y-1 text-muted-foreground">
@@ -178,7 +191,7 @@ export function DiscoveryDraftImportPanel({
             onClick={handleImportSelected}
             className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
           >
-            Prefill builder from draft
+            Use this draft
           </button>
         </div>
       ) : null}

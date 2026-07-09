@@ -32,19 +32,28 @@ const EVIDENCE_EXPORT_COMMANDS = [
   { label: "Run lane fixture checks", command: "npm run v1:lane-fixtures", runnableAction: "run_lane_fixture_checks" as const }
 ] as const;
 
-export function DashboardAdvancedPanel() {
+export function DashboardAdvancedContent({ embedded = false }: { embedded?: boolean }) {
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Wrench className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-xl font-semibold tracking-tight">Advanced</h2>
+    <div className={embedded ? "space-y-6" : "mx-auto max-w-3xl space-y-6 p-4 sm:p-6"}>
+      {!embedded ? (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Wrench className="h-5 w-5 text-muted-foreground" />
+            <h2 className="text-xl font-semibold tracking-tight">Advanced</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Operator workflows for preflight, evidence export, and lane fixture checks. These run
+            against your local workspace and node — not required for everyday marketplace use.
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Operator workflows for preflight, evidence export, and lane fixture checks. These run
-          against your local workspace and node — not required for everyday marketplace use.
-        </p>
-      </div>
+      ) : (
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold tracking-tight">Operator tools</h3>
+          <p className="text-sm text-muted-foreground">
+            Preflight drills, evidence export, and the legacy console for maintainers.
+          </p>
+        </div>
+      )}
 
       <KernelTruthBanner variant="banner" />
 
@@ -61,7 +70,7 @@ export function DashboardAdvancedPanel() {
             href="/dashboard/builder#import"
             className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:bg-accent"
           >
-            Open offer builder
+            Open publish flow
             <ExternalLink className="h-4 w-4" />
           </Link>
         </CardContent>
@@ -110,4 +119,8 @@ export function DashboardAdvancedPanel() {
       </Card>
     </div>
   );
+}
+
+export function DashboardAdvancedPanel() {
+  return <DashboardAdvancedContent />;
 }

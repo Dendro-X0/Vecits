@@ -1,10 +1,6 @@
 import { Handshake } from "lucide-react";
 
-import type { QueryParams } from "@/app/explorer/lib";
-import { CategorySidebar } from "@/components/marketplace/category-sidebar";
-import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
-import { ListingGridWithSession } from "@/components/marketplace/listing-grid-with-session";
-import { MarketplaceToolbar } from "@/components/marketplace/marketplace-toolbar";
+import { MarketplaceListingsSection } from "@/components/marketplace/marketplace-listings-section";
 import { loadMarketplaceListings, prepareListings } from "@/lib/marketplace/load";
 import { MarketplaceTrustBar } from "@/components/shell/marketplace-trust-bar";
 import { STATIC_QUERY_PARAMS } from "@/lib/static-query-params";
@@ -19,7 +15,7 @@ export default async function MutualAidPage() {
       <MarketplaceTrustBar
         nodeLabel={loaded.baseUrl}
         asOf={loaded.asOf}
-        showcase={loaded.showcase}
+        mockMode={loaded.mockMode}
       />
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -38,25 +34,13 @@ export default async function MutualAidPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <KernelTruthBanner variant="offProtocol" />
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <CategorySidebar searchParams={params} activeSection="mutual-aid" />
-          <div className="space-y-6">
-            <MarketplaceToolbar
-              searchParams={params}
-              total={listings.length}
-              pathname="/marketplace/mutual-aid"
-            />
-            <ListingGridWithSession
-              listings={listings}
-              searchParams={params}
-              emptyMessage="No mutual aid listings on this node yet. Try the full marketplace or connect another operator store."
-            />
-          </div>
-        </div>
+        <MarketplaceListingsSection
+          searchParams={params}
+          listings={listings}
+          loaded={loaded}
+          activeSection="mutual-aid"
+          toolbarPathname="/marketplace/mutual-aid"
+        />
       </section>
     </>
   );

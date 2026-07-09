@@ -150,81 +150,110 @@ export default async function DiscoveryExplorerPage() {
         </p>
         <ExamplePresets items={presetLinks} />
 
-        <form>
-          <label>
-            service_type (optional lane filter)
-            <input
-              name="service_type"
-              defaultValue={serviceType}
-              style={inputStyle}
-              placeholder="software-fixes"
-            />
-          </label>
-          <label>
-            min_score (optional signed integer)
-            <input
-              name="min_score"
-              defaultValue={minScoreRaw}
-              style={minScoreParse.error ? invalidInputStyle : inputStyle}
-              placeholder="0"
-            />
-          </label>
-          {minScoreParse.error ? <p style={fieldErrorStyle}>{minScoreParse.error}</p> : null}
-          <label>
-            alpha_defaults (optional bool, default `1`)
-            <input
-              name="alpha_defaults"
-              defaultValue={alphaDefaultsRaw}
-              style={alphaDefaultsParse.error ? invalidInputStyle : inputStyle}
-              placeholder="1"
-            />
-          </label>
-          {alphaDefaultsParse.error ? <p style={fieldErrorStyle}>{alphaDefaultsParse.error}</p> : null}
-          <p style={helperTextStyle}>
-            `1` constrains discovery to alpha initial lanes; `0` uses all policy-allowed lanes.
-          </p>
-          <label>
-            as_of (optional RFC3339)
-            <input
-              name="as_of"
-              defaultValue={asOf}
-              style={asOfError ? invalidInputStyle : inputStyle}
-              placeholder="2026-03-01T00:00:00Z"
-            />
-          </label>
-          {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
-          <p style={helperTextStyle}>Format hint: `YYYY-MM-DDTHH:MM:SSZ`</p>
-          <label>
-            limit (optional, default 50)
-            <input
-              name="limit"
-              defaultValue={limitRaw}
-              style={limitParse.error ? invalidInputStyle : inputStyle}
-              placeholder="50"
-            />
-          </label>
-          {limitParse.error ? <p style={fieldErrorStyle}>{limitParse.error}</p> : null}
-          <label>
-            cursor (optional)
-            <input
-              name="cursor"
-              defaultValue={cursorRaw}
-              style={cursorParse.error ? invalidInputStyle : inputStyle}
-              placeholder="0"
-            />
-          </label>
-          {cursorParse.error ? <p style={fieldErrorStyle}>{cursorParse.error}</p> : null}
-          <label>
-            base_url (optional)
-            <input
-              name="base_url"
-              defaultValue={baseUrlInput}
-              style={baseUrlError ? invalidInputStyle : inputStyle}
-              placeholder={baseUrl}
-            />
-          </label>
-          {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
-          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap" }}>
+        <form className="space-y-4">
+          <div className="rounded-2xl border border-border/70 bg-card/70 p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Discovery filters
+            </p>
+            <div className="mt-3 space-y-3">
+              <label>
+                Service lane filter (optional)
+                <input
+                  name="service_type"
+                  defaultValue={serviceType}
+                  style={inputStyle}
+                  placeholder="software-fixes"
+                />
+              </label>
+
+              <label>
+                Minimum score (optional)
+                <input
+                  name="min_score"
+                  defaultValue={minScoreRaw}
+                  style={minScoreParse.error ? invalidInputStyle : inputStyle}
+                  placeholder="0"
+                />
+              </label>
+              {minScoreParse.error ? <p style={fieldErrorStyle}>{minScoreParse.error}</p> : null}
+
+              <label>
+                Alpha lane defaults (optional, default `1`)
+                <input
+                  name="alpha_defaults"
+                  defaultValue={alphaDefaultsRaw}
+                  style={alphaDefaultsParse.error ? invalidInputStyle : inputStyle}
+                  placeholder="1"
+                />
+              </label>
+              {alphaDefaultsParse.error ? <p style={fieldErrorStyle}>{alphaDefaultsParse.error}</p> : null}
+
+              <p style={helperTextStyle}>
+                `1` keeps alpha starter lanes; `0` includes all policy-allowed service lanes.
+              </p>
+            </div>
+
+            <details className="mt-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-foreground">
+                Context & timing
+              </summary>
+              <div className="mt-3 space-y-3">
+                <label>
+                  As-of timestamp (optional)
+                  <input
+                    name="as_of"
+                    defaultValue={asOf}
+                    style={asOfError ? invalidInputStyle : inputStyle}
+                    placeholder="2026-03-01T00:00:00Z"
+                  />
+                </label>
+                {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
+                <p style={helperTextStyle}>Use RFC3339 format: `YYYY-MM-DDTHH:MM:SSZ`</p>
+
+                <label>
+                  Node URL override (optional)
+                  <input
+                    name="base_url"
+                    defaultValue={baseUrlInput}
+                    style={baseUrlError ? invalidInputStyle : inputStyle}
+                    placeholder={baseUrl}
+                  />
+                </label>
+                {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
+              </div>
+            </details>
+
+            <details className="mt-3 rounded-xl border border-border/70 bg-muted/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-foreground">
+                Limits & paging
+              </summary>
+              <div className="mt-3 space-y-3">
+                <label>
+                  Result limit (optional, default 50)
+                  <input
+                    name="limit"
+                    defaultValue={limitRaw}
+                    style={limitParse.error ? invalidInputStyle : inputStyle}
+                    placeholder="50"
+                  />
+                </label>
+                {limitParse.error ? <p style={fieldErrorStyle}>{limitParse.error}</p> : null}
+
+                <label>
+                  Cursor offset (optional)
+                  <input
+                    name="cursor"
+                    defaultValue={cursorRaw}
+                    style={cursorParse.error ? invalidInputStyle : inputStyle}
+                    placeholder="0"
+                  />
+                </label>
+                {cursorParse.error ? <p style={fieldErrorStyle}>{cursorParse.error}</p> : null}
+              </div>
+            </details>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", alignItems: "center" }}>
             <button type="submit" style={buttonStyle}>
               Run Discovery
             </button>

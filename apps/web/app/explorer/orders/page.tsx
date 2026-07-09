@@ -76,39 +76,55 @@ export default async function OrdersExplorerPage() {
           Query `GET /state/order/:id` with shareable URL params.
         </p>
         <ExamplePresets items={presetLinks} />
-        <form>
-          <label>
-            Order ID
-            <input
-              name="id"
-              defaultValue={orderId}
-              style={orderIdError ? invalidInputStyle : inputStyle}
-              placeholder="order-1"
-            />
-          </label>
-          {orderIdError ? <p style={fieldErrorStyle}>{orderIdError}</p> : null}
-          <label>
-            as_of (optional RFC3339)
-            <input
-              name="as_of"
-              defaultValue={asOf}
-              style={asOfError ? invalidInputStyle : inputStyle}
-              placeholder="2026-03-01T00:00:00Z"
-            />
-          </label>
-          {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
-          <p style={helperTextStyle}>Format hint: `YYYY-MM-DDTHH:MM:SSZ`</p>
-          <label>
-            base_url (optional)
-            <input
-              name="base_url"
-              defaultValue={baseUrlInput}
-              style={baseUrlError ? invalidInputStyle : inputStyle}
-              placeholder={baseUrl}
-            />
-          </label>
-          {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
-          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap" }}>
+        <form className="space-y-4">
+          <div className="rounded-2xl border border-border/70 bg-card/70 p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Core query
+            </p>
+            <div className="mt-3 space-y-3">
+              <label>
+                Order ID
+                <input
+                  name="id"
+                  defaultValue={orderId}
+                  style={orderIdError ? invalidInputStyle : inputStyle}
+                  placeholder="order-1"
+                />
+              </label>
+              {orderIdError ? <p style={fieldErrorStyle}>{orderIdError}</p> : null}
+            </div>
+
+            <details className="mt-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-medium text-foreground">
+                Context & timing
+              </summary>
+              <div className="mt-3 space-y-3">
+                <label>
+                  As-of timestamp (optional)
+                  <input
+                    name="as_of"
+                    defaultValue={asOf}
+                    style={asOfError ? invalidInputStyle : inputStyle}
+                    placeholder="2026-03-01T00:00:00Z"
+                  />
+                </label>
+                {asOfError ? <p style={fieldErrorStyle}>{asOfError}</p> : null}
+                <p style={helperTextStyle}>Use RFC3339 format: `YYYY-MM-DDTHH:MM:SSZ`</p>
+                <label>
+                  Node URL override (optional)
+                  <input
+                    name="base_url"
+                    defaultValue={baseUrlInput}
+                    style={baseUrlError ? invalidInputStyle : inputStyle}
+                    placeholder={baseUrl}
+                  />
+                </label>
+                {baseUrlError ? <p style={fieldErrorStyle}>{baseUrlError}</p> : null}
+              </div>
+            </details>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.55rem", flexWrap: "wrap", alignItems: "center" }}>
             <button type="submit" style={buttonStyle}>
               Fetch Order
             </button>

@@ -4,6 +4,8 @@ Active restart-era planning, progress tracking, and session handoff.
 
 | Document | Purpose |
 | --- | --- |
+| [frontend-phase2-plan.md](../frontend-phase2-plan.md) | **Active:** client Phase 2 (role workspace, order hub) |
+| [frontend-phase1-completion.md](../frontend-phase1-completion.md) | Client Phase 1 deal loop (complete) |
 | [restart-roadmap.md](restart-roadmap.md) | Canonical R0–R7 plan and gates |
 | [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) | **What is done / what's next** (protocol stack) |
 | [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) | **Active:** Tauri v2 official client |

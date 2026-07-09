@@ -1,8 +1,13 @@
+ "use client";
+
 import Link from "next/link";
-import { Compass, Search, Settings, UserCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Compass, Menu, Search, Settings, UserCircle, X } from "lucide-react";
+import { useState } from "react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS: Array<{
@@ -17,6 +22,9 @@ const NAV_ITEMS: Array<{
 ];
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -37,10 +45,13 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                  "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition",
+                  pathname.startsWith(item.href)
+                    ? "bg-primary/10 text-foreground ring-1 ring-primary/25"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon aria-hidden="true" className="h-4 w-4" />
                 {item.label}
               </Link>
             ))}
@@ -48,10 +59,47 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="md:hidden"
+            aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileNavOpen}
+            aria-controls="mobile-site-nav"
+            onClick={() => setMobileNavOpen((previous) => !previous)}
+          >
+            {mobileNavOpen ? <X aria-hidden="true" className="h-4 w-4" /> : <Menu aria-hidden="true" className="h-4 w-4" />}
+          </Button>
           <ThemeToggle />
           <AuthStatus />
         </div>
       </div>
+      {mobileNavOpen ? (
+        <nav
+          id="mobile-site-nav"
+          className="border-t border-border bg-background px-4 py-3 md:hidden sm:px-6"
+        >
+          <div className="mx-auto flex max-w-7xl flex-col gap-1">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={`mobile-${item.href}`}
+                href={item.href}
+                onClick={() => setMobileNavOpen(false)}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition",
+                  pathname.startsWith(item.href)
+                    ? "bg-primary/10 text-foreground ring-1 ring-primary/25"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                )}
+              >
+                <item.icon aria-hidden="true" className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      ) : null}
     </header>
   );
 }

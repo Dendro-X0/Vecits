@@ -3,6 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 export type OperationsCommandRunnableAction =
   | "refresh_evidence_manifest"
   | "refresh_artifact_prune_plan"
@@ -53,7 +56,7 @@ export function OperationsCommandTools(props: OperationsCommandToolsProps) {
   const [status, setStatus] = useState<string>("");
   const [statusTone, setStatusTone] = useState<"ok" | "error">("ok");
   const hasCompactedCommands = commands.some(
-    item => !item.command.includes("\n") && item.command.length > SINGLE_LINE_COMPACT_THRESHOLD
+    (item) => !item.command.includes("\n") && item.command.length > SINGLE_LINE_COMPACT_THRESHOLD
   );
 
   async function copyCommand(command: string, label: string) {
@@ -120,158 +123,88 @@ export function OperationsCommandTools(props: OperationsCommandToolsProps) {
   }
 
   return (
-    <section
-      style={{
-        marginTop: "0.6rem",
-        border: "1px solid #2a3458",
-        borderRadius: 10,
-        padding: "0.8rem",
-        background: "#0d1633"
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap"
-        }}
-      >
-        <h4 style={{ marginTop: 0, marginBottom: "0.45rem" }}>{title}</h4>
+    <section className="surface-inset rounded-xl p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-sm font-medium">{title}</h4>
         {hasCompactedCommands ? (
-          <button
-            type="button"
-            style={{
-              background: "#1a2f66",
-              color: "#dbe7ff",
-              border: "1px solid #3651a1",
-              borderRadius: 8,
-              padding: "0.35rem 0.6rem",
-              cursor: "pointer",
-              marginBottom: "0.35rem"
-            }}
-            onClick={() => setShowFullCommands(value => !value)}
-          >
-            {showFullCommands ? "Compact Commands" : "Show Full Commands"}
-          </button>
+          <Button type="button" variant="outline" size="sm" onClick={() => setShowFullCommands((value) => !value)}>
+            {showFullCommands ? "Compact commands" : "Show full commands"}
+          </Button>
         ) : null}
       </div>
+
       {collapsed ? (
-        <button
-          type="button"
-          style={{
-            background: "#16264f",
-            color: "#dbe7ff",
-            border: "1px solid #3651a1",
-            borderRadius: 8,
-            padding: "0.4rem 0.65rem",
-            cursor: "pointer"
-          }}
-          onClick={() => setCollapsed(false)}
-        >
-          Show Commands ({commands.length})
-        </button>
+        <Button type="button" variant="outline" size="sm" onClick={() => setCollapsed(false)}>
+          Show commands ({commands.length})
+        </Button>
       ) : commands.length > 0 ? (
-        <ul style={{ marginTop: 0, marginBottom: 0 }}>
-          {commands.map(item => {
+        <ul className="space-y-4">
+          {commands.map((item) => {
             const runnableAction = item.runnableAction;
             const compactPreview = showFullCommands ? item.command : compactCommandPreview(item.command);
             return (
-              <li key={`${item.label}-${item.command}`} style={{ marginBottom: "0.55rem" }}>
-                <div>{item.label}</div>
+              <li key={`${item.label}-${item.command}`} className="space-y-2">
+                <p className="text-sm font-medium">{item.label}</p>
                 <pre
                   title={!showFullCommands && compactPreview !== item.command ? item.command : undefined}
-                  style={{
-                    marginTop: "0.35rem",
-                    marginBottom: "0.35rem",
-                    border: "1px solid #2a3458",
-                    borderRadius: 8,
-                    padding: "0.5rem 0.65rem",
-                    background: "#0b122b",
-                    whiteSpace: "pre-wrap"
-                  }}
+                  className="surface-code overflow-x-auto rounded-lg px-3 py-2 font-mono text-xs leading-relaxed whitespace-pre-wrap"
                 >
                   {compactPreview}
                 </pre>
-                <button
-                  type="button"
-                  style={{
-                    background: "#1a2f66",
-                    color: "#dbe7ff",
-                    border: "1px solid #3651a1",
-                    borderRadius: 8,
-                    padding: "0.4rem 0.65rem",
-                    cursor: "pointer"
-                  }}
-                  onClick={() => copyCommand(item.command, item.label)}
-                >
-                  Copy Command
-                </button>
-                {runnableAction ? (
-                  <button
+                <div className="flex flex-wrap gap-2">
+                  <Button
                     type="button"
-                    style={{
-                      background: "#1f4d2f",
-                      color: "#d9ffe4",
-                      border: "1px solid #2f7c4a",
-                      borderRadius: 8,
-                      padding: "0.4rem 0.65rem",
-                      cursor: runningAction === runnableAction ? "wait" : "pointer",
-                      marginLeft: "0.45rem",
-                      opacity: runningAction === runnableAction ? 0.75 : 1
-                    }}
-                    disabled={runningAction !== null}
-                    onClick={() => runWorkflowCommand(runnableAction, item.label)}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyCommand(item.command, item.label)}
                   >
-                    {runningAction === runnableAction ? "Running..." : "Run Now"}
-                  </button>
-                ) : null}
+                    Copy command
+                  </Button>
+                  {runnableAction ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="border-success/30 bg-success/10 text-success hover:bg-success/20"
+                      disabled={runningAction !== null}
+                      onClick={() => runWorkflowCommand(runnableAction, item.label)}
+                    >
+                      {runningAction === runnableAction ? "Running…" : "Run now"}
+                    </Button>
+                  ) : null}
+                </div>
               </li>
             );
           })}
         </ul>
       ) : (
-        <p style={{ marginTop: 0, marginBottom: 0, opacity: 0.85 }}>
-          No commands available.
-        </p>
+        <p className="text-sm text-muted-foreground">No commands available.</p>
       )}
+
       {!collapsed && commands.length > 0 && collapsedByDefault ? (
-        <button
-          type="button"
-          style={{
-            background: "#16264f",
-            color: "#dbe7ff",
-            border: "1px solid #3651a1",
-            borderRadius: 8,
-            padding: "0.4rem 0.65rem",
-            cursor: "pointer",
-            marginTop: "0.35rem"
-          }}
-          onClick={() => setCollapsed(true)}
-        >
-          Collapse Commands
-        </button>
+        <Button type="button" variant="ghost" size="sm" className="mt-3" onClick={() => setCollapsed(true)}>
+          Collapse commands
+        </Button>
       ) : null}
+
       {showReloadButton ? (
-        <button
+        <Button
           type="button"
-          style={{
-            background: "#1a2f66",
-            color: "#dbe7ff",
-            border: "1px solid #3651a1",
-            borderRadius: 8,
-            padding: "0.4rem 0.65rem",
-            cursor: "pointer",
-            marginTop: "0.35rem"
-          }}
+          variant="outline"
+          size="sm"
+          className="mt-3"
           onClick={() => window.location.reload()}
         >
-          {isRefreshing ? "Refreshing..." : "Refresh Status View"}
-        </button>
+          {isRefreshing ? "Refreshing…" : "Refresh status view"}
+        </Button>
       ) : null}
+
       {status ? (
-        <p style={{ marginBottom: 0, color: statusTone === "ok" ? "#9fe0b1" : "#ffb17a" }}>
+        <p
+          className={cn(
+            "mt-3 text-sm",
+            statusTone === "ok" ? "text-[var(--status-ok)]" : "text-[var(--status-error)]"
+          )}
+        >
           {status}
         </p>
       ) : null}

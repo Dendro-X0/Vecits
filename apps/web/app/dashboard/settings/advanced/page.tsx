@@ -1,5 +1,5 @@
-import { DashboardAdvancedPanel } from "@/components/dashboard/dashboard-advanced-panel";
+import { redirect } from "next/navigation";
 
 export default function DashboardAdvancedPage() {
-  return <DashboardAdvancedPanel />;
+  redirect("/dashboard/settings?advanced=1");
 }

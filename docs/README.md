@@ -13,7 +13,7 @@ Operators: [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md). I
 | **Kernel / protocol** | R0–R2 complete; reference-lane procedure guards GAP-01..07 closed |
 | **Trust bootstrap** | Spec locked — [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) |
 | **Discovery bridge** | Classifier + offer drafts + Aperio import — [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| **Client** | R4-C1..C4 complete; marketplace UX deferred (R7-D3) |
+| **Client** | R4-C1..C4 complete; **frontend Phase 1 deal loop complete** — [frontend-phase1-completion.md](frontend-phase1-completion.md); Phase 2 planned — [frontend-phase2-plan.md](frontend-phase2-plan.md) |
 | **Gates** | RG-1..RG-4 pass; RG-5 partial (Aperio live CLI optional) |
 
 Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md) · Evidence: [roadmap/progress.md](roadmap/progress.md)
@@ -26,7 +26,8 @@ Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md
 | Operator / first deploy | [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md) |
 | Protocol / fixtures | [architecture/software-fixes-lane.md](architecture/software-fixes-lane.md) → [v0/v0-scenario-fixture-matrix.md](v0/v0-scenario-fixture-matrix.md) |
 | Discovery (Aperio → Vectis) | [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| What's next | [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
+| What's next (client UX) | [frontend-phase2-plan.md](frontend-phase2-plan.md) |
+| What's next (protocol) | [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
 | Maintainer / R-track | [roadmap/restart-roadmap.md](roadmap/restart-roadmap.md) |
 | Spec reviewer | [specs/README.md](specs/README.md) |
 | Security / abuse | [v0/v0-abuse-gaming-test-matrix.md](v0/v0-abuse-gaming-test-matrix.md) |
@@ -53,7 +54,9 @@ docs/
 
 | Document | Purpose |
 | --- | --- |
-| [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) | What is done vs deferred — stack-ranked |
+| [frontend-spec.md](frontend-spec.md) | Dashboard / marketplace UI rules |
+| [frontend-phase1-completion.md](frontend-phase1-completion.md) | Deal loop Phase 1 completion record |
+| [frontend-phase2-plan.md](frontend-phase2-plan.md) | Role workspace + order hub Phase 2 plan |
 | [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) | Cold-start: vouches + contribution mint → first exchange |
 | [architecture/software-fixes-lane.md](architecture/software-fixes-lane.md) | Reference v1 digital lane |
 | [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) | Aperio Rust engine → Vectis offer drafts |

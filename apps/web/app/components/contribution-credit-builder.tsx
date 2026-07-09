@@ -16,6 +16,13 @@ import {
   defaultNodeClientBaseUrlForForms,
   validateNodeClientBaseUrl
 } from "@/lib/node-client-base-url";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 type BuilderMode = "claim" | "attest" | "mint" | "spend";
 type SourceKind = "signed" | "accepted";
@@ -382,7 +389,24 @@ export function ContributionCreditBuilder() {
         {mode === "attest" ? (
           <>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>claimId<input value={attestClaimId} onChange={inputEvent => setAttestClaimId(inputEvent.target.value)} style={fieldStyle} /></label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>decision<select value={attestDecision} onChange={inputEvent => setAttestDecision(inputEvent.target.value as "approve" | "reject")} style={fieldStyle}><option value="approve">approve</option><option value="reject">reject</option></select></label>
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              decision
+              <Select
+                value={attestDecision}
+                onValueChange={value => {
+                  if (!value) return;
+                  setAttestDecision(value as "approve" | "reject");
+                }}
+              >
+                <SelectTrigger className="mt-1.5 w-full min-w-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="start">
+                  <SelectItem value="approve">approve</SelectItem>
+                  <SelectItem value="reject">reject</SelectItem>
+                </SelectContent>
+              </Select>
+            </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>notesHash (optional)<input value={attestNotesHash} onChange={inputEvent => setAttestNotesHash(inputEvent.target.value)} style={fieldStyle} /></label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>references.claim eventId (optional but recommended)<input value={attestClaimReferenceEventId} onChange={inputEvent => setAttestClaimReferenceEventId(inputEvent.target.value)} style={fieldStyle} /></label>
           </>
@@ -404,7 +428,27 @@ export function ContributionCreditBuilder() {
         {mode === "spend" ? (
           <>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>spenderPubKey<input value={spendSpenderPubKey} onChange={inputEvent => setSpendSpenderPubKey(inputEvent.target.value)} style={fieldStyle} /></label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>sinkKind<select value={spendSinkKind} onChange={inputEvent => setSpendSinkKind(inputEvent.target.value as SpendSinkKind)} style={fieldStyle}>{SUPPORTED_SINKS.map(sink => (<option key={sink} value={sink}>{sink}</option>))}</select></label>
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              sinkKind
+              <Select
+                value={spendSinkKind}
+                onValueChange={value => {
+                  if (!value) return;
+                  setSpendSinkKind(value as SpendSinkKind);
+                }}
+              >
+                <SelectTrigger className="mt-1.5 w-full min-w-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent align="start">
+                  {SUPPORTED_SINKS.map(sink => (
+                    <SelectItem key={sink} value={sink}>
+                      {sink}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>amount<input value={spendAmount} onChange={inputEvent => setSpendAmount(inputEvent.target.value)} style={fieldStyle} /></label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>nonce<input value={spendNonce} onChange={inputEvent => setSpendNonce(inputEvent.target.value)} style={fieldStyle} /></label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>references.source eventId (optional)<input value={spendSourceReferenceEventId} onChange={inputEvent => setSpendSourceReferenceEventId(inputEvent.target.value)} style={fieldStyle} /></label>

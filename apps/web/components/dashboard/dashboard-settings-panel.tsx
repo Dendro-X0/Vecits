@@ -2,41 +2,73 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import {
+  Fingerprint,
+  KeyRound,
+  Link2,
+  LogOut,
+  Moon,
+  Server,
+  Shield,
+  UserRound
+} from "lucide-react";
 
 import { KeyBackupPanel } from "@/components/auth/key-backup-panel";
 import { PasskeyVaultPanel } from "@/components/auth/passkey-vault-panel";
-import { ThemeSettingRow } from "@/components/theme/theme-toggle";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardSettingsTechnicalPanel } from "@/components/dashboard/dashboard-settings-technical-panel";
+import { SettingsAdvancedDisclosure } from "@/components/dashboard/settings-advanced-disclosure";
+import {
+  SettingsCategoryNav,
+  SettingsRow,
+  SettingsSection,
+  type SettingsCategory
+} from "@/components/dashboard/settings-primitives";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useTheme } from "@/components/theme/theme-provider";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clearSession, loadActiveSession, mirrorSessionToBrowserStorage, saveSession, type AuthSession } from "@/lib/auth/session";
-import { clearDesktopVault, isDesktopVaultAvailable } from "@/lib/auth/desktop-vault";
+import {
+  clearSession,
+  loadActiveSession,
+  mirrorSessionToBrowserStorage,
+  saveSession,
+  type AuthSession
+} from "@/lib/auth/session";
 import { EMPTY_PROFILE, loadProfile, saveProfile, type UserProfile } from "@/lib/dashboard/profile";
 import {
   readMobilePinnedNodeOverride,
-  readRuntimeMobilePinnedNodeUrl,
   resolveNodeConnectionInfo,
-  validateMobilePinnedNodeUrl,
-  writeMobilePinnedNodeOverride,
+  validateMobilePinnedNodeUrl
 } from "@/lib/node-client-base-url";
 import { truncatePubkey } from "@/lib/utils";
 
+const THEME_LABELS = {
+  light: "Light",
+  dark: "Dark",
+  system: "System"
+} as const;
+
 export function DashboardSettingsPanel() {
+  const searchParams = useSearchParams();
+  const advancedOpenByDefault = searchParams.get("advanced") === "1";
+  const { preference } = useTheme();
+  const [activeCategory, setActiveCategory] = useState<SettingsCategory>("profile");
   const [session, setSession] = useState<AuthSession | null>(null);
-  const desktopVault = isDesktopVaultAvailable();
   const [profile, setProfile] = useState<UserProfile>(EMPTY_PROFILE);
   const [profileSaved, setProfileSaved] = useState(false);
   const [nodeInfo, setNodeInfo] = useState(() => resolveNodeConnectionInfo());
   const [mobilePinnedNodeDraft, setMobilePinnedNodeDraft] = useState("");
   const [mobilePinnedNodeSaved, setMobilePinnedNodeSaved] = useState(false);
-  const [runtimeMobilePinnedNodeUrl, setRuntimeMobilePinnedNodeUrl] = useState("");
 
   useEffect(() => {
     const active = loadActiveSession();
     setSession(active);
     setNodeInfo(resolveNodeConnectionInfo());
     setMobilePinnedNodeDraft(readMobilePinnedNodeOverride());
-    setRuntimeMobilePinnedNodeUrl(readRuntimeMobilePinnedNodeUrl());
     if (active) {
       setProfile(loadProfile(active.publicKeyHex));
     }
@@ -52,289 +84,264 @@ export function DashboardSettingsPanel() {
     window.setTimeout(() => setProfileSaved(false), 2000);
   }
 
-  function handleMobilePinnedNodeSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const trimmed = mobilePinnedNodeDraft.trim();
-    if (trimmed) {
-      const error = validateMobilePinnedNodeUrl(trimmed);
-      if (error) {
-        return;
-      }
-    }
-    writeMobilePinnedNodeOverride(trimmed);
-    setNodeInfo(resolveNodeConnectionInfo());
-    setMobilePinnedNodeSaved(true);
-    window.setTimeout(() => setMobilePinnedNodeSaved(false), 2000);
+  function handleSignOut() {
+    clearSession();
+    setSession(null);
+    setProfile(EMPTY_PROFILE);
   }
 
-  function handleMobilePinnedNodeReset() {
-    writeMobilePinnedNodeOverride("");
-    setMobilePinnedNodeDraft("");
+  function refreshNodeInfo() {
     setNodeInfo(resolveNodeConnectionInfo());
-    setMobilePinnedNodeSaved(false);
   }
 
-  const mobilePinnedNodeError =
-    mobilePinnedNodeDraft.trim().length > 0
-      ? validateMobilePinnedNodeUrl(mobilePinnedNodeDraft.trim())
-      : null;
+  const connectionIssue = validateMobilePinnedNodeUrl(nodeInfo.baseUrl);
+  const connectionBadge = connectionIssue ? (
+    <Badge variant="outline" className="border-destructive/40 text-destructive">
+      Needs attention
+    </Badge>
+  ) : (
+    <Badge variant="outline" className="border-primary/30 text-primary">
+      Connected
+    </Badge>
+  );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-      <div>
-        <p className="text-sm text-muted-foreground">
-          App preferences and profile details for your workspace identity.
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>App preferences</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ThemeSettingRow />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Kernel connection</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <p className="text-muted-foreground">
-            Connected node: <span className="font-mono text-foreground">{nodeInfo.baseUrl}</span>
+    <div className="w-full px-4 py-5 sm:px-6 lg:px-8">
+      <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="space-y-4">
+          <p className="px-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            General
           </p>
-          <p className="text-muted-foreground">
-            Source: <span className="text-foreground">{nodeInfo.source}</span>
-          </p>
-          {nodeInfo.isMobileRuntime ? (
-            <p className="text-muted-foreground">
-              Mobile runtime: <span className="text-foreground">enabled</span>
-            </p>
-          ) : null}
-          {nodeInfo.isMobileRuntime && !nodeInfo.isMobileRelease ? (
-            <form className="space-y-2" onSubmit={handleMobilePinnedNodeSubmit}>
-              <Label htmlFor="mobilePinnedNodeUrl">Mobile pinned node URL override</Label>
-              {runtimeMobilePinnedNodeUrl ? (
-                <p className="text-xs text-muted-foreground">
-                  Runtime default:{" "}
-                  <span className="font-mono text-foreground">{runtimeMobilePinnedNodeUrl}</span>
-                </p>
-              ) : null}
-              <Input
-                id="mobilePinnedNodeUrl"
-                value={mobilePinnedNodeDraft}
-                onChange={(event) => setMobilePinnedNodeDraft(event.target.value)}
-                placeholder="https://node.example.com"
-              />
-              {mobilePinnedNodeError ? (
-                <p className="text-xs text-destructive">{mobilePinnedNodeError}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground">
-                  Optional non-release override stored locally on this device.
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={Boolean(mobilePinnedNodeError)}
-                className="inline-flex h-9 items-center justify-center rounded-lg border border-border px-3 text-xs font-medium text-foreground transition hover:bg-accent disabled:opacity-50"
-              >
-                {mobilePinnedNodeSaved ? "Saved" : "Save mobile node override"}
-              </button>
-              <button
-                type="button"
-                onClick={handleMobilePinnedNodeReset}
-                className="inline-flex h-9 items-center justify-center rounded-lg border border-border px-3 text-xs font-medium text-foreground transition hover:bg-accent"
-              >
-                Reset to runtime default
-              </button>
-            </form>
-          ) : null}
-          {nodeInfo.isMobileRelease ? (
-            <p
-              className={
-                validateMobilePinnedNodeUrl(nodeInfo.baseUrl)
-                  ? "text-destructive"
-                  : "text-emerald-600 dark:text-emerald-400"
-              }
+          <SettingsCategoryNav active={activeCategory} onChange={setActiveCategory} />
+        </aside>
+
+        <div className="min-w-0">
+          {activeCategory === "profile" ? (
+            <SettingsSection
+              title="Profile"
+              description="How you appear in the marketplace and which theme this device uses."
             >
-              {validateMobilePinnedNodeUrl(nodeInfo.baseUrl) ??
-                "Mobile release policy satisfied (HTTPS pinned node)."}
-            </p>
+              <SettingsRow
+                icon={Moon}
+                title="Appearance"
+                description="Choose light, dark, or match your system theme."
+                badge={
+                  <Badge variant="muted">{THEME_LABELS[preference] ?? preference}</Badge>
+                }
+              >
+                <ThemeToggle variant="segmented" className="w-full sm:w-auto" />
+              </SettingsRow>
+
+              <SettingsRow
+                icon={UserRound}
+                title="Marketplace profile"
+                description="Saved on this device. These fields help buyers recognize you on listings."
+                badge={
+                  session ? (
+                    <Badge variant="success">Signed in</Badge>
+                  ) : (
+                    <Badge variant="muted">Guest</Badge>
+                  )
+                }
+              >
+                {session ? (
+                  <form className="space-y-4" onSubmit={handleProfileSubmit}>
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">Display name</Label>
+                      <Input
+                        id="displayName"
+                        value={profile.displayName}
+                        onChange={(event) =>
+                          setProfile((prev) => ({ ...prev, displayName: event.target.value }))
+                        }
+                        placeholder="How you appear on listings"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bio">Bio</Label>
+                      <Input
+                        id="bio"
+                        value={profile.bio}
+                        onChange={(event) =>
+                          setProfile((prev) => ({ ...prev, bio: event.target.value }))
+                        }
+                        placeholder="Short introduction for buyers and collaborators"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="serviceCategories">Service categories</Label>
+                      <Input
+                        id="serviceCategories"
+                        value={profile.serviceCategories}
+                        onChange={(event) =>
+                          setProfile((prev) => ({ ...prev, serviceCategories: event.target.value }))
+                        }
+                        placeholder="software-fixes, documentation"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="links">Links</Label>
+                      <Input
+                        id="links"
+                        value={profile.links}
+                        onChange={(event) =>
+                          setProfile((prev) => ({ ...prev, links: event.target.value }))
+                        }
+                        placeholder="https://example.com/portfolio"
+                      />
+                    </div>
+                    <Button type="submit">{profileSaved ? "Saved" : "Save profile"}</Button>
+                  </form>
+                ) : (
+                  <div className="space-y-3 text-sm text-muted-foreground">
+                    <p>Sign in to edit how your identity appears in the client.</p>
+                    <Button nativeButton={false} render={<Link href="/sign-in" />} size="sm">
+                      Sign in
+                    </Button>
+                  </div>
+                )}
+              </SettingsRow>
+
+              <SettingsRow
+                icon={Link2}
+                title="Public key"
+                description="Your identity reference used for signing marketplace events."
+              >
+                {session ? (
+                  <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
+                    {session.publicKeyHex}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No unlocked identity on this device.</p>
+                )}
+              </SettingsRow>
+            </SettingsSection>
           ) : null}
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {session ? (
-            <form className="space-y-4" onSubmit={handleProfileSubmit}>
-              <p className="text-sm text-muted-foreground">
-                Saved locally for now. Kernel identity updates will wire here later.
-              </p>
-              <div className="space-y-2">
-                <Label htmlFor="displayName">Display name</Label>
-                <Input
-                  id="displayName"
-                  value={profile.displayName}
-                  onChange={(event) => setProfile((prev) => ({ ...prev, displayName: event.target.value }))}
-                  placeholder="How you appear on listings"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
-                <Input
-                  id="bio"
-                  value={profile.bio}
-                  onChange={(event) => setProfile((prev) => ({ ...prev, bio: event.target.value }))}
-                  placeholder="Short introduction for buyers and collaborators"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="serviceCategories">Service categories</Label>
-                <Input
-                  id="serviceCategories"
-                  value={profile.serviceCategories}
-                  onChange={(event) =>
-                    setProfile((prev) => ({ ...prev, serviceCategories: event.target.value }))
-                  }
-                  placeholder="software-fixes, mutual-aid, documentation"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="links">Links</Label>
-                <Input
-                  id="links"
-                  value={profile.links}
-                  onChange={(event) => setProfile((prev) => ({ ...prev, links: event.target.value }))}
-                  placeholder="https://example.com/portfolio"
-                />
-              </div>
-              <button
-                type="submit"
-                className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          {activeCategory === "connection" ? (
+            <SettingsSection
+              title="Connection"
+              description="Where this client reads marketplace state and submits signed events."
+            >
+              <SettingsRow
+                icon={Server}
+                title="Kernel node"
+                description="Your node must be running for live marketplace and transaction data."
+                badge={connectionBadge}
               >
-                {profileSaved ? "Saved" : "Save profile"}
-              </button>
-            </form>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Sign in to edit your profile.{" "}
-              <Link href="/sign-in" className="text-primary underline underline-offset-4">
-                Sign in
-              </Link>
-            </p>
-          )}
-        </CardContent>
-      </Card>
+                <div className="space-y-2 text-sm">
+                  <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
+                    {nodeInfo.baseUrl}
+                  </p>
+                  {connectionIssue ? (
+                    <p className="text-destructive">{connectionIssue}</p>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      If you operate your own node, open advanced settings below for dev overrides and
+                      operator tools.
+                    </p>
+                  )}
+                </div>
+              </SettingsRow>
+            </SettingsSection>
+          ) : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Active session</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          {session ? (
-            <>
-              <p>
-                Unlocked identity:{" "}
-                <span className="font-mono text-foreground">
-                  {truncatePubkey(session.publicKeyHex, 10, 10)}
-                </span>
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  clearSession();
-                  setSession(null);
-                  setProfile(EMPTY_PROFILE);
-                }}
-                className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm transition hover:bg-accent"
+          {activeCategory === "security" ? (
+            <SettingsSection
+              title="Security"
+              description="Protect your signing key and control the active session on this device."
+            >
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="space-y-1 p-4">
+                  <p className="text-sm font-medium text-foreground">Use Vectis on another device</p>
+                  <p className="text-sm text-muted-foreground">
+                    Before you switch browsers or reinstall, export an encrypted key backup or set up a
+                    passkey vault so you can restore the same identity later.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <SettingsRow
+                icon={Shield}
+                title="Active session"
+                description="The identity currently unlocked in this browser or desktop shell."
+                badge={
+                  session ? <Badge variant="success">Unlocked</Badge> : <Badge variant="muted">Locked</Badge>
+                }
               >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <p className="text-muted-foreground">
-              No unlocked key in this browser.{" "}
-              <Link href="/sign-in" className="text-primary underline underline-offset-4">
-                Sign in
-              </Link>{" "}
-              or{" "}
-              <Link href="/register" className="text-primary underline underline-offset-4">
-                register
-              </Link>
-              .
-            </p>
-          )}
-        </CardContent>
-      </Card>
+                {session ? (
+                  <div className="space-y-3">
+                    <p className="font-mono text-sm">{truncatePubkey(session.publicKeyHex, 12, 12)}</p>
+                    <Button type="button" variant="outline" size="sm" onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    <Button nativeButton={false} render={<Link href="/sign-in" />} size="sm">
+                      Sign in
+                    </Button>
+                    <Button
+                      nativeButton={false}
+                      render={<Link href="/register" />}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Register
+                    </Button>
+                  </div>
+                )}
+              </SettingsRow>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Passkey vault</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PasskeyVaultPanel
-            session={session}
-            onUnlocked={(unlocked) => {
-              saveSession(unlocked, true);
-              mirrorSessionToBrowserStorage(unlocked);
-              setSession(unlocked);
-            }}
-          />
-        </CardContent>
-      </Card>
+              <SettingsRow
+                icon={Fingerprint}
+                title="Passkey vault"
+                description="Unlock your identity with device biometrics or PIN where supported."
+              >
+                <PasskeyVaultPanel
+                  session={session}
+                  onUnlocked={(unlocked) => {
+                    saveSession(unlocked, true);
+                    mirrorSessionToBrowserStorage(unlocked);
+                    setSession(unlocked);
+                  }}
+                />
+              </SettingsRow>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Encrypted key backup</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <KeyBackupPanel
-            session={session}
-            onImported={(imported) => {
-              setSession(imported);
-              setProfile(loadProfile(imported.publicKeyHex));
-            }}
-          />
-        </CardContent>
-      </Card>
+              <SettingsRow
+                icon={KeyRound}
+                title="Encrypted key backup"
+                description="Export or restore an encrypted backup if you move devices or reinstall."
+              >
+                <KeyBackupPanel
+                  session={session}
+                  onImported={(imported) => {
+                    setSession(imported);
+                    setProfile(loadProfile(imported.publicKeyHex));
+                  }}
+                />
+              </SettingsRow>
+            </SettingsSection>
+          ) : null}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Advanced</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p>
-            Preflight drills, evidence export, and lane fixture checks for operators. Not required
-            for everyday marketplace use.
-          </p>
-          <Link
-            href="/dashboard/settings/advanced"
-            className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm font-medium text-foreground transition hover:bg-accent"
-          >
-            Open advanced tools
-          </Link>
-          {desktopVault ? (
-            <button
-              type="button"
-              onClick={() => {
-                void clearDesktopVault().then(() => {
-                  clearSession();
-                  setSession(null);
-                  setProfile(EMPTY_PROFILE);
-                });
+          <SettingsAdvancedDisclosure defaultOpen={advancedOpenByDefault}>
+            <DashboardSettingsTechnicalPanel
+              session={session}
+              nodeInfo={nodeInfo}
+              mobilePinnedNodeDraft={mobilePinnedNodeDraft}
+              onMobilePinnedNodeDraftChange={setMobilePinnedNodeDraft}
+              mobilePinnedNodeSaved={mobilePinnedNodeSaved}
+              onMobilePinnedNodeSaved={() => {
+                setMobilePinnedNodeSaved(true);
+                window.setTimeout(() => setMobilePinnedNodeSaved(false), 2000);
               }}
-              className="inline-flex h-10 items-center justify-center rounded-lg border border-destructive/30 px-4 text-sm font-medium text-destructive transition hover:bg-destructive/10"
-            >
-              Remove desktop vault
-            </button>
-          ) : null}
-        </CardContent>
-      </Card>
+              onNodeInfoRefresh={refreshNodeInfo}
+              onSignOut={handleSignOut}
+            />
+          </SettingsAdvancedDisclosure>
+        </div>
+      </div>
     </div>
   );
 }
