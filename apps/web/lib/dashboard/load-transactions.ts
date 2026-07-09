@@ -6,6 +6,10 @@ import {
   deriveTransactionProgress,
   type TransactionProgress
 } from "@/lib/dashboard/transaction-progress";
+import {
+  summarizeWorkspaceRoles,
+  type WorkspaceRoleSummary
+} from "@/lib/dashboard/workspace-role";
 
 const DEFAULT_NODE =
   process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
@@ -26,6 +30,7 @@ export type TransactionsState =
   | {
       kind: "live";
       orders: TransactionOrderSummary[];
+      roleSummary: WorkspaceRoleSummary;
       asOf?: string;
       nodeLabel: string;
     }
@@ -140,9 +145,12 @@ export async function loadTransactions(publicKeyHex: string): Promise<Transactio
       };
     }
 
+    const sorted = sortOrders(summaries);
+
     return {
       kind: "live",
-      orders: sortOrders(summaries),
+      orders: sorted,
+      roleSummary: summarizeWorkspaceRoles(sorted),
       asOf: ordersView.as_of,
       nodeLabel: DEFAULT_NODE
     };

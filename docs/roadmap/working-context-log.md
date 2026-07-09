@@ -7,7 +7,8 @@ Last updated: July 2026
 ## Current phase snapshot
 
 - **Frontend Phase 1 (deal loop)** — **complete** (July 2026). Evidence: `docs/frontend-phase1-completion.md`
-- **Frontend Phase 2 (workspace depth)** — **next slice**. Plan: `docs/frontend-phase2-plan.md`
+- **Frontend Phase 2 (workspace depth)** — **complete** (July 2026). Plan: `docs/frontend-phase2-plan.md`
+- **In-app help** — `/help` in web client; dev docs in `docs/client/`
 - Active protocol plan: `docs/roadmap/restart-roadmap.md`
 - **R0 complete** — gate `RG-1` = `pass`
 - **R1 complete** — gate `RG-2` = `pass`

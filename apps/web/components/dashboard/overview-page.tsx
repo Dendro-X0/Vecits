@@ -19,6 +19,8 @@ import {
   loadLiveOverviewStats,
   type LiveOverviewState
 } from "@/lib/dashboard/load-live-overview";
+import { loadTransactions, type TransactionsState } from "@/lib/dashboard/load-transactions";
+import type { WorkspaceRoleSummary } from "@/lib/dashboard/workspace-role";
 import { truncatePubkey } from "@/lib/utils";
 
 type OverviewStatus = "signed-out" | "loading" | "live" | "empty" | "error";
@@ -154,7 +156,54 @@ function WorkspaceScaffoldCard() {
   );
 }
 
-function LiveOverviewContent({ state }: { state: Extract<LiveOverviewState, { kind: "live" }> }) {
+function RoleQueueKpis({ summary }: { summary: WorkspaceRoleSummary }) {
+  const cards = [
+    {
+      label: "Buying · needs you",
+      value: summary.buyer.needsAction,
+      hint: `${summary.buyer.inProgress} in progress · ${summary.buyer.complete} complete`
+    },
+    {
+      label: "Selling · needs you",
+      value: summary.provider.needsAction,
+      hint: `${summary.provider.inProgress} in progress · ${summary.provider.complete} complete`
+    },
+    {
+      label: "Buying · active",
+      value: summary.buyer.total,
+      hint: "Orders where you are the buyer"
+    },
+    {
+      label: "Selling · active",
+      value: summary.provider.total,
+      hint: "Orders where you are the provider"
+    }
+  ];
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
+        <Card key={card.label} className="border-border/70">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">{card.label}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-1">
+            <p className="text-3xl font-semibold tracking-tight">{card.value}</p>
+            <p className="text-xs text-muted-foreground">{card.hint}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function LiveOverviewContent({
+  state,
+  roleSummary
+}: {
+  state: Extract<LiveOverviewState, { kind: "live" }>;
+  roleSummary: WorkspaceRoleSummary | null;
+}) {
   const { kpis, laneBars, activity } = state.stats;
   const maxLaneCount = Math.max(...laneBars.map((bar) => bar.count), 1);
 
@@ -165,9 +214,22 @@ function LiveOverviewContent({ state }: { state: Extract<LiveOverviewState, { ki
           <div>
             <p className="text-sm font-medium text-foreground">Workspace context</p>
             <p className="text-sm text-muted-foreground">
-              Kernel-backed values from <span className="font-medium text-foreground">{state.stats.nodeLabel}</span>
+              {roleSummary ? (
+                <>
+                  {roleSummary.primaryLabel} · kernel-backed values from{" "}
+                  <span className="font-medium text-foreground">{state.stats.nodeLabel}</span>
+                </>
+              ) : (
+                <>
+                  Kernel-backed values from{" "}
+                  <span className="font-medium text-foreground">{state.stats.nodeLabel}</span>
+                </>
+              )}
               {state.stats.asOf ? ` · as_of ${state.stats.asOf}` : ""}
             </p>
+            {roleSummary ? (
+              <p className="mt-1 text-xs text-muted-foreground">{roleSummary.hint}</p>
+            ) : null}
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs text-primary">
             <Sparkles className="h-3.5 w-3.5" />
@@ -175,6 +237,8 @@ function LiveOverviewContent({ state }: { state: Extract<LiveOverviewState, { ki
           </div>
         </CardContent>
       </Card>
+
+      {roleSummary ? <RoleQueueKpis summary={roleSummary} /> : null}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
@@ -282,6 +346,7 @@ function LiveOverviewContent({ state }: { state: Extract<LiveOverviewState, { ki
 export function OverviewPage() {
   const [pubkey, setPubkey] = useState<string | null>(null);
   const [overviewState, setOverviewState] = useState<LiveOverviewState | null>(null);
+  const [transactionsState, setTransactionsState] = useState<TransactionsState | null>(null);
   const [loadingLive, setLoadingLive] = useState(false);
 
   useEffect(() => {
@@ -291,17 +356,21 @@ export function OverviewPage() {
   useEffect(() => {
     if (!pubkey) {
       setOverviewState(null);
+      setTransactionsState(null);
       return;
     }
 
     let cancelled = false;
     setLoadingLive(true);
-    void loadLiveOverviewStats(pubkey).then((state) => {
-      if (!cancelled) {
-        setOverviewState(state);
-        setLoadingLive(false);
+    void Promise.all([loadLiveOverviewStats(pubkey), loadTransactions(pubkey)]).then(
+      ([overview, transactions]) => {
+        if (!cancelled) {
+          setOverviewState(overview);
+          setTransactionsState(transactions);
+          setLoadingLive(false);
+        }
       }
-    });
+    );
 
     return () => {
       cancelled = true;
@@ -309,6 +378,8 @@ export function OverviewPage() {
   }, [pubkey]);
 
   const status = resolveStatus(pubkey, loadingLive, overviewState);
+  const roleSummary =
+    transactionsState?.kind === "live" ? transactionsState.roleSummary : null;
 
   return (
     <div className="w-full space-y-5 px-4 py-5 sm:px-6 lg:px-8">
@@ -358,22 +429,25 @@ export function OverviewPage() {
       ) : null}
 
       {status === "empty" ? (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
-          <EmptyPanel
-            icon={PackageOpen}
-            title="No marketplace activity yet"
-            description="You are connected, but this identity has no offers or exchange events yet. Browse listings or publish your first offer to get started."
-            primaryHref="/marketplace"
-            primaryLabel="Browse"
-            secondaryHref="/dashboard/builder"
-            secondaryLabel="Publish"
-          />
-          <WorkspaceScaffoldCard />
+        <div className="space-y-5">
+          {roleSummary ? <RoleQueueKpis summary={roleSummary} /> : null}
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+            <EmptyPanel
+              icon={PackageOpen}
+              title="No marketplace activity yet"
+              description="You are connected, but this identity has no offers or exchange events yet. Browse listings or publish your first offer to get started."
+              primaryHref="/marketplace"
+              primaryLabel="Browse"
+              secondaryHref="/dashboard/builder"
+              secondaryLabel="Publish"
+            />
+            <WorkspaceScaffoldCard />
+          </div>
         </div>
       ) : null}
 
       {status === "live" && overviewState?.kind === "live" ? (
-        <LiveOverviewContent state={overviewState} />
+        <LiveOverviewContent state={overviewState} roleSummary={roleSummary} />
       ) : null}
     </div>
   );

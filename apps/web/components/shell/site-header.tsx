@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Menu, Search, Settings, UserCircle, X } from "lucide-react";
+import { BookOpen, Compass, Menu, Search, Settings, UserCircle, X } from "lucide-react";
 import { useState } from "react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
@@ -18,6 +18,7 @@ const NAV_ITEMS: Array<{
   { href: "/marketplace", label: "Marketplace", icon: Search },
   { href: "/dashboard", label: "Identity", icon: UserCircle },
   { href: "/explorer", label: "Explore", icon: Compass },
+  { href: "/help", label: "Help", icon: BookOpen },
   { href: "/dashboard/settings", label: "Settings", icon: Settings }
 ];
 

@@ -8,6 +8,15 @@ export type NormalizedOfferTerms = {
   status?: string;
 };
 
+export type CompensationMode = "credits" | "barter" | "mixed";
+
+export type OfferCompensationSummary = {
+  compensationMode: CompensationMode;
+  termsHash?: string;
+  barterTerms?: string;
+  barterTags: string[];
+};
+
 function readString(record: Record<string, unknown>, ...keys: string[]): string | undefined {
   for (const key of keys) {
     const value = record[key];
@@ -43,6 +52,51 @@ function readEvidenceFormats(record: Record<string, unknown>): string[] {
     return raw.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
   }
   return ["artifactHash"];
+}
+
+function readStringArray(record: Record<string, unknown>, ...keys: string[]): string[] {
+  for (const key of keys) {
+    const value = record[key];
+    if (Array.isArray(value)) {
+      return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+    }
+    if (typeof value === "string" && value.trim()) {
+      return value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+  }
+  return [];
+}
+
+export function compensationModeLabel(mode: CompensationMode): string {
+  if (mode === "barter") {
+    return "Barter";
+  }
+  if (mode === "mixed") {
+    return "Credits + barter";
+  }
+  return "Credits";
+}
+
+export function readOfferCompensationSummary(
+  offer: Record<string, unknown> | null | undefined
+): OfferCompensationSummary | null {
+  if (!offer) {
+    return null;
+  }
+
+  const rawMode = readString(offer, "compensation_mode", "compensationMode") ?? "credits";
+  const compensationMode: CompensationMode =
+    rawMode === "barter" || rawMode === "mixed" ? rawMode : "credits";
+
+  return {
+    compensationMode,
+    termsHash: readString(offer, "terms_hash", "termsHash"),
+    barterTerms: readString(offer, "barter_terms", "barterTerms"),
+    barterTags: readStringArray(offer, "barter_tags", "barterTags")
+  };
 }
 
 export function normalizeOfferTerms(

@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeftRight,
   ArrowRight,
+  Bell,
   ChartLine,
   CheckCircle2,
   Circle,
   LayoutGrid,
+  NotebookPen,
   PackageOpen,
   Sparkles,
   UserCircle,
@@ -25,6 +28,15 @@ import {
   type TransactionsState
 } from "@/lib/dashboard/load-transactions";
 import type { TransactionProgressStep } from "@/lib/dashboard/transaction-progress";
+import type { MilestoneProgressSummary } from "@/lib/dashboard/transaction-progress";
+import {
+  filterOrdersByRole,
+  parseRoleFilter,
+  roleFilterLabel,
+  type RoleFilter
+} from "@/lib/dashboard/workspace-role";
+import { loadWorkspaceSummaries, type OrderWorkspaceSummary } from "@/lib/workspace/order-notes";
+import { flushDueOrderReminders } from "@/lib/workspace/order-reminders";
 import { cn, truncatePubkey } from "@/lib/utils";
 
 type TransactionsStatus = "signed-out" | "loading" | "live" | "empty" | "error";
@@ -85,6 +97,45 @@ function EmptyPanel({
   );
 }
 
+function RoleFilterTabs({
+  active,
+  buyerCount,
+  providerCount,
+  onChange
+}: {
+  active: RoleFilter;
+  buyerCount: number;
+  providerCount: number;
+  onChange: (filter: RoleFilter) => void;
+}) {
+  const tabs: { id: RoleFilter; label: string; count: number }[] = [
+    { id: "all", label: "All", count: buyerCount + providerCount },
+    { id: "buyer", label: "Buying", count: buyerCount },
+    { id: "provider", label: "Selling", count: providerCount }
+  ];
+
+  return (
+    <div className="inline-flex flex-wrap gap-1 rounded-lg border border-border bg-muted/30 p-1">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          type="button"
+          onClick={() => onChange(tab.id)}
+          className={cn(
+            "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition",
+            active === tab.id
+              ? "bg-background font-medium text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          {tab.label}
+          <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] tabular-nums">{tab.count}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function TransactionsScaffoldCard() {
   return (
     <Card className="hidden border-border/70 lg:block">
@@ -108,6 +159,52 @@ function TransactionsScaffoldCard() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function DeadlineBadge({
+  hint
+}: {
+  hint: NonNullable<TransactionOrderSummary["progress"]["deadlineHint"]>;
+}) {
+  const tone =
+    hint.kind === "order_expired" || hint.kind === "past_due"
+      ? "border-destructive/40 text-destructive"
+      : "border-amber-500/40 text-amber-700 dark:text-amber-300";
+
+  return (
+    <Badge variant="outline" className={tone} title={hint.detail}>
+      {hint.label}
+    </Badge>
+  );
+}
+
+function MilestoneProgressStrip({ summaries }: { summaries: MilestoneProgressSummary[] }) {
+  if (summaries.length <= 1) {
+    return null;
+  }
+
+  return (
+    <ol className="flex flex-wrap gap-2">
+      {summaries.map((milestone) => (
+        <li
+          key={milestone.id}
+          className={cn(
+            "rounded-lg border px-3 py-1.5 text-xs",
+            milestone.phase === "active"
+              ? "border-primary/30 bg-primary/10 text-foreground"
+              : milestone.phase === "complete"
+                ? "border-primary/20 bg-primary/5 text-foreground"
+                : milestone.phase === "disputed"
+                  ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : "border-border bg-muted/30 text-muted-foreground"
+          )}
+        >
+          <span className="font-medium">{milestone.label}</span>
+          <span className="ml-2 text-muted-foreground">{milestone.status}</span>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -143,7 +240,13 @@ function StepIndicator({ steps }: { steps: TransactionProgressStep[] }) {
   );
 }
 
-function TransactionOrderCard({ order }: { order: TransactionOrderSummary }) {
+function TransactionOrderCard({
+  order,
+  workspaceSummary
+}: {
+  order: TransactionOrderSummary;
+  workspaceSummary?: OrderWorkspaceSummary;
+}) {
   const laneLabel = order.serviceType.replace(/-/g, " ");
 
   return (
@@ -154,8 +257,37 @@ function TransactionOrderCard({ order }: { order: TransactionOrderSummary }) {
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="lane">{laneLabel}</Badge>
               <Badge variant="outline">{order.role === "buyer" ? "Buying" : "Selling"}</Badge>
+              {order.progress.milestoneTotal > 1 ? (
+                <Badge variant="outline">
+                  {order.progress.activeMilestoneIndex} of {order.progress.milestoneTotal} milestones
+                </Badge>
+              ) : null}
+              {order.progress.deadlineHint ? (
+                <DeadlineBadge hint={order.progress.deadlineHint} />
+              ) : null}
+              {workspaceSummary?.hasNote ? (
+                <Badge variant="outline" className="border-warning/40 text-warning">
+                  <NotebookPen className="mr-1 size-3" />
+                  Note
+                </Badge>
+              ) : null}
+              {workspaceSummary?.reminderDue ? (
+                <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-300">
+                  <Bell className="mr-1 size-3" />
+                  Reminder due
+                </Badge>
+              ) : workspaceSummary?.hasReminder ? (
+                <Badge variant="outline">
+                  <Bell className="mr-1 size-3" />
+                  Reminder set
+                </Badge>
+              ) : null}
               {order.progress.needsViewerAction ? (
                 <Badge variant="default">Action needed</Badge>
+              ) : order.progress.isDisputed ? (
+                <Badge variant="outline" className="border-destructive/40 text-destructive">
+                  Dispute open
+                </Badge>
               ) : order.progress.isComplete ? (
                 <Badge variant="success">Complete</Badge>
               ) : (
@@ -177,7 +309,12 @@ function TransactionOrderCard({ order }: { order: TransactionOrderSummary }) {
         <div className="rounded-xl border border-border bg-muted/20 px-4 py-3">
           <p className="text-sm font-medium">{order.progress.headline}</p>
           <p className="mt-1 text-sm text-muted-foreground">{order.progress.detail}</p>
+          {order.progress.deadlineHint ? (
+            <p className="mt-2 text-xs text-muted-foreground">{order.progress.deadlineHint.detail}</p>
+          ) : null}
         </div>
+
+        <MilestoneProgressStrip summaries={order.progress.milestoneSummaries} />
 
         <StepIndicator steps={order.progress.steps} />
 
@@ -195,6 +332,15 @@ function TransactionOrderCard({ order }: { order: TransactionOrderSummary }) {
               Guided builder
             </Button>
           ) : null}
+          {order.progress.disputeBuilderHref ? (
+            <Button
+              nativeButton={false}
+              render={<Link href={order.progress.disputeBuilderHref} />}
+              variant="outline"
+            >
+              {order.progress.isDisputed ? "Resolve dispute" : "Open dispute"}
+            </Button>
+          ) : null}
           <Button
             nativeButton={false}
             render={<Link href={`/marketplace/offers/${encodeURIComponent(order.offerId)}`} />}
@@ -209,9 +355,15 @@ function TransactionOrderCard({ order }: { order: TransactionOrderSummary }) {
 }
 
 export function TransactionsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [pubkey, setPubkey] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState<TransactionsState | null>(null);
+  const [workspaceSummaries, setWorkspaceSummaries] = useState<
+    Map<string, OrderWorkspaceSummary>
+  >(new Map());
+  const roleFilter = parseRoleFilter(searchParams.get("role"));
   const status = resolveStatus(pubkey, loading, state);
 
   useEffect(() => {
@@ -236,19 +388,76 @@ export function TransactionsPage() {
       }
     });
 
+    const session = loadActiveSession();
+    if (session) {
+      void flushDueOrderReminders(session);
+    }
+
     return () => {
       cancelled = true;
     };
   }, [pubkey]);
 
-  const actionCount =
-    state?.kind === "live"
-      ? state.orders.filter((order) => order.progress.needsViewerAction).length
-      : 0;
-  const completeCount =
-    state?.kind === "live" ? state.orders.filter((order) => order.progress.isComplete).length : 0;
-  const inProgressCount =
-    state?.kind === "live" ? state.orders.length - actionCount - completeCount : 0;
+  useEffect(() => {
+    if (!pubkey || state?.kind !== "live") {
+      setWorkspaceSummaries(new Map());
+      return;
+    }
+
+    const session = loadActiveSession();
+    if (!session) {
+      return;
+    }
+
+    let cancelled = false;
+    void loadWorkspaceSummaries(
+      session,
+      state.orders.map((order) => order.orderId)
+    ).then((summaries) => {
+      if (!cancelled) {
+        setWorkspaceSummaries(summaries);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pubkey, state]);
+
+  function setRoleFilter(filter: RoleFilter) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (filter === "all") {
+      params.delete("role");
+    } else {
+      params.set("role", filter);
+    }
+    const query = params.toString();
+    router.replace(query ? `/dashboard/transactions?${query}` : "/dashboard/transactions", {
+      scroll: false
+    });
+  }
+
+  const liveOrders = state?.kind === "live" ? state.orders : [];
+  const filteredOrders = filterOrdersByRole(liveOrders, roleFilter);
+  const roleSummary = state?.kind === "live" ? state.roleSummary : null;
+
+  const queueSource =
+    roleFilter === "buyer"
+      ? roleSummary?.buyer
+      : roleFilter === "provider"
+        ? roleSummary?.provider
+        : null;
+
+  const actionCount = queueSource
+    ? queueSource.needsAction
+    : liveOrders.filter((order) => order.progress.needsViewerAction).length;
+  const completeCount = queueSource
+    ? queueSource.complete
+    : liveOrders.filter((order) => order.progress.isComplete).length;
+  const inProgressCount = queueSource
+    ? queueSource.inProgress
+    : liveOrders.length - actionCount - completeCount;
+  const totalCount = queueSource ? queueSource.total : liveOrders.length;
 
   return (
     <div className="w-full space-y-5 px-4 py-5 sm:px-6 lg:px-8">
@@ -325,10 +534,11 @@ export function TransactionsPage() {
               <div>
                 <p className="text-sm font-medium text-foreground">Transactions context</p>
                 <p className="text-sm text-muted-foreground">
-                  Kernel-backed order state from{" "}
+                  {state.roleSummary.primaryLabel} · kernel-backed order state from{" "}
                   <span className="font-medium text-foreground">{state.nodeLabel}</span>
                   {state.asOf ? ` · as_of ${state.asOf}` : ""}
                 </p>
+                <p className="mt-1 text-xs text-muted-foreground">{state.roleSummary.hint}</p>
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -337,12 +547,25 @@ export function TransactionsPage() {
             </CardContent>
           </Card>
 
+          <RoleFilterTabs
+            active={roleFilter}
+            buyerCount={state.roleSummary.buyer.total}
+            providerCount={state.roleSummary.provider.total}
+            onChange={setRoleFilter}
+          />
+
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Card className="border-border/70">
               <CardContent className="space-y-1 p-5">
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Total orders</p>
-                <p className="text-3xl font-semibold tracking-tight">{state.orders.length}</p>
-                <p className="text-xs text-muted-foreground">Loaded from participant order view</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                  {roleFilterLabel(roleFilter)}
+                </p>
+                <p className="text-3xl font-semibold tracking-tight">{totalCount}</p>
+                <p className="text-xs text-muted-foreground">
+                  {roleFilter === "all"
+                    ? `${state.roleSummary.buyer.total} buying · ${state.roleSummary.provider.total} selling`
+                    : "Filtered from participant order view"}
+                </p>
               </CardContent>
             </Card>
             <Card className="border-border/70">
@@ -386,9 +609,21 @@ export function TransactionsPage() {
           {state.asOf ? (
             <p className="text-xs text-muted-foreground">Kernel as_of {state.asOf}</p>
           ) : null}
-          {state.orders.map((order) => (
-            <TransactionOrderCard key={order.orderId} order={order} />
-          ))}
+          {filteredOrders.length === 0 ? (
+            <Card className="border-border/70">
+              <CardContent className="px-5 py-8 text-center text-sm text-muted-foreground">
+                No {roleFilter === "buyer" ? "buying" : "selling"} orders in this queue yet.
+              </CardContent>
+            </Card>
+          ) : (
+            filteredOrders.map((order) => (
+              <TransactionOrderCard
+                key={order.orderId}
+                order={order}
+                workspaceSummary={workspaceSummaries.get(order.orderId)}
+              />
+            ))
+          )}
         </div>
       ) : null}
     </div>

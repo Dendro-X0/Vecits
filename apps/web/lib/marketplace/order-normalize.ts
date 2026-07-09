@@ -14,6 +14,7 @@ export type NormalizedOrderExchange = {
   providerPubKey: string;
   orderReferenceEventId: string;
   status: string;
+  orderExpiresAt?: string;
   milestones: NormalizedMilestone[];
 };
 
@@ -64,6 +65,7 @@ export function normalizeOrderExchange(
     providerPubKey,
     orderReferenceEventId,
     status: readString(order, "status") ?? "unknown",
+    orderExpiresAt: readString(order, "order_expires_at", "orderExpiresAt"),
     milestones: milestones
       .filter((milestone) => milestone.data)
       .map((milestone) => ({

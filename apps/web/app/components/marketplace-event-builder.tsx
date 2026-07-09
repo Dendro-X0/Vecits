@@ -15,6 +15,7 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { KernelTruthNotice } from "./kernel-truth-notice";
 import { DiscoveryDraftImportPanel } from "@/components/marketplace/discovery-draft-import-panel";
+import { MilestoneScheduleEditor } from "@/components/marketplace/milestone-schedule-editor";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,15 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {
+  buildMilestonePayloadRows,
+  createDefaultMilestoneDraft,
+  createInitialMilestoneRows,
+  milestoneDraftRequirements,
+  milestoneTermsPayload,
+  readMilestonesFromPayload,
+  type OrderMilestoneDraft
+} from "@/lib/marketplace/milestone-draft";
 import {
   discoveryDraftToBuilderPrefill,
   type DiscoveryDraftBuilderPrefill,
@@ -62,6 +72,7 @@ export type MarketplaceEventBuilderProps = {
   onAccepted?: (mode: BuilderMode) => void;
   showDiscoveryImport?: boolean;
   initialMode?: BuilderMode;
+  prefillOrderId?: string;
 };
 
 type FixturePreset = "acceptFlow" | "timeoutFlow";
@@ -461,7 +472,8 @@ export function MarketplaceEventBuilder({
   onControlledModeChange,
   onAccepted,
   showDiscoveryImport = true,
-  initialMode
+  initialMode,
+  prefillOrderId
 }: MarketplaceEventBuilderProps = {}) {
   const searchParams = useSearchParams();
   const isTransaction = variant === "transaction";
@@ -483,6 +495,19 @@ export function MarketplaceEventBuilder({
     }
     setInternalMode(initialMode);
   }, [initialMode, isControlled]);
+
+  useEffect(() => {
+    const orderId = prefillOrderId?.trim();
+    if (!orderId) {
+      return;
+    }
+    setOrderId(orderId);
+    setEscrowOrderId(orderId);
+    setDeliveryOrderId(orderId);
+    setAcceptOrderId(orderId);
+    setDisputeOrderId(orderId);
+    setSettleOrderId(orderId);
+  }, [prefillOrderId]);
   const [flowRoute, setFlowRoute] = useState<FlowRoute>("acceptPath");
   const [activePreset, setActivePreset] = useState<FixturePreset | null>(null);
   const [baseUrl, setBaseUrl] = useState(DEFAULT_NODE_API_BASE_URL);
@@ -509,12 +534,7 @@ export function MarketplaceEventBuilder({
   const [providerPubKey, setProviderPubKey] = useState("");
   const [buyerPubKey, setBuyerPubKey] = useState("");
   const [orderExpiresAt, setOrderExpiresAt] = useState("2026-12-15T00:00:00Z");
-  const [milestoneId, setMilestoneId] = useState("m1");
-  const [milestoneAmountCredits, setMilestoneAmountCredits] = useState("100");
-  const [milestoneEvidenceFormat, setMilestoneEvidenceFormat] = useState("artifactHash");
-  const [milestoneDeliverable, setMilestoneDeliverable] = useState("");
-  const [milestoneDueWindow, setMilestoneDueWindow] = useState("");
-  const [milestoneAcceptanceCriteria, setMilestoneAcceptanceCriteria] = useState("");
+  const [milestoneRows, setMilestoneRows] = useState<OrderMilestoneDraft[]>(createInitialMilestoneRows);
   const [milestoneTermsHashMessage, setMilestoneTermsHashMessage] = useState<string | null>(null);
   const [offerReferenceEventId, setOfferReferenceEventId] = useState("");
 
@@ -574,6 +594,14 @@ export function MarketplaceEventBuilder({
     null
   );
 
+  const primaryMilestoneRow = milestoneRows[0] ?? createDefaultMilestoneDraft(0);
+  const milestoneId = primaryMilestoneRow.milestoneId;
+  const milestoneAmountCredits = primaryMilestoneRow.amountCredits;
+  const milestoneEvidenceFormat = primaryMilestoneRow.evidenceFormat;
+  const milestoneDeliverable = primaryMilestoneRow.deliverable;
+  const milestoneDueWindow = primaryMilestoneRow.dueWindow;
+  const milestoneAcceptanceCriteria = primaryMilestoneRow.acceptanceCriteria;
+
   const activeLaneTemplate = resolveLaneTemplateForServiceType(serviceType);
   const laneTemplateConstraintWarning = validateLaneTemplateConstraints({
     mode: "offer",
@@ -619,12 +647,7 @@ export function MarketplaceEventBuilder({
     providerPubKey,
     buyerPubKey,
     orderExpiresAt,
-    milestoneId,
-    milestoneAmountCredits,
-    milestoneEvidenceFormat,
-    milestoneDeliverable,
-    milestoneDueWindow,
-    milestoneAcceptanceCriteria,
+    milestoneRows,
     guidedOrderTerms: isTransaction,
     escrowSpenderPubKey,
     escrowOrderId,
@@ -802,6 +825,12 @@ export function MarketplaceEventBuilder({
     setEscrowSpenderPubKey(authorPubKey.trim());
   }
 
+  function updatePrimaryMilestone(patch: Partial<OrderMilestoneDraft>) {
+    setMilestoneRows((rows) =>
+      rows.map((row, index) => (index === 0 ? { ...row, ...patch } : row))
+    );
+  }
+
   function applyServiceLaneTemplate(templateId: string) {
     const template = SERVICE_LANE_TEMPLATE_BY_ID.get(templateId);
     if (!template) {
@@ -812,7 +841,7 @@ export function MarketplaceEventBuilder({
     setUnitDefinition(template.unitDefinition);
     setDeliveryMode(template.deliveryMode);
     setAllowedEvidenceFormats(template.allowedEvidenceFormats.join(","));
-    setMilestoneEvidenceFormat(template.defaultMilestoneEvidenceFormat);
+    updatePrimaryMilestone({ evidenceFormat: template.defaultMilestoneEvidenceFormat });
     setDeliveryEvidenceFormat(template.defaultMilestoneEvidenceFormat);
   }
 
@@ -971,9 +1000,7 @@ export function MarketplaceEventBuilder({
     setProviderPubKey("");
     setBuyerPubKey("");
     setOrderExpiresAt("2026-12-15T00:00:00Z");
-    setMilestoneId("m1");
-    setMilestoneAmountCredits("100");
-    setMilestoneEvidenceFormat("artifactHash");
+    setMilestoneRows(createInitialMilestoneRows());
     setOfferReferenceEventId("");
 
     setEscrowSpenderPubKey("");
@@ -1072,9 +1099,8 @@ export function MarketplaceEventBuilder({
         providerPubKey,
         buyerPubKey,
         orderExpiresAt,
-        milestoneId,
-        milestoneAmountCredits,
-        milestoneEvidenceFormat,
+        milestoneRows,
+        guidedOrderTerms: isTransaction,
         escrowSpenderPubKey,
         escrowOrderId,
         escrowMilestoneId,
@@ -1126,9 +1152,7 @@ export function MarketplaceEventBuilder({
     setProviderPubKey(FIXTURE_IDENTITY_KEYS.bob);
     setBuyerPubKey(FIXTURE_IDENTITY_KEYS.alice);
     setOrderExpiresAt("2026-12-15T00:00:00Z");
-    setMilestoneId("m1");
-    setMilestoneAmountCredits("100");
-    setMilestoneEvidenceFormat("artifactHash");
+    setMilestoneRows(createInitialMilestoneRows());
     setOfferReferenceEventId("");
 
     setEscrowSpenderPubKey(FIXTURE_IDENTITY_KEYS.alice);
@@ -1254,7 +1278,7 @@ export function MarketplaceEventBuilder({
       if (linkedAllowedEvidenceFormats.length > 0) {
         setAllowedEvidenceFormats(linkedAllowedEvidenceFormats.join(","));
         if (!linkedAllowedEvidenceFormats.includes(milestoneEvidenceFormat.trim())) {
-          setMilestoneEvidenceFormat(linkedAllowedEvidenceFormats[0]);
+          updatePrimaryMilestone({ evidenceFormat: linkedAllowedEvidenceFormats[0] });
         }
         if (!linkedAllowedEvidenceFormats.includes(deliveryEvidenceFormat.trim())) {
           setDeliveryEvidenceFormat(linkedAllowedEvidenceFormats[0]);
@@ -1285,6 +1309,10 @@ export function MarketplaceEventBuilder({
         setEscrowSpenderPubKey(buyer);
       }
       const milestone = readFirstMilestone(payload);
+      const milestones = readMilestonesFromPayload(payload);
+      if (milestones) {
+        setMilestoneRows(milestones);
+      }
       if (milestone?.milestoneId) {
         setEscrowMilestoneId(milestone.milestoneId);
       }
@@ -1302,6 +1330,10 @@ export function MarketplaceEventBuilder({
           setDeliveryOrderId(linkedOrderId);
         }
         const milestone = readFirstMilestone(payload);
+        const milestones = readMilestonesFromPayload(payload);
+        if (milestones) {
+          setMilestoneRows(milestones);
+        }
         if (milestone?.milestoneId) {
           setDeliveryMilestoneId(milestone.milestoneId);
         }
@@ -1386,24 +1418,20 @@ export function MarketplaceEventBuilder({
 
   async function handleHashMilestoneTerms() {
     setMilestoneTermsHashMessage(null);
-    if (
-      !milestoneDeliverable.trim() ||
-      !milestoneDueWindow.trim() ||
-      !milestoneAcceptanceCriteria.trim()
-    ) {
-      setMilestoneTermsHashMessage("Fill deliverable, due window, and acceptance criteria first.");
+    const termsRows = milestoneTermsPayload(milestoneRows);
+    const missing = termsRows.find(
+      (row) => !row.deliverable || !row.dueWindow || !row.acceptanceCriteria
+    );
+    if (missing) {
+      setMilestoneTermsHashMessage(
+        "Fill deliverable, due window, and acceptance criteria for every milestone first."
+      );
       return;
     }
     try {
-      const digest = await sha256Hex(
-        JSON.stringify({
-          deliverable: milestoneDeliverable.trim(),
-          dueWindow: milestoneDueWindow.trim(),
-          acceptanceCriteria: milestoneAcceptanceCriteria.trim()
-        })
-      );
+      const digest = await sha256Hex(JSON.stringify(termsRows));
       setTermsHash(`terms-${digest.slice(0, 16)}`);
-      setMilestoneTermsHashMessage("Terms hash updated from milestone terms.");
+      setMilestoneTermsHashMessage("Terms hash updated from milestone schedule.");
     } catch {
       setMilestoneTermsHashMessage("Could not hash milestone terms in this browser.");
     }
@@ -1467,12 +1495,7 @@ export function MarketplaceEventBuilder({
       providerPubKey,
       buyerPubKey,
       orderExpiresAt,
-      milestoneId,
-      milestoneAmountCredits,
-      milestoneEvidenceFormat,
-      milestoneDeliverable,
-      milestoneDueWindow,
-      milestoneAcceptanceCriteria,
+      milestoneRows,
       guidedOrderTerms: isTransaction,
       escrowSpenderPubKey,
       escrowOrderId,
@@ -1582,9 +1605,7 @@ export function MarketplaceEventBuilder({
                 providerPubKey,
                 buyerPubKey,
                 orderExpiresAt,
-                milestoneId,
-                milestoneAmountCredits,
-                milestoneEvidenceFormat,
+                milestoneRows,
                 offerReferenceEventId
               })
             : mode === "delivery"
@@ -1717,7 +1738,7 @@ export function MarketplaceEventBuilder({
       setUnitDefinition(prefill.unitDefinition);
       setDeliveryMode(prefill.deliveryMode);
       setAllowedEvidenceFormats(prefill.allowedEvidenceFormats);
-      setMilestoneEvidenceFormat(prefill.milestoneEvidenceFormat);
+      updatePrimaryMilestone({ evidenceFormat: prefill.milestoneEvidenceFormat });
       setDeliveryEvidenceFormat(prefill.milestoneEvidenceFormat);
     }
 
@@ -2489,73 +2510,25 @@ export function MarketplaceEventBuilder({
                       <p className="mt-1 text-foreground">{barterTagList.join(", ")}</p>
                     </div>
                   ) : null}
-                  {milestoneDeliverable.trim() ? (
-                    <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 sm:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Deliverable</p>
-                      <p className="mt-1 text-foreground">{milestoneDeliverable.trim()}</p>
+                  {milestoneRows.map((row, index) => (
+                    <div
+                      key={`${row.milestoneId}-${index}`}
+                      className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 sm:col-span-2"
+                    >
+                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                        Milestone {index + 1}
+                      </p>
+                      <p className="mt-1 font-mono text-sm text-foreground">
+                        {row.milestoneId} · {row.amountCredits} credits · {row.evidenceFormat}
+                      </p>
+                      {row.deliverable.trim() ? (
+                        <p className="mt-1 text-sm text-foreground">{row.deliverable.trim()}</p>
+                      ) : null}
+                      {row.dueWindow.trim() ? (
+                        <p className="mt-1 text-xs text-muted-foreground">Due: {row.dueWindow.trim()}</p>
+                      ) : null}
                     </div>
-                  ) : null}
-                  {milestoneDueWindow.trim() ? (
-                    <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2">
-                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Due window</p>
-                      <p className="mt-1 text-foreground">{milestoneDueWindow.trim()}</p>
-                    </div>
-                  ) : null}
-                  {milestoneAcceptanceCriteria.trim() ? (
-                    <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 sm:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Acceptance criteria</p>
-                      <p className="mt-1 text-foreground">{milestoneAcceptanceCriteria.trim()}</p>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-            {isTransaction ? (
-              <div className="mb-4 space-y-3 rounded-xl border border-border/70 bg-card px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium text-foreground">Milestone terms</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Define what will be delivered, when it is due, and how acceptance is judged.
-                  </p>
-                </div>
-                <label style={{ display: "block" }}>
-                  Deliverable
-                  <textarea
-                    value={milestoneDeliverable}
-                    onChange={event => setMilestoneDeliverable(event.target.value)}
-                    style={{ ...fieldStyle, minHeight: "4.5rem", resize: "vertical" }}
-                    placeholder="e.g. Landing page redesign with responsive layout and deploy notes"
-                  />
-                </label>
-                <label style={{ display: "block" }}>
-                  Due window
-                  <input
-                    value={milestoneDueWindow}
-                    onChange={event => setMilestoneDueWindow(event.target.value)}
-                    style={fieldStyle}
-                    placeholder="e.g. 7 days after escrow funding"
-                  />
-                </label>
-                <label style={{ display: "block" }}>
-                  Acceptance criteria
-                  <textarea
-                    value={milestoneAcceptanceCriteria}
-                    onChange={event => setMilestoneAcceptanceCriteria(event.target.value)}
-                    style={{ ...fieldStyle, minHeight: "4.5rem", resize: "vertical" }}
-                    placeholder="e.g. Buyer can verify deploy URL, source commit hash, and checklist in README"
-                  />
-                </label>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    style={buttonStyle}
-                    onClick={() => void handleHashMilestoneTerms()}
-                  >
-                    Hash milestone terms
-                  </button>
-                  {milestoneTermsHashMessage ? (
-                    <span className="text-sm text-[var(--status-ok)]">{milestoneTermsHashMessage}</span>
-                  ) : null}
+                  ))}
                 </div>
               </div>
             ) : null}
@@ -2605,34 +2578,27 @@ export function MarketplaceEventBuilder({
                 placeholder="2026-12-15T00:00:00Z"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={milestoneId}
-                onChange={event => setMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone amount" : "milestone amountCredits"}
-              <input
-                value={milestoneAmountCredits}
-                onChange={event => setMilestoneAmountCredits(event.target.value)}
-                style={fieldStyle}
-                placeholder="100"
-              />
-            </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone proof format" : "milestone evidenceFormat"}
-              <input
-                value={milestoneEvidenceFormat}
-                onChange={event => setMilestoneEvidenceFormat(event.target.value)}
-                style={fieldStyle}
-                placeholder="artifactHash"
-              />
-            </label>
             </div>
+            {isTransaction ? (
+              <div className="mb-4">
+                <MilestoneScheduleEditor
+                  rows={milestoneRows}
+                  guidedTerms
+                  onChange={setMilestoneRows}
+                  onHashTerms={() => void handleHashMilestoneTerms()}
+                  termsHashMessage={milestoneTermsHashMessage}
+                />
+              </div>
+            ) : null}
+            {!isTransaction ? (
+              <div className="mb-4">
+                <MilestoneScheduleEditor
+                  rows={milestoneRows}
+                  guidedTerms={false}
+                  onChange={setMilestoneRows}
+                />
+              </div>
+            ) : null}
             <details className={isTransaction ? "mb-2 rounded-xl border border-border bg-muted/20 px-4 py-3" : undefined}>
               <summary className={isTransaction ? "cursor-pointer text-sm font-medium text-foreground" : undefined}>
                 {isTransaction ? "Reference details" : "references.offer eventId (optional but recommended)"}
@@ -2874,14 +2840,13 @@ export function MarketplaceEventBuilder({
               <div className="mb-4 rounded-xl border border-dashed border-border/80 bg-muted/15 px-4 py-3 text-sm">
                 <p className="font-medium text-foreground">Problem with delivery?</p>
                 <p className="mt-1 text-muted-foreground">
-                  If work does not meet the locked terms, open a dispute instead of accepting. Dispute tools
-                  live in the operator builder so the happy path stays simple.
+                  If work does not meet the locked terms, use the guided dispute branch instead of accepting.
                 </p>
                 <Link
-                  href="/dashboard/builder?operator=1&step=dispute"
+                  href={`/dashboard/builder?branch=dispute&step=dispute${acceptOrderId.trim() ? `&order=${encodeURIComponent(acceptOrderId.trim())}` : ""}`}
                   className="mt-2 inline-flex text-sm font-medium text-primary hover:underline"
                 >
-                  Open dispute tools
+                  Open dispute resolution
                 </Link>
               </div>
             ) : null}
@@ -2933,8 +2898,15 @@ export function MarketplaceEventBuilder({
 
         {mode === "dispute" ? (
           <>
+            {isTransaction ? (
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+                Open a dispute when delivered work does not match the locked terms. Pick a reason and
+                reference the delivery event when you have it.
+              </div>
+            ) : null}
+            <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              orderId
+              {isTransaction ? "Order ID" : "orderId"}
               <input
                 value={disputeOrderId}
                 onChange={event => setDisputeOrderId(event.target.value)}
@@ -2943,7 +2915,7 @@ export function MarketplaceEventBuilder({
               />
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              milestoneId
+              {isTransaction ? "Milestone ID" : "milestoneId"}
               <input
                 value={disputeMilestoneId}
                 onChange={event => setDisputeMilestoneId(event.target.value)}
@@ -2952,16 +2924,35 @@ export function MarketplaceEventBuilder({
               />
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              reasonCode
-              <input
-                value={disputeReasonCode}
-                onChange={event => setDisputeReasonCode(event.target.value)}
-                style={fieldStyle}
-                placeholder="quality"
-              />
+              {isTransaction ? "Dispute reason" : "reasonCode"}
+              {isTransaction ? (
+                <Select
+                  value={disputeReasonCode}
+                  onValueChange={value => {
+                    if (!value) return;
+                    setDisputeReasonCode(value);
+                  }}
+                >
+                  <SelectTrigger className="mt-1.5 w-full min-w-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="start">
+                    <SelectItem value="quality">Quality — work does not meet criteria</SelectItem>
+                    <SelectItem value="scope">Scope — deliverable outside agreed terms</SelectItem>
+                    <SelectItem value="timeout">Timeout — windows expired without resolution</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <input
+                  value={disputeReasonCode}
+                  onChange={event => setDisputeReasonCode(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="quality"
+                />
+              )}
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              notesHash (optional)
+              {isTransaction ? "Notes hash (optional)" : "notesHash (optional)"}
               <input
                 value={disputeNotesHash}
                 onChange={event => setDisputeNotesHash(event.target.value)}
@@ -2969,31 +2960,77 @@ export function MarketplaceEventBuilder({
                 placeholder="optional dispute notes hash"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              disputedAt
-              <input
-                value={disputedAt}
-                onChange={event => setDisputedAt(event.target.value)}
-                style={fieldStyle}
-                placeholder="2026-03-01T00:09:30Z"
-              />
-            </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              references.delivery eventId (optional but recommended)
-              <input
-                value={disputeDeliveryReferenceEventId}
-                onChange={event => setDisputeDeliveryReferenceEventId(event.target.value)}
-                style={fieldStyle}
-                placeholder="service delivery eventId"
-              />
-            </label>
+            {!isTransaction ? (
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                disputedAt
+                <input
+                  value={disputedAt}
+                  onChange={event => setDisputedAt(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="2026-03-01T00:09:30Z"
+                />
+              </label>
+            ) : null}
+            </div>
+            <details className={isTransaction ? "mb-2 rounded-xl border border-border/70 bg-muted/25 px-4 py-3" : undefined}>
+              <summary className={isTransaction ? "cursor-pointer text-sm font-medium text-foreground" : undefined}>
+                {isTransaction ? "Reference details" : "references.delivery eventId (optional but recommended)"}
+              </summary>
+              {isTransaction ? (
+                <label style={{ display: "block", marginBottom: "0.5rem", marginTop: "0.75rem" }}>
+                  Disputed at (optional RFC3339)
+                  <input
+                    value={disputedAt}
+                    onChange={event => setDisputedAt(event.target.value)}
+                    style={fieldStyle}
+                    placeholder="2026-03-01T00:09:30Z"
+                  />
+                </label>
+              ) : null}
+              <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
+                {isTransaction ? "Delivery reference event ID" : "references.delivery eventId (optional but recommended)"}
+                <input
+                  value={disputeDeliveryReferenceEventId}
+                  onChange={event => setDisputeDeliveryReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="service delivery eventId"
+                />
+              </label>
+            </details>
           </>
         ) : null}
 
         {mode === "settle" ? (
           <>
+            {isTransaction ? (
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+                Propose how credits move after a dispute. Preview the split before you sign and submit.
+              </div>
+            ) : null}
+            {isTransaction ? (
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/20 px-4 py-3">
+                <p className="text-sm font-medium text-foreground">Settlement preview</p>
+                <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                  <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2">
+                    <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Outcome</p>
+                    <p className="mt-1 text-foreground">
+                      {settleOutcome === "buyerWins" ? "Buyer wins" : "Split"}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2">
+                    <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Buyer refund</p>
+                    <p className="mt-1 font-mono text-foreground">{buyerRefundCredits || "0"} credits</p>
+                  </div>
+                  <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 sm:col-span-2">
+                    <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Provider reward</p>
+                    <p className="mt-1 font-mono text-foreground">{providerRewardCredits || "0"} credits</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              orderId
+              {isTransaction ? "Order ID" : "orderId"}
               <input
                 value={settleOrderId}
                 onChange={event => setSettleOrderId(event.target.value)}
@@ -3002,7 +3039,7 @@ export function MarketplaceEventBuilder({
               />
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              milestoneId
+              {isTransaction ? "Milestone ID" : "milestoneId"}
               <input
                 value={settleMilestoneId}
                 onChange={event => setSettleMilestoneId(event.target.value)}
@@ -3011,7 +3048,7 @@ export function MarketplaceEventBuilder({
               />
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              outcome
+              {isTransaction ? "Settlement outcome" : "outcome"}
               <Select
                 value={settleOutcome}
                 onValueChange={value => {
@@ -3023,13 +3060,13 @@ export function MarketplaceEventBuilder({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent align="start">
-                  <SelectItem value="split">Split</SelectItem>
-                  <SelectItem value="buyerWins">Buyer wins</SelectItem>
+                  <SelectItem value="split">Split — divide refund and reward</SelectItem>
+                  <SelectItem value="buyerWins">Buyer wins — full refund to buyer</SelectItem>
                 </SelectContent>
               </Select>
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              buyerRefundCredits
+              {isTransaction ? "Buyer refund credits" : "buyerRefundCredits"}
               <input
                 value={buyerRefundCredits}
                 onChange={event => setBuyerRefundCredits(event.target.value)}
@@ -3038,7 +3075,7 @@ export function MarketplaceEventBuilder({
               />
             </label>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              providerRewardCredits
+              {isTransaction ? "Provider reward credits" : "providerRewardCredits"}
               <input
                 value={providerRewardCredits}
                 onChange={event => setProviderRewardCredits(event.target.value)}
@@ -3046,24 +3083,43 @@ export function MarketplaceEventBuilder({
                 placeholder="0"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              settledAt
-              <input
-                value={settledAt}
-                onChange={event => setSettledAt(event.target.value)}
-                style={fieldStyle}
-                placeholder="2026-03-01T00:10:00Z"
-              />
-            </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              references.dispute eventId (optional but recommended)
-              <input
-                value={settleDisputeReferenceEventId}
-                onChange={event => setSettleDisputeReferenceEventId(event.target.value)}
-                style={fieldStyle}
-                placeholder="service dispute eventId"
-              />
-            </label>
+            {!isTransaction ? (
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                settledAt
+                <input
+                  value={settledAt}
+                  onChange={event => setSettledAt(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="2026-03-01T00:10:00Z"
+                />
+              </label>
+            ) : null}
+            </div>
+            <details className={isTransaction ? "mb-2 rounded-xl border border-border/70 bg-muted/25 px-4 py-3" : undefined}>
+              <summary className={isTransaction ? "cursor-pointer text-sm font-medium text-foreground" : undefined}>
+                {isTransaction ? "Reference details" : "references.dispute eventId (optional but recommended)"}
+              </summary>
+              {isTransaction ? (
+                <label style={{ display: "block", marginBottom: "0.5rem", marginTop: "0.75rem" }}>
+                  Settled at (optional RFC3339)
+                  <input
+                    value={settledAt}
+                    onChange={event => setSettledAt(event.target.value)}
+                    style={fieldStyle}
+                    placeholder="2026-03-01T00:10:00Z"
+                  />
+                </label>
+              ) : null}
+              <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
+                {isTransaction ? "Dispute reference event ID" : "references.dispute eventId (optional but recommended)"}
+                <input
+                  value={settleDisputeReferenceEventId}
+                  onChange={event => setSettleDisputeReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="service dispute eventId"
+                />
+              </label>
+            </details>
           </>
         ) : null}
 
@@ -3310,24 +3366,25 @@ function buildOrderUnsigned(input: {
   providerPubKey: string;
   buyerPubKey: string;
   orderExpiresAt: string;
-  milestoneId: string;
-  milestoneAmountCredits: string;
-  milestoneEvidenceFormat: string;
+  milestoneRows: OrderMilestoneDraft[];
   offerReferenceEventId: string;
 }) {
-  const amountCredits = parsePositiveInteger(input.milestoneAmountCredits, "milestone amountCredits");
+  const milestones = buildMilestonePayloadRows(input.milestoneRows).map((row) => ({
+    milestoneId: requireNonEmpty(row.milestoneId, "milestoneId"),
+    amountCredits: parsePositiveInteger(String(row.amountCredits), "milestone amountCredits"),
+    evidenceFormat: requireNonEmpty(row.evidenceFormat, "milestone evidenceFormat")
+  }));
+
+  if (milestones.length === 0) {
+    throw new Error("At least one milestone is required.");
+  }
+
   const payload: Record<string, unknown> = {
     orderId: requireNonEmpty(input.orderId, "orderId"),
     offerId: requireNonEmpty(input.offerId, "offerId"),
     providerPubKey: requireNonEmpty(input.providerPubKey, "providerPubKey"),
     buyerPubKey: requireNonEmpty(input.buyerPubKey, "buyerPubKey"),
-    milestones: [
-      {
-        milestoneId: requireNonEmpty(input.milestoneId, "milestoneId"),
-        amountCredits,
-        evidenceFormat: requireNonEmpty(input.milestoneEvidenceFormat, "milestone evidenceFormat")
-      }
-    ],
+    milestones,
     orderExpiresAt: requireNonEmpty(input.orderExpiresAt, "orderExpiresAt")
   };
 
@@ -3824,12 +3881,7 @@ function modeRequirements(
     providerPubKey: string;
     buyerPubKey: string;
     orderExpiresAt: string;
-    milestoneId: string;
-    milestoneAmountCredits: string;
-    milestoneEvidenceFormat: string;
-    milestoneDeliverable?: string;
-    milestoneDueWindow?: string;
-    milestoneAcceptanceCriteria?: string;
+    milestoneRows: OrderMilestoneDraft[];
     guidedOrderTerms?: boolean;
     escrowSpenderPubKey: string;
     escrowOrderId: string;
@@ -3890,15 +3942,13 @@ function modeRequirements(
       text("providerPubKey", fields.providerPubKey),
       text("buyerPubKey", fields.buyerPubKey),
       text("orderExpiresAt", fields.orderExpiresAt),
-      text("milestoneId", fields.milestoneId),
-      positiveInt("milestoneAmountCredits", fields.milestoneAmountCredits),
-      text("milestoneEvidenceFormat", fields.milestoneEvidenceFormat)
+      ...milestoneDraftRequirements(fields.milestoneRows, Boolean(fields.guidedOrderTerms)).map(
+        (requirement) => ({
+          label: requirement.label,
+          ok: requirement.ok
+        })
+      )
     ];
-    if (fields.guidedOrderTerms) {
-      requirements.push(text("milestoneDeliverable", fields.milestoneDeliverable ?? ""));
-      requirements.push(text("milestoneDueWindow", fields.milestoneDueWindow ?? ""));
-      requirements.push(text("milestoneAcceptanceCriteria", fields.milestoneAcceptanceCriteria ?? ""));
-    }
     return requirements;
   }
   if (mode === "escrowSpend") {

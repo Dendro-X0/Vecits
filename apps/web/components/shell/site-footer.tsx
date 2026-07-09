@@ -9,6 +9,9 @@ export function SiteFooter() {
           protocol — communities can run their own stores and apps.
         </p>
         <div className="flex flex-wrap gap-4">
+          <Link href="/help" className="transition hover:text-foreground">
+            Help
+          </Link>
           <Link href="/explorer" className="transition hover:text-foreground">
             Kernel explorer
           </Link>

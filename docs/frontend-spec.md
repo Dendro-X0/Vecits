@@ -149,3 +149,10 @@ Acceptance checks:
 
 **Status:** Phase 1 complete — see [frontend-phase1-completion.md](frontend-phase1-completion.md). Phase 2 plan: [frontend-phase2-plan.md](frontend-phase2-plan.md).
 
+### In-app user help
+
+- Routes: `/help`, `/help/deal-flow`, `/help/disputes`, `/help/identity`, `/help/node-connection`
+- Content source: `apps/web/lib/help/articles.ts`
+- Linked from site header, footer, dashboard sidebar
+- Maintainer sync: [client/in-app-help-sync.md](client/in-app-help-sync.md)
+

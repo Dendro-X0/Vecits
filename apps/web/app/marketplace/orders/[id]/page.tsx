@@ -5,10 +5,11 @@ import { ArrowLeft, BadgeCheck, Coins, UserRound } from "lucide-react";
 import type { QueryParams } from "@/app/explorer/lib";
 import { getNodeBaseUrl, getOptionalParam, toErrorMessage } from "@/app/explorer/lib";
 import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
-import { OrderExchangePanel } from "@/components/marketplace/order-exchange-panel";
+import { OrderDetailWorkspace } from "@/components/marketplace/order-detail-workspace";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { normalizeOrderExchange } from "@/lib/marketplace/order-normalize";
+import { readOfferCompensationSummary } from "@/lib/marketplace/offer-normalize";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
 import { marketplaceOrderStaticParams } from "@/lib/desktop-static-params";
 import { STATIC_QUERY_PARAMS } from "@/lib/static-query-params";
@@ -31,6 +32,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
   const asOf = getOptionalParam(query, "as_of");
 
   let order: Record<string, unknown> | null = null;
+  let offer: Record<string, unknown> | null = null;
   let milestones: Array<{ id: string; data: Record<string, unknown> | null; error?: string }> =
     [];
   let error: string | null = null;
@@ -68,6 +70,13 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           }
         })
       );
+
+      try {
+        const offerView = await client.getOffer(offerIdFromOrder(order), asOf);
+        offer = (offerView.data as Record<string, unknown> | null) ?? null;
+      } catch {
+        offer = null;
+      }
     }
   } catch (caught) {
     error = toErrorMessage(caught);
@@ -90,6 +99,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   const exchange = order ? normalizeOrderExchange(id, order, milestones) : null;
   const backHref = buildMarketplaceHref(`/marketplace/offers/${offerId}`, query);
+  const compensation = readOfferCompensationSummary(offer);
 
   return (
     <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
@@ -134,16 +144,25 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Exchange progress</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OrderExchangePanel baseUrl={baseUrl} exchange={exchange} searchParams={query} />
-          </CardContent>
-        </Card>
+        {exchange ? (
+          <OrderDetailWorkspace
+            baseUrl={baseUrl}
+            exchange={exchange}
+            searchParams={query}
+            compensation={compensation}
+            offerHref={backHref}
+          />
+        ) : null}
       </div>
     </section>
+  );
+}
+
+function offerIdFromOrder(order: Record<string, unknown>): string {
+  return (
+    (order.offer_id as string | undefined) ??
+    (order.offerId as string | undefined) ??
+    "unknown"
   );
 }
 

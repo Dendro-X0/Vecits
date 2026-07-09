@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { ArrowLeftRight, LayoutDashboard, PenLine, Settings, Store } from "lucide-react";
+import { ArrowLeftRight, BookOpen, LayoutDashboard, PenLine, Settings, Store } from "lucide-react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
+import { WorkspaceRoleHint } from "@/components/dashboard/workspace-role-hint";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +36,10 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Operate",
-    items: [{ href: "/dashboard/settings", label: "Settings", icon: Settings, exact: true }]
+    items: [
+      { href: "/dashboard/settings", label: "Settings", icon: Settings, exact: true },
+      { href: "/help", label: "Help", icon: BookOpen, exact: false }
+    ]
   }
 ];
 
@@ -60,13 +64,13 @@ function pageMeta(pathname: string): { title: string; description: string } {
     return {
       title: "Transactions",
       description:
-        "Track order progress and see what needs your attention next — funded escrow, delivery, or acceptance."
+        "Buying and selling queues — filter by role and see what needs your attention next."
     };
   }
   return {
     title: "Overview",
     description:
-      "Marketplace activity and exchange progress from kernel replay. Credits are protocol units, not fiat money."
+      "Role-aware marketplace activity from kernel replay. Credits are protocol units, not fiat money."
   };
 }
 
@@ -135,9 +139,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <h1 className="truncate text-lg font-semibold tracking-tight">{title}</h1>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p>
           </div>
-          <div className="flex shrink-0 items-center gap-2 pt-1">
-            <ThemeToggle />
-            <AuthStatus />
+          <div className="flex shrink-0 items-start gap-3 pt-1">
+            <WorkspaceRoleHint />
+            <div className="flex shrink-0 items-center gap-2">
+              <ThemeToggle />
+              <AuthStatus />
+            </div>
           </div>
         </header>
 

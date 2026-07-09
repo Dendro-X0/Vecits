@@ -52,6 +52,8 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 - Offline `physical-handoff` lane production deployment (fixture proven — SCN-18)
 - `OrderAmend` event kind (use new order or paired settle for now)
 
+**Client work (no live users required):** use [client/testing-without-users.md](client/testing-without-users.md) — fixtures + two local keys + `/help` guides.
+
 Stack-ranked backlog: [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md)
 
 ## Verify in five minutes
@@ -90,6 +92,12 @@ pnpm r7:client:readiness               # desktop cargo check + R4 audit + web + 
 1. Aperio engine docs: `E:\Web Projects\aperio\docs\engine\README.md`
 2. [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md)
 3. [specs/discovery-bridge-spec.md](specs/discovery-bridge-spec.md)
+
+### "I want to build or test the official client"
+
+1. [client/development-guide.md](client/development-guide.md)
+2. [client/testing-without-users.md](client/testing-without-users.md)
+3. In-app user guides: run web client → `/help`
 
 ### "I want to know what's next"
 
