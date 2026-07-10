@@ -16,7 +16,7 @@ cargo run --bin cli -- fixtures run
 Confirm replay:
 
 ```bash
-cargo run --bin vectis-node -- db inspect --data-dir ./vectis-data-dev
+cargo run --bin vectis-node -- db inspect --data-dir ./.data/dev
 ```
 
 ## 2. Use two local identities

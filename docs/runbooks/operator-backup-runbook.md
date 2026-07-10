@@ -6,10 +6,10 @@ Last updated: July 2026
 
 ## What to back up
 
-Copy the entire operator data directory (default `./vectis-data-r2` for R2 proof):
+Copy the entire operator data directory (default `./.data/r2` for R2 proof):
 
 ```text
-vectis-data/
+.data/r2/
   events.log          # authoritative append-only log
   node.db             # SQLite projection (rebuildable from events.log)
   manifest.json       # kernel version metadata
@@ -46,7 +46,7 @@ Manual Bash example:
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-SRC="./vectis-data"
+SRC="./.data/default"
 DEST="/backup/vectis/$(date +%Y-%m-%d)"
 mkdir -p "$DEST"
 cp -a "$SRC/events.log" "$SRC/manifest.json" "$DEST/"
@@ -66,7 +66,7 @@ Archive copy: `target/r2-evidence-archive/r2-evidence-<timestamp>/`
 Export only:
 
 ```bash
-npm run r2:evidence-export -- --data-dir ./vectis-data-r2
+npm run r2:evidence-export -- --data-dir ./.data/r2
 ```
 
 Produces under `target/tmp/r2-evidence-<timestamp>/`:
@@ -99,10 +99,10 @@ Pass criteria: replay state hash matches `replay-state-hash.txt` from the export
 
 ```bash
 BIN="$(npm run -s v1:resolve-release)"
-"$BIN" node init --data-dir ./vectis-data-restored
-cp /backup/vectis/2026-07-01/events.log ./vectis-data-restored/
-"$BIN" log replay --in ./vectis-data-restored/events.log --out /tmp/replay-check.json
-"$BIN" node serve --data-dir ./vectis-data-restored --bind 127.0.0.1:7878
+"$BIN" node init --data-dir ./.data/restored
+cp /backup/vectis/2026-07-01/events.log ./.data/restored/
+"$BIN" log replay --in ./.data/restored/events.log --out /tmp/replay-check.json
+"$BIN" node serve --data-dir ./.data/restored --bind 127.0.0.1:7878
 ```
 
 ## Related docs

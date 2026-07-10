@@ -35,7 +35,7 @@ npm run r6:compute-job:drill
 npm run r6:compute-job:drill -- --base-url http://127.0.0.1:7878
 
 # Custom data dir
-npm run r6:compute-job:drill -- --data-dir ./vectis-data-compute
+npm run r6:compute-job:drill -- --data-dir ./.data/r6
 ```
 
 Pass criteria: script prints `R6-L1 compute-job drill passed` and order status is `closed`.

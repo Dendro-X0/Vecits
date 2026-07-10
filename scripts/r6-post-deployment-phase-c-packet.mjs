@@ -13,6 +13,7 @@ import {
   waitForNode,
 } from "./lib/ga6-drill-core.mjs";
 import { createReleaseRunners, resolveReleaseBinary } from "./lib/release-binary.mjs";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -37,7 +38,7 @@ Optional:
   --help                    Show help
 
 Examples:
-  pnpm r6:post-deployment:phase-c:packet -- --data-dir ./vectis-data-r6-docs --lane documentation --order-id <id> --buyer-pubkey <hex> --provider-pubkey <hex> --base-url http://127.0.0.1:7878
+  pnpm r6:post-deployment:phase-c:packet -- --data-dir ./.data/r6-pd-documentation --lane documentation --order-id <id> --buyer-pubkey <hex> --provider-pubkey <hex> --base-url http://127.0.0.1:7878
   pnpm r6:post-deployment:phase-c:smoke
 `);
 }
@@ -135,7 +136,7 @@ async function resolveSmokeContext(args) {
     );
   }
 
-  args.dataDir = path.join(WORKSPACE_ROOT, "vectis-data-r6-pd-documentation");
+  args.dataDir = DATA_DIRS.r6PdDocumentation;
   args.lane = summary.lane;
   args.orderId = summary.orderId;
   args.offerId = summary.offerId ?? "";

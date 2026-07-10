@@ -9,7 +9,7 @@ npm run v1:build-release
 TARGET="$(node -p "const fs=require('fs');const p='dist/release';fs.readdirSync(p).find(n=>n.startsWith('vectis-node-'))")"
 NODE_BIN="$(node ./scripts/resolve-release-binary.mjs)"
 
-DATA_DIR="${1:-$ROOT/vectis-data}"
+DATA_DIR="${1:-$ROOT/.data/default}"
 
 "$NODE_BIN" node init --data-dir "$DATA_DIR"
 

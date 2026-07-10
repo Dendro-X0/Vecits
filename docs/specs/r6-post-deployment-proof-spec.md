@@ -41,7 +41,7 @@ Pass = lane registry/fixtures aligned, offline guards green, compute-job drill p
 Automated exchange on chosen community lane (same machinery as R2, extended lanes):
 
 ```bash
-pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./vectis-data-r6-docs
+pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./.data/r6-pd-documentation
 ```
 
 Uses `r2:exchange-drill` with R6 `ALLOWED_LANES`. Not a substitute for human counterparty proof, but validates HTTP path per lane.

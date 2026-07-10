@@ -19,7 +19,7 @@ Use when you need to close R2-P2 locally before a human counterparty is availabl
 ```bash
 npm run v1:build-release
 
-# Default lane: project-maintenance on ./vectis-data-r2 (dedicated R2 proof dir)
+# Default lane: project-maintenance on `./.data/r2` (dedicated R2 proof dir)
 npm run r2:exchange-drill
 
 # Other lane
@@ -53,7 +53,7 @@ npm run r2:restore-drill
 
 ```bash
 BIN="$(npm run -s v1:resolve-release)"
-"$BIN" node serve --data-dir ./vectis-data --bind 127.0.0.1:7878
+"$BIN" node serve --data-dir ./.data/default --bind 127.0.0.1:7878
 ```
 
 2. **Operator (buyer)** — create identity via onboarding wizard or SDK; obtain credits through contribution flow.
@@ -84,7 +84,7 @@ Defined in `scripts/lib/r2-exchange-core.mjs`. Do **not** reuse these keys in pr
 
 ## What does not count as R2-P2
 
-- Ingesting `fixtures/valid/marketplace-*.jsonl` into `./vectis-data`
+- Ingesting `fixtures/valid/marketplace-*.jsonl` into `./.data/default`
 - Replay-only tests without appending to the operator production log
 - Exchange that stops before `ServiceAccept` (milestone not closed)
 

@@ -63,9 +63,9 @@ BIN="$(npm run -s v1:resolve-release)"
 ### 2. Initialize source node
 
 ```bash
-"$BIN" node init --data-dir ./vectis-data-source
-"$BIN" node ingest --data-dir ./vectis-data-source --in fixtures/valid/marketplace-accept.jsonl
-"$BIN" node serve --data-dir ./vectis-data-source --bind 0.0.0.0:7878 \
+"$BIN" node init --data-dir ./.data/source
+"$BIN" node ingest --data-dir ./.data/source --in fixtures/valid/marketplace-accept.jsonl
+"$BIN" node serve --data-dir ./.data/source --bind 0.0.0.0:7878 \
   --ingest-rate-limit-max 120 --ingest-rate-limit-window-seconds 60
 ```
 
@@ -75,7 +75,7 @@ Verify: `curl http://<source-host>:7878/health`
 
 ### 3. Configure sink peers
 
-Create `./vectis-data-sink/peers.json`:
+Create `./.data/sink/peers.json`:
 
 ```json
 {
@@ -95,12 +95,12 @@ Optional: add `read_token` if source requires authenticated reads.
 ### 4. Initialize sink and pull
 
 ```bash
-"$BIN" node init --data-dir ./vectis-data-sink
-# copy peers.json into vectis-data-sink/ before or after init
+"$BIN" node init --data-dir ./.data/sink
+# copy peers.json into .data/sink/ before or after init
 
-"$BIN" node sync pull --data-dir ./vectis-data-sink --peer source --limit 200 --max-pages 100
-"$BIN" node sync status --data-dir ./vectis-data-sink
-"$BIN" node serve --data-dir ./vectis-data-sink --bind 127.0.0.1:7879
+"$BIN" node sync pull --data-dir ./.data/sink --peer source --limit 200 --max-pages 100
+"$BIN" node sync status --data-dir ./.data/sink
+"$BIN" node serve --data-dir ./.data/sink --bind 127.0.0.1:7879
 ```
 
 ### 5. Verify convergence

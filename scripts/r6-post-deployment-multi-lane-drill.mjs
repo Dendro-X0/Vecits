@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMMUNITY_ARTIFACT_LANES } from "./lib/r6-lane-template-registry.mjs";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -58,7 +59,7 @@ function parseArgs(argv) {
 }
 
 function runLaneDrill(lane, skipBuild) {
-  const dataDir = path.join(WORKSPACE_ROOT, `vectis-data-r6-pd-${lane}`);
+  const dataDir = DATA_DIRS.r6PdLane(lane);
   const drillArgs = [
     "./scripts/r6-post-deployment-drill.mjs",
     "--lane",

@@ -12,7 +12,7 @@ How to run and iterate on the official Vectis client (`apps/web`) against a loca
 
 ```bash
 # Terminal 1 — node API (default http://127.0.0.1:7878)
-cargo run --bin vectis-node -- serve --data-dir ./vectis-data-dev
+cargo run --bin vectis-node -- serve --data-dir ./.data/dev
 
 # Terminal 2 — web client
 cd apps/web

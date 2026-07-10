@@ -62,10 +62,10 @@ During transition, `cargo run --bin cli -- node serve ...` remains valid.
 ### Fresh install
 
 1. Download binary or pull container image
-2. Run `vectis-node init --data-dir ./vectis-data`
-3. Run `vectis-node serve --data-dir ./vectis-data --bind 127.0.0.1:7878`
+2. Run `vectis-node init --data-dir ./.data/default`
+3. Run `vectis-node serve --data-dir ./.data/default --bind 127.0.0.1:7878`
 4. Verify: `GET /health` returns OK + version manifest
-5. Optional: `vectis-node ingest --data-dir ./vectis-data --in fixtures/valid/...`
+5. Optional: `vectis-node ingest --data-dir ./.data/default --in fixtures/valid/...`
 
 ### Client connection
 

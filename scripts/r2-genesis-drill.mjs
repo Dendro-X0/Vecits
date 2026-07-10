@@ -19,12 +19,13 @@ import {
   createReleaseRunners,
   resolveReleaseBinary,
 } from "./lib/release-binary.mjs";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function parseArgs(argv) {
   const result = {
-    dataDir: path.join(WORKSPACE_ROOT, "vectis-data-r2-genesis"),
+    dataDir: DATA_DIRS.r2Genesis,
     baseUrl: "",
     baseDate: "2026-07-02",
     skipBuild: argv.includes("--no-build"),

@@ -66,6 +66,7 @@
     "r6:post-deployment:multi-lane-drill": "node ./scripts/r6-post-deployment-multi-lane-drill.mjs",
     "r6:post-deployment:phase-c:packet": "node ./scripts/r6-post-deployment-phase-c-packet.mjs",
     "r6:post-deployment:phase-c:smoke": "node ./scripts/r6-post-deployment-phase-c-smoke.mjs",
+    "repo:migrate-data-dirs": "node ./scripts/migrate-data-dirs.mjs",
     "typecheck": "pnpm -r --filter \"@new-start/*\" --filter \"@vectis/desktop\" typecheck",
     "build": "pnpm --filter @new-start/sdk-ts build && pnpm --filter @new-start/web build"
   }

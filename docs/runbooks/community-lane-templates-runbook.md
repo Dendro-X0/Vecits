@@ -63,8 +63,8 @@ npm run v3:discovery-bridge:smoke
 Use release binary + dedicated data dir per lane proof:
 
 ```bash
-npm run r2:exchange-drill -- --lane documentation --data-dir ./vectis-data-docs
-npm run r2:exchange-drill -- --lane feature-work --data-dir ./vectis-data-features
+npm run r2:exchange-drill -- --lane documentation --data-dir ./.data/r6-pd-documentation
+npm run r2:exchange-drill -- --lane feature-work --data-dir ./.data/r6-pd-feature-work
 ```
 
 Supported `--lane` values: all entries in the [lane template catalog](../architecture/lane-template-catalog.md#digital-artifact-lanes-community-deployable).

@@ -13,7 +13,7 @@ Last updated: July 2026
 | Backup schedule | daily backup via cron / Task Scheduler / systemd timer |
 | Verification | `npm run r2:deploy-smoke` |
 
-**Production data directory:** `./vectis-data-r2` (R2 exchange proof log — do not mix with fixture experiments in `./vectis-data`).
+**Production data directory:** `./.data/r2` (R2 exchange proof log — do not mix with fixture experiments in `./.data/default`).
 
 ## Quick verify (local)
 
@@ -79,14 +79,14 @@ Data persists in Docker volume `vectis-data`. Back up by copying the volume or r
 ```powershell
 npm run v1:build-release
 $bin = npm run -s v1:resolve-release
-& $bin node serve --data-dir .\vectis-data-r2 --bind 127.0.0.1:7878
+& $bin node serve --data-dir .\.data\r2 --bind 127.0.0.1:7878
 curl http://127.0.0.1:7878/health
 ```
 
 ### Daily backup (Task Scheduler)
 
 ```powershell
-.\deploy\windows\Register-VectisBackupTask.ps1 -DataDir "E:\Experimental projects\vectis\vectis-data-r2"
+.\deploy\windows\Register-VectisBackupTask.ps1 -DataDir "E:\Experimental projects\vectis\.data\r2"
 ```
 
 Manual backup:
@@ -100,10 +100,10 @@ npm run r2:backup
 ```bash
 npm run r2:backup
 # custom paths:
-node ./scripts/r2-backup.mjs --data-dir ./vectis-data-r2 --dest ./target/backups/manual-run
+node ./scripts/r2-backup.mjs --data-dir ./.data/r2 --dest ./target/backups/manual-run
 ```
 
-Weekly: add `npm run r2:evidence-export -- --data-dir ./vectis-data-r2`.
+Weekly: add `npm run r2:evidence-export -- --data-dir ./.data/r2`.
 
 ## Uptime expectations
 

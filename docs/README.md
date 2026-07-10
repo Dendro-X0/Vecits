@@ -13,7 +13,7 @@ Operators: [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md). I
 | **Kernel / protocol** | R0–R2 complete; reference-lane procedure guards GAP-01..07 closed |
 | **Trust bootstrap** | Spec locked — [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) |
 | **Discovery bridge** | Classifier + offer drafts + Aperio import — [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| **Client** | R4-C1..C4 complete; frontend Phase 1–3 complete ([frontend-phase3-completion.md](frontend-phase3-completion.md)) — in-app help at `/help`, dev docs in [client/](client/README.md) |
+| **Client** | R4-C1..C4 complete; frontend Phase 1–3 complete ([frontend-phase3-completion.md](frontend-phase3-completion.md)) — layout: [../REPOSITORY.md](../REPOSITORY.md) |
 | **Gates** | RG-1..RG-4 pass; RG-5 partial (Aperio live CLI optional) |
 
 Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md) · Evidence: [roadmap/progress.md](roadmap/progress.md)

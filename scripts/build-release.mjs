@@ -61,8 +61,8 @@ async function main() {
     artifacts: [cliName, nodeName],
     builtAt: new Date().toISOString(),
     commands: {
-      init: `./${nodeName} node init --data-dir ./vectis-data`,
-      serve: `./${nodeName} node serve --data-dir ./vectis-data --bind 127.0.0.1:7878`,
+      init: `./${nodeName} node init --data-dir ./.data/default`,
+      serve: `./${nodeName} node serve --data-dir ./.data/default --bind 127.0.0.1:7878`,
       health: "curl http://127.0.0.1:7878/health",
     },
   };

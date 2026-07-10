@@ -16,7 +16,7 @@ function usage() {
   node ./scripts/r6-post-deployment-drill.mjs [r2:exchange-drill options]
 
 Examples:
-  pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./vectis-data-r6-docs
+  pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./.data/r6-pd-documentation
   pnpm r6:post-deployment:drill -- --lane feature-work --no-build
 `);
 }

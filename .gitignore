@@ -6,6 +6,22 @@
 /.next
 **/.next
 **/dist
-/.dev
 apps/web/.env.local
 .env.local
+
+# Local node databases and drill output (see .data/README.md)
+/.data/*
+!/.data/README.md
+
+# Legacy data dir names at repo root (pre .data/ convention)
+/vectis-data/
+/vectis-data-*/
+
+# Maintainer dev ephemeral state (tracked exceptions below)
+/.dev/*
+!/.dev/README.md
+!/.dev/client.cdp.yaml
+
+# Logs and static export build output
+debug.log
+apps/web/out/

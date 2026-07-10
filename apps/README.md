@@ -1,8 +1,11 @@
 # Apps
 
-This directory hosts runnable applications.
+Runnable applications in the Vectis monorepo.
 
-Current apps:
+| App | Stack | Purpose |
+| --- | --- | --- |
+| [`cli/`](cli/) | Rust | Protocol CLI + `vectis-node` operator runtime |
+| [`web/`](web/) | Next.js | Official client — marketplace, dashboard, explorer |
+| [`desktop/`](desktop/) | Tauri v2 | Desktop shell + Android/iOS mobile scaffold |
 
-- `cli` - Rust protocol and node CLI.
-- `web` - Next.js Track 3 shell consuming the Rust node via `@new-start/sdk-ts`.
+See [`../REPOSITORY.md`](../REPOSITORY.md) for the full layout.

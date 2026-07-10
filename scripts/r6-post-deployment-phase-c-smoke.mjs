@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPhaseCPacket } from "./r6-post-deployment-phase-c-packet.mjs";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -16,7 +17,7 @@ function runDocumentationDrill() {
       "--lane",
       "documentation",
       "--data-dir",
-      path.join(WORKSPACE_ROOT, "vectis-data-r6-pd-documentation"),
+      DATA_DIRS.r6PdDocumentation,
       "--no-build",
     ],
     { cwd: WORKSPACE_ROOT, stdio: "inherit", shell: false },

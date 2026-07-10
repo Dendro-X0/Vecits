@@ -4,12 +4,13 @@ import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function parseArgs(argv) {
   const result = {
-    dataDir: path.join(WORKSPACE_ROOT, "vectis-data-r2"),
+    dataDir: DATA_DIRS.r2,
     destDir: "",
   };
   for (let i = 0; i < argv.length; i += 1) {

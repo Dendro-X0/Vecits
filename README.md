@@ -4,47 +4,43 @@ Vectis is a modular coordination and settlement protocol for digital skills and 
 
 This repo hosts the reference implementation: Rust kernel, `vectis-node` operator runtime, TypeScript SDK, and the official Vectis client (`apps/web`). Operators may run the kernel alone or launch **their own branded stores and marketplaces** on top. See [`docs/foundation/product-identity.md`](docs/foundation/product-identity.md).
 
+**Repository map:** [`REPOSITORY.md`](REPOSITORY.md)
+
 **Restart (July 2026):** R0–R2 and R4-C1–C4 complete. Local operator path:
 
 ```bash
 npm run v1:build-release
 BIN="$(npm run -s v1:resolve-release)"
-"$BIN" node init --data-dir ./vectis-data
-"$BIN" node serve --data-dir ./vectis-data --bind 127.0.0.1:7878
+"$BIN" node init --data-dir ./.data/default
+"$BIN" node serve --data-dir ./.data/default --bind 127.0.0.1:7878
 ```
 
 See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbooks/operator-quickstart.md`](docs/runbooks/operator-quickstart.md) to run a node.
 
 ## Workspace
 
-- `crates/protocol-core` - event types, canonicalization, hashing, signing, and verification
-- `crates/policy` - embedded default V0 policy
-- `crates/state-engine` - deterministic replay, reducers, derived state, and fixture tests
-- `crates/node` - local node runtime with JSONL event log, SQLite indexes, snapshots, and HTTP API
-- `apps/cli` - key generation, event signing, replay, validation, inspection, and fixture commands
-- `fixtures/` - checked-in valid and invalid JSONL event logs
+| Path | Role |
+| --- | --- |
+| `crates/` | Rust kernel — protocol-core, policy, state-engine, reputation, node |
+| `apps/cli` | Key generation, signing, replay, fixtures, `vectis-node` binary |
+| `apps/web` | Next.js client (marketplace, dashboard, explorer) |
+| `apps/desktop` | Tauri v2 desktop + mobile scaffold |
+| `packages/sdk-ts` | Typed HTTP client for the node API |
+| `fixtures/` | Checked-in valid/invalid JSONL event logs |
+| `scripts/` | Maintainer drills and readiness bundles |
+| `.data/` | **Local only** — node databases and drill output ([`.data/README.md`](.data/README.md)) |
 
 ## Commands
 
 - `cargo test`
-- `cargo run --bin cli -- keys generate`
-- `cargo run --bin cli -- event sign --in <draft.json> --out <event.json>`
-- `cargo run --bin cli -- log validate --in <events.jsonl>`
-- `cargo run --bin cli -- log replay --in <events.jsonl> --out <state.json>`
-- `cargo run --bin cli -- state inspect --in <events.jsonl>`
 - `cargo run --bin cli -- fixtures run`
-- `cargo run --bin cli -- node serve --data-dir <path> --bind 127.0.0.1:7878`
-- `cargo run --bin cli -- node ingest --data-dir <path> --in <events.jsonl>`
-- `cargo run --bin cli -- node snapshot create --data-dir <path> [--as-of <rfc3339>] [--out <snapshot.json>]`
-- `cargo run --bin cli -- node snapshot replay --snapshot <snapshot.json> --events <events.jsonl> [--as-of <rfc3339>]`
-- `cargo run --bin cli -- node policy current --data-dir <path> [--as-of <rfc3339>]`
-- `cargo run --bin cli -- node policy timeline --data-dir <path> [--as-of <rfc3339>] [--limit <n>] [--cursor <n>]`
-- `cargo run --bin cli -- node reputation current --data-dir <path> --identity <pubkey> [--as-of <rfc3339>]`
-- `cargo run --bin cli -- node reputation history --data-dir <path> --identity <pubkey> [--as-of <rfc3339>] [--limit <n>] [--cursor <n>] [--lane <service_type>]`
-- `cargo run --bin cli -- node db inspect --data-dir <path>`
+- `pnpm install` && `pnpm dev:web`
+- `pnpm r4:client-audit`
 
-## TypeScript workspace (Track 3 kickoff)
+Full CLI reference: `cargo run --bin cli -- --help`
 
-- `npm install`
-- `npm run -w @new-start/sdk-ts typecheck`
-- `npm run -w @new-start/web dev`
+## TypeScript workspace
+
+- `pnpm install`
+- `pnpm --filter @new-start/sdk-ts typecheck`
+- `pnpm dev:web`

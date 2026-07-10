@@ -24,7 +24,7 @@ Last updated: July 2026
 
 ```bash
 vectis-node node serve \
-  --data-dir ./vectis-data \
+  --data-dir ./.data/default \
   --bind 0.0.0.0:7878 \
   --ingest-rate-limit-max 120 \
   --ingest-rate-limit-window-seconds 60
@@ -46,8 +46,8 @@ Verification: `cargo test -p node --test api api_post_events_rate`.
 Optional tamper detection for `events.log`. **Disabled by default.** When enabled at init, each ingested event appends a line to `events.chain.jsonl` with rolling SHA-256 chain hashes.
 
 ```bash
-vectis-node node init --data-dir ./vectis-data --events-log-hash-chain
-cargo run --bin cli -- log verify-chain --data-dir ./vectis-data
+vectis-node node init --data-dir ./.data/default --events-log-hash-chain
+cargo run --bin cli -- log verify-chain --data-dir ./.data/default
 ```
 
 | Artifact | Purpose |

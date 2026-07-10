@@ -17,7 +17,7 @@ Last updated: July 2026
 - **R4-C1..C4 complete** — client/kernel audit; `npm run r4:client-audit`
 - **Next implementation slice:** **`R7-D1`** — Tauri v2 desktop scaffold ([r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md))
 - R3-B1 (standalone Aperio CLI) remains parallel when repo access available
-- Production operator data: `./vectis-data-r2` (not `./vectis-data`, which has fixture pollution)
+- Production operator data: `./.data/r2` (not `./.data/default`, which is for fresh init / experiments)
 
 ### R2 progress (complete)
 

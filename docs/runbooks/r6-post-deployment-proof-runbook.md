@@ -38,13 +38,13 @@ Pick one community artifact lane from [lane template catalog](../architecture/la
 Dedicated data dir per lane (do not mix with production):
 
 ```bash
-pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./vectis-data-r6-docs
+pnpm r6:post-deployment:drill -- --lane documentation --data-dir ./.data/r6-pd-documentation
 ```
 
 Other lanes:
 
 ```bash
-pnpm r6:post-deployment:drill -- --lane feature-work --data-dir ./vectis-data-r6-features
+pnpm r6:post-deployment:drill -- --lane feature-work --data-dir ./.data/r6-pd-feature-work
 ```
 
 Node already running:
@@ -82,7 +82,7 @@ curl "http://127.0.0.1:7878/state/order/<orderId>?as_of=<RFC3339>"
 
 ```bash
 pnpm r6:post-deployment:phase-c:packet -- \\
-  --data-dir ./vectis-data-r6-docs \\
+  --data-dir ./.data/r6-pd-documentation \\
   --lane documentation \\
   --order-id <orderId> \\
   --buyer-pubkey <hex> \\

@@ -21,12 +21,13 @@ import {
   createReleaseRunners,
   resolveReleaseBinary,
 } from "./lib/release-binary.mjs";
+import { DATA_DIRS } from "./lib/data-dirs.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export function parseEvidenceExportArgs(argv) {
   const result = {
-    dataDir: path.join(WORKSPACE_ROOT, "vectis-data-r2"),
+    dataDir: DATA_DIRS.r2,
     outDir: "",
     baseUrl: "",
     asOf: "",

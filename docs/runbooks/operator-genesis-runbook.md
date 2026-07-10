@@ -20,7 +20,7 @@ Related: [../specs/trust-bootstrap-and-credits-path-spec.md](../specs/trust-boot
 pnpm --filter @new-start/sdk-ts build
 npm run v1:build-release
 
-# Dedicated genesis proof dir (default ./vectis-data-r2-genesis)
+# Dedicated genesis proof dir (default `./.data/r2-genesis`)
 npm run r2:genesis-drill
 
 # Node already running

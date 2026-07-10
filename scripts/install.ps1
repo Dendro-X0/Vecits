@@ -7,7 +7,7 @@ Set-Location $Root
 npm run v1:build-release
 
 $Binary = node ./scripts/resolve-release-binary.mjs
-$DataDir = if ($args.Count -gt 0) { $args[0] } else { Join-Path $Root "vectis-data" }
+$DataDir = if ($args.Count -gt 0) { $args[0] } else { Join-Path $Root ".data\default" }
 
 & $Binary node init --data-dir $DataDir
 
