@@ -84,11 +84,54 @@ async function main() {
   }
 
   const marketplace = await readUtf8("apps/web/app/marketplace/page.tsx");
-  if (!/variant="offProtocol"|variant='offProtocol'/.test(marketplace)) {
+  if (
+    !/variant="offProtocol"|variant='offProtocol'/.test(marketplace) &&
+    !/KernelTruthBanner/.test(marketplace)
+  ) {
     failures.push("marketplace entry missing SOC-01 off-protocol payment warning");
   }
 
+  const helpArticles = await readUtf8("apps/web/lib/help/articles.ts");
+  const requiredHelpSlugs = ["deal-flow", "disputes", "identity", "node-connection"];
+  for (const slug of requiredHelpSlugs) {
+    if (!new RegExp(`slug:\\s*"${slug}"`).test(helpArticles)) {
+      failures.push(`help articles missing slug: ${slug}`);
+    }
+  }
+
+  const phase2Surfaces = [
+    "apps/web/components/marketplace/order-action-hub.tsx",
+    "apps/web/lib/dashboard/workspace-role.ts",
+    "apps/web/components/workspace/order-workspace-notes-panel.tsx",
+    "apps/web/lib/marketplace/milestone-draft.ts"
+  ];
+  for (const relative of phase2Surfaces) {
+    try {
+      await fs.access(path.join(WORKSPACE_ROOT, relative));
+    } catch {
+      failures.push(`missing Phase 2 surface: ${relative}`);
+    }
+  }
+
+  const transactionsPage = await readUtf8("apps/web/components/dashboard/transactions-page.tsx");
+  if (!/parseRoleFilter/.test(transactionsPage)) {
+    failures.push("transactions page missing role-aware queue filter");
+  }
+
+  const orderDetailWorkspace = await readUtf8(
+    "apps/web/components/marketplace/order-detail-workspace.tsx"
+  );
+  if (!/OrderActionHub/.test(orderDetailWorkspace)) {
+    failures.push("order detail workspace missing action hub");
+  }
+  if (!/OrderWorkspaceNotesPanel/.test(orderDetailWorkspace)) {
+    failures.push("order detail workspace missing off-protocol notes panel");
+  }
+
   const siteHeader = await readUtf8("apps/web/components/shell/site-header.tsx");
+  if (!/\/help/.test(siteHeader)) {
+    failures.push("site header missing Help nav link");
+  }
   if (!/label: "Identity"/.test(siteHeader)) {
     failures.push("site header missing Identity primary nav label");
   }
@@ -120,7 +163,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log("R4 client audit passed (C1–C4 checks).");
+  console.log("R4 client audit passed (C1–C4 + Phase 2 surface checks).");
   console.log(`  scanned ${webFiles.length} web app source files`);
   console.log("  AB-15: session state gated on kernel ingest");
   console.log("  SOC-01-doc: onboarding + operator-security-guide + marketplace entry");

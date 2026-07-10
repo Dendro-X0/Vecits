@@ -147,7 +147,7 @@ Acceptance checks:
 - **Identity portability**: settings security section leads with backup/passkey guidance before advanced technical controls.
 - **Transactions handoff**: live order cards deep-link to the matching guided builder step when the viewer needs to act.
 
-**Status:** Phase 1 complete — see [frontend-phase1-completion.md](frontend-phase1-completion.md). Phase 2 plan: [frontend-phase2-plan.md](frontend-phase2-plan.md).
+**Status:** Phase 1 complete — see [frontend-phase1-completion.md](frontend-phase1-completion.md). Phase 2 complete — see [frontend-phase2-completion.md](frontend-phase2-completion.md). Phase 3 plan: [frontend-phase3-plan.md](frontend-phase3-plan.md).
 
 ### In-app user help
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { MarketplaceHero } from "@/components/marketplace/marketplace-hero";
+import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
 import { MarketplaceStatusPanel } from "@/components/marketplace/marketplace-status-panel";
 import { MarketplaceListingsSection } from "@/components/marketplace/marketplace-listings-section";
 import { MarketplaceTrustNotes } from "@/components/marketplace/marketplace-trust-notes";
@@ -47,6 +48,9 @@ export default async function MarketplacePage() {
         </section>
       ) : null}
       <MarketplaceHero />
+      <section className="mx-auto max-w-7xl px-4 pt-2 sm:px-6 lg:px-8">
+        <KernelTruthBanner variant="offProtocol" />
+      </section>
       <section id="listings" className="mx-auto max-w-7xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
         {!connectionError ? <MarketplaceTrustNotes /> : null}
 

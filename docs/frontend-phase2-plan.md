@@ -1,6 +1,6 @@
 # Frontend Phase 2 — Workspace Depth
 
-Status: **complete** (July 2026)
+Status: **complete** (July 2026) — see [frontend-phase2-completion.md](frontend-phase2-completion.md). Next: [frontend-phase3-plan.md](frontend-phase3-plan.md).
 
 Prerequisite: [frontend-phase1-completion.md](frontend-phase1-completion.md)  
 Canonical rules: [frontend-spec.md](frontend-spec.md)
@@ -103,7 +103,7 @@ Turn the marketplace client from a **deal loop** into a **daily workspace**: rol
 - [x] Overview and Transactions show role-aware queues and matching “needs you” counts
 - [x] At least two milestones can be composed in guided order step
 - [x] Off-protocol notes (if shipped) are visually distinct from kernel state
-- [ ] `pnpm typecheck` + manual smoke on order detail + dispute path
+- [x] `pnpm typecheck` + manual smoke on order detail + dispute path → [client/testing-without-users.md](client/testing-without-users.md) §12
 
 ## Verification commands
 
