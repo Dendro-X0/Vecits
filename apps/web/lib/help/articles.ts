@@ -125,6 +125,90 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: "Only events accepted by the node appear as authoritative state. Client-side drafts, notes, or chat are not settlement unless they are signed and ingested."
       }
     ]
+  },
+  {
+    slug: "trust-bootstrap",
+    title: "Trust bootstrap and founding network",
+    summary:
+      "How sponsor vouches unlock provider admission during the founding phase — and how that differs from milestone settlement.",
+    sections: [
+      {
+        heading: "Founding network phase",
+        body: "Early deployments label honestly as a founding network. Admission is invite-style: sponsors vouch for new identities before they can publish offers. This is not a permanent gate — operators tighten policy as the network matures.",
+        bullets: [
+          "Dashboard and marketplace show a Founding network label with this guide linked.",
+          "Vouch weight comes from replay-visible Vouch events on your node.",
+          "Credits are coordination fuel — not fiat money and not withdrawable."
+        ]
+      },
+      {
+        heading: "Admission vs settlement",
+        body: "Sponsor vouches answer whether a provider may publish offers (admission). They do not replace milestone rules. Escrow funding, delivery evidence, and buyer accept still settle each order on locked terms.",
+        bullets: [
+          "Admission — provider_eligibility_threshold from active policy.",
+          "Settlement — SpendCredits, ServiceDelivery, ServiceAccept per order.",
+          "Disputes — deterministic protocol outcomes only; no human override in the client."
+        ]
+      },
+      {
+        heading: "Getting sponsor vouches",
+        body: "Open Dashboard → Overview while signed in. The trust bootstrap panel shows your vouch weight vs threshold, lets you track requested sponsors, and copy a vouch request message for sponsors to sign.",
+        bullets: [
+          "Create your identity on-node first (Settings → Advanced operator tools if needed).",
+          "Add sponsor public keys and copy the request draft.",
+          "Sponsors submit signed Vouch events referencing your identity."
+        ]
+      }
+    ]
+  },
+  {
+    slug: "credits-path",
+    title: "Earning credits as a buyer",
+    summary:
+      "The contribution path for first credits during founding: claim → attest → mint → fund escrow.",
+    sections: [
+      {
+        heading: "Why buyers need credits",
+        body: "Marketplace escrow spends in-protocol credits. During founding there is no fiat checkout. Buyers typically earn first credits by documenting contribution work, collecting attestations, and minting under policy rules.",
+        bullets: [
+          "Credits expire and are not transferable wealth.",
+          "Mint reason contribution is the primary net-new issuance path before marketplace closes.",
+          "Never treat credits as money or an investment."
+        ]
+      },
+      {
+        heading: "Step 1 — File a contribution claim",
+        body: "Describe verifiable work: maintenance, documentation, ops support, or other network contribution. The claim references an artifact hash and requested credit amount within policy caps.",
+        bullets: [
+          "Use operator contribution tools in Settings → Advanced for signed events during drills.",
+          "Claims need a unique claimId and beneficiary public key (usually yours)."
+        ]
+      },
+      {
+        heading: "Step 2 — Collect attestations",
+        body: "Independent attestors approve or reject the claim. Policy sets claim_approval_threshold — typically two distinct sponsors during genesis.",
+        bullets: [
+          "Attest events reference the claim event.",
+          "Rejections do not mint credits."
+        ]
+      },
+      {
+        heading: "Step 3 — Mint credits",
+        body: "After enough approvals, mint credits with mintReason contribution. Minted lots carry expiry — spend them before they lapse.",
+        bullets: [
+          "Mint references the approved claim.",
+          "Check balance in Overview trust bootstrap or the balance explorer."
+        ]
+      },
+      {
+        heading: "Step 4 — Fund escrow",
+        body: "With spendable balance, place an order and fund the milestone from Publish & transact → Fund escrow. That locks credits for provider work under locked terms.",
+        bullets: [
+          "Dashboard → Publish & transact → Fund escrow.",
+          "Order pages also link to the matching builder step."
+        ]
+      }
+    ]
   }
 ];
 

@@ -1,12 +1,14 @@
 import type { DiscoveryOfferRow } from "@new-start/sdk-ts";
 
 import type { SortOption } from "./lanes";
+import type { ListingTrustSnippet } from "./trust-signals";
 
 export type MarketplaceListing = DiscoveryOfferRow & {
   title: string;
   subtitle: string;
   deliveryMode?: string;
   showcase?: boolean;
+  trustSnippet?: ListingTrustSnippet;
 };
 
 const UNIT_HINTS: Record<string, string> = {

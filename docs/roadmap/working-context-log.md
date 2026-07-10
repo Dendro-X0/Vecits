@@ -8,7 +8,7 @@ Last updated: July 2026
 
 - **Frontend Phase 1 (deal loop)** — **complete** (July 2026). Evidence: `docs/frontend-phase1-completion.md`
 - **Frontend Phase 2 (workspace depth)** — **complete** (July 2026). Plan: `docs/frontend-phase2-plan.md` · completion: `docs/frontend-phase2-completion.md`
-- **Frontend Phase 3 (trust + lanes)** — **planned**. Plan: `docs/frontend-phase3-plan.md`
+- **Frontend Phase 3 (trust + lanes)** — **complete**. Summary: `docs/frontend-phase3-completion.md`
 - **In-app help** — `/help` in web client; dev docs in `docs/client/`
 - Active protocol plan: `docs/roadmap/restart-roadmap.md`
 - **R0 complete** — gate `RG-1` = `pass`

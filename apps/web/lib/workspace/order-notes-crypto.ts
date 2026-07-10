@@ -28,7 +28,7 @@ export type OrderWorkspaceRecord = {
   reminder?: OrderWorkspaceReminder | null;
 };
 
-type WorkspaceStoreDocument = {
+export type WorkspaceStoreDocument = {
   format: typeof WORKSPACE_STORE_FORMAT;
   version: typeof WORKSPACE_STORE_VERSION;
   publicKeyHex: string;

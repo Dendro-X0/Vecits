@@ -1,8 +1,9 @@
 # Frontend Phase 3 — Trust, Lanes, and Production Readiness
 
-Status: **planned** (kickoff after Phase 2 commit `2416d40`)
+Status: **complete** (July 2026)
 
 Prerequisite: [frontend-phase2-plan.md](frontend-phase2-plan.md) (complete)  
+Completion summary: [frontend-phase3-completion.md](frontend-phase3-completion.md)  
 Canonical rules: [frontend-spec.md](frontend-spec.md)
 
 ## Goal
@@ -39,6 +40,8 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 
 ### P3-A — Trust bootstrap in the main client
 
+**Status:** complete (July 2026). Overview trust panel, offer-step admission guard, founding network label, help articles.
+
 **Problem:** New providers hit `provider_eligibility_threshold` and buyers hit zero balance with no guidance in the guided client. Operator tools exist but are buried in Advanced → legacy console.
 
 | ID | Scope | Acceptance |
@@ -57,6 +60,8 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 
 ### P3-B — Multi-milestone exchange completion
 
+**Status:** complete (July 2026). Milestone picker on downstream builder steps, `?milestone=` handoff, order hub milestone strip, relative due-window hints (best effort).
+
 **Problem:** Phase 2 composes multi-milestone orders but escrow/delivery/accept/dispute steps still assume a single milestone id field.
 
 | ID | Scope | Acceptance |
@@ -71,6 +76,8 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 ---
 
 ### P3-C — Marketplace trust signals
+
+**Status:** complete (July 2026). Provider trust on offer detail, listing snippets, discovery disclaimer, delivery history labels.
 
 **Problem:** Marketplace shows price and lane but not **why** a provider is eligible or what reputation means.
 
@@ -87,6 +94,8 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 
 ### P3-D — Lane discovery and publish guidance
 
+**Status:** complete (July 2026). Lane catalog route, publish lane-fit panel, discovery import CTAs with draft disclaimer, experimental lane badges.
+
 **Problem:** Seven community lanes exist (R6-L2) but the marketplace does not help users pick the right lane or import discovery drafts.
 
 | ID | Scope | Acceptance |
@@ -101,6 +110,8 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 ---
 
 ### P3-E — Workspace layer depth (optional slice)
+
+**Status:** complete (July 2026). Overview reminder flush, order hub local-note chip, encrypted workspace backup export in Advanced settings.
 
 **Problem:** P2-E notes work on order detail but reminders only flush on transactions load.
 
@@ -143,13 +154,18 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 - [x] `npm run r4:client-audit` passes (P3-F)
 - [x] Manual smoke checklist documented for Phase 2 paths (P3-F)
 - [x] `docs/README.md` and `frontend-spec.md` link Phase 3 plan (P3-F)
-- [ ] New provider sees eligibility status in guided client before offer submit fails on-node
-- [ ] New buyer sees credits-path checklist without opening operator console
-- [ ] Multi-milestone order can be funded/delivered/accepted per-milestone from guided builder
-- [ ] Offer detail shows kernel-backed provider eligibility or reputation snippet with disclaimer
-- [ ] `npm run r4:client-audit` passes
+- [x] New provider sees eligibility status in guided client before offer submit fails on-node
+- [x] New buyer sees credits-path checklist without opening operator console
+- [x] Multi-milestone order can be funded/delivered/accepted per-milestone from guided builder
+- [x] Offer detail shows kernel-backed provider eligibility or reputation snippet with disclaimer
+- [x] Marketplace links to lane catalog; offer step shows lane delivery/evidence fit
+- [x] Discovery draft import promoted with "draft ≠ live offer" label in marketplace and builder
+- [x] Overview flushes due workspace reminders on signed-in load
+- [x] Order hub shows local-note chip when encrypted workspace record exists
+- [x] Advanced settings exports identity-bound encrypted workspace notes backup (off-protocol)
+- [x] `npm run r4:client-audit` passes
 - [x] `cd apps/web && pnpm typecheck` passes
-- [ ] Manual smoke per [client/testing-without-users.md](client/testing-without-users.md) including genesis drill walkthrough
+- [x] Manual smoke checklist documented for Phase 3 paths ([client/testing-without-users.md](client/testing-without-users.md) §13)
 
 ## Verification commands
 

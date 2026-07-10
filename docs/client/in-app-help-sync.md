@@ -21,6 +21,8 @@ End users should not need to read `/docs` in git. Maintainers should not duplica
 | `disputes` | Disputes and settlement | [foundation/market-operating-model.md](../foundation/market-operating-model.md), guided branch in `transaction-builder-panel.tsx` |
 | `identity` | Identity and backup | [runbooks/operator-security-guide.md](../runbooks/operator-security-guide.md), [runbooks/desktop-secure-key-vault.md](../runbooks/desktop-secure-key-vault.md) |
 | `node-connection` | Connecting to a node | [runbooks/operator-quickstart.md](../runbooks/operator-quickstart.md), [development-guide.md](development-guide.md) |
+| `trust-bootstrap` | Trust bootstrap and founding network | [specs/trust-bootstrap-and-credits-path-spec.md](../specs/trust-bootstrap-and-credits-path-spec.md) §9 |
+| `credits-path` | Earning credits as a buyer | [specs/trust-bootstrap-and-credits-path-spec.md](../specs/trust-bootstrap-and-credits-path-spec.md) SCN-02 |
 
 ## When to update
 

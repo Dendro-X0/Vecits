@@ -3,7 +3,7 @@
 Status: **complete** (July 2026)
 
 Canonical plan: [frontend-phase2-plan.md](frontend-phase2-plan.md)  
-Next: [frontend-phase3-plan.md](frontend-phase3-plan.md)
+Next: [frontend-phase3-completion.md](frontend-phase3-completion.md)
 
 ## Goal
 
@@ -46,9 +46,6 @@ cd apps/web && pnpm typecheck
 
 Manual smoke: [client/testing-without-users.md](client/testing-without-users.md)
 
-## Known follow-ups (Phase 3)
+## Known follow-ups (post–Phase 3)
 
-- Trust bootstrap UX in main client (operator wizard → dashboard)
-- Milestone picker on escrow/delivery/accept steps
-- Marketplace trust signals (vouch weight, lane reputation)
-- `npm run r4:client-audit` gate
+See [frontend-phase3-completion.md](frontend-phase3-completion.md).

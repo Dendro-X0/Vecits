@@ -9,8 +9,32 @@ import {
   type MarketplaceListing
 } from "@/lib/marketplace/listings";
 import { fetchMarketplaceDiscovery } from "@/lib/marketplace/node";
+import {
+  loadListingTrustSnippets,
+  showcaseListingTrustSnippet
+} from "@/lib/marketplace/trust-signals";
 
 const MOCK_MODE_ENABLED = process.env.NEXT_PUBLIC_VECTIS_MOCK_MODE === "1";
+
+async function attachTrustSnippets(
+  baseUrl: string,
+  listings: MarketplaceListing[],
+  asOf?: string,
+  showcase = false
+): Promise<MarketplaceListing[]> {
+  if (showcase) {
+    return listings.map((listing) => ({
+      ...listing,
+      trustSnippet: showcaseListingTrustSnippet(listing)
+    }));
+  }
+
+  const snippets = await loadListingTrustSnippets(baseUrl, listings, asOf);
+  return listings.map((listing) => {
+    const snippet = snippets.get(listing.provider_pub_key.toLowerCase());
+    return snippet ? { ...listing, trustSnippet: snippet } : listing;
+  });
+}
 
 export async function loadMarketplaceListings(
   searchParams: QueryParams,
@@ -49,7 +73,7 @@ export async function loadMarketplaceListings(
       listings = listings.filter((listing) => listing.service_type === "project-maintenance");
     }
     return {
-      listings,
+      listings: await attachTrustSnippets(discovery.baseUrl, listings, undefined, true),
       showcase: true,
       mockMode: true,
       baseUrl: discovery.baseUrl,
@@ -75,7 +99,7 @@ export async function loadMarketplaceListings(
       };
     }
     return {
-      listings: SHOWCASE_LISTINGS,
+      listings: await attachTrustSnippets(discovery.baseUrl, SHOWCASE_LISTINGS, undefined, true),
       showcase: true,
       mockMode: true,
       baseUrl: discovery.baseUrl,
@@ -84,13 +108,13 @@ export async function loadMarketplaceListings(
     };
   }
 
-  return {
-    listings,
-    showcase: false,
-    mockMode: false,
-    baseUrl: discovery.baseUrl,
-    asOf: discovery.view.as_of
-  };
+    return {
+      listings: await attachTrustSnippets(discovery.baseUrl, listings, discovery.view.as_of),
+      showcase: false,
+      mockMode: false,
+      baseUrl: discovery.baseUrl,
+      asOf: discovery.view.as_of
+    };
 }
 
 export function prepareListings(

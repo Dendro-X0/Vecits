@@ -34,6 +34,11 @@ export function CategorySidebar({
             active={activeSection === "mutual-aid"}
             label="Mutual aid"
           />
+          <SidebarLink
+            href={buildMarketplaceHref("/marketplace/lanes", searchParams)}
+            active={false}
+            label="Lane catalog"
+          />
         </div>
       </div>
 

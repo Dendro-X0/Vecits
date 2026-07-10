@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { TrustBootstrapPanel } from "@/components/dashboard/trust-bootstrap-panel";
+import { TrustPhaseLabel } from "@/components/dashboard/trust-phase-label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadActiveSession } from "@/lib/auth/session";
@@ -21,6 +23,7 @@ import {
 } from "@/lib/dashboard/load-live-overview";
 import { loadTransactions, type TransactionsState } from "@/lib/dashboard/load-transactions";
 import type { WorkspaceRoleSummary } from "@/lib/dashboard/workspace-role";
+import { flushDueOrderReminders } from "@/lib/workspace/order-reminders";
 import { truncatePubkey } from "@/lib/utils";
 
 type OverviewStatus = "signed-out" | "loading" | "live" | "empty" | "error";
@@ -354,6 +357,14 @@ export function OverviewPage() {
   }, []);
 
   useEffect(() => {
+    const session = loadActiveSession();
+    if (!session?.publicKeyHex) {
+      return;
+    }
+    void flushDueOrderReminders(session);
+  }, [pubkey]);
+
+  useEffect(() => {
     if (!pubkey) {
       setOverviewState(null);
       setTransactionsState(null);
@@ -383,9 +394,14 @@ export function OverviewPage() {
 
   return (
     <div className="w-full space-y-5 px-4 py-5 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap items-center justify-end gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {pubkey ? <TrustPhaseLabel compact /> : null}
         <StatusBadge status={status} state={overviewState} pubkey={pubkey} />
       </div>
+
+      {pubkey && status !== "loading" ? (
+        <TrustBootstrapPanel publicKeyHex={pubkey} />
+      ) : null}
 
       {status === "signed-out" ? (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">

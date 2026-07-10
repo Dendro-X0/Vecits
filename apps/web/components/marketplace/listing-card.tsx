@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, BadgeCheck, Coins, UserRound } from "lucide-react";
 
 import type { QueryParams } from "@/app/explorer/lib";
+import { ListingTrustBadges } from "@/components/marketplace/provider-trust-signals";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
@@ -52,11 +53,12 @@ export function ListingCard({ listing, searchParams, signedIn = false }: Listing
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <UserRound className="h-4 w-4 shrink-0" />
-          <span>{truncatePubkey(listing.provider_pub_key)}</span>
-          <span className="text-border">·</span>
-          <span>Rep {listing.global_score}</span>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <UserRound className="h-4 w-4 shrink-0" />
+            <span>{truncatePubkey(listing.provider_pub_key)}</span>
+          </div>
+          <ListingTrustBadges serviceType={listing.service_type} snippet={listing.trustSnippet} />
         </div>
       </CardContent>
 

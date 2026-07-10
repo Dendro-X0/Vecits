@@ -13,7 +13,7 @@ Operators: [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md). I
 | **Kernel / protocol** | R0–R2 complete; reference-lane procedure guards GAP-01..07 closed |
 | **Trust bootstrap** | Spec locked — [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) |
 | **Discovery bridge** | Classifier + offer drafts + Aperio import — [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| **Client** | R4-C1..C4 complete; frontend Phase 1–2 complete; Phase 3 planned ([frontend-phase3-plan.md](frontend-phase3-plan.md)) — in-app help at `/help`, dev docs in [client/](client/README.md) |
+| **Client** | R4-C1..C4 complete; frontend Phase 1–3 complete ([frontend-phase3-completion.md](frontend-phase3-completion.md)) — in-app help at `/help`, dev docs in [client/](client/README.md) |
 | **Gates** | RG-1..RG-4 pass; RG-5 partial (Aperio live CLI optional) |
 
 Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md) · Evidence: [roadmap/progress.md](roadmap/progress.md)
@@ -26,7 +26,7 @@ Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md
 | Operator / first deploy | [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md) |
 | Protocol / fixtures | [architecture/software-fixes-lane.md](architecture/software-fixes-lane.md) → [v0/v0-scenario-fixture-matrix.md](v0/v0-scenario-fixture-matrix.md) |
 | Discovery (Aperio → Vectis) | [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| What's next (client UX) | [frontend-phase3-plan.md](frontend-phase3-plan.md) |
+| What's next (client UX) | [frontend-phase3-completion.md](frontend-phase3-completion.md) · [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
 | Client dev + solo testing | [client/development-guide.md](client/development-guide.md) · [client/testing-without-users.md](client/testing-without-users.md) |
 | What's next (protocol) | [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
 | Maintainer / R-track | [roadmap/restart-roadmap.md](roadmap/restart-roadmap.md) |

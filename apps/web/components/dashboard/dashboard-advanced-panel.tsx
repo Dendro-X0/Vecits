@@ -5,6 +5,7 @@ import { ExternalLink, Wrench } from "lucide-react";
 
 import { OperationsCommandTools } from "@/app/components/operations-command-tools";
 import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
+import { WorkspaceBackupPanel } from "@/components/workspace/workspace-backup-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const READINESS_COMMANDS = [
@@ -73,6 +74,19 @@ export function DashboardAdvancedContent({ embedded = false }: { embedded?: bool
             Open publish flow
             <ExternalLink className="h-4 w-4" />
           </Link>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Workspace notes backup</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Export encrypted order notes and reminders from this browser. Restore by copying the file
+            back into local storage on the same identity — not a kernel or protocol feature.
+          </p>
+          <WorkspaceBackupPanel />
         </CardContent>
       </Card>
 

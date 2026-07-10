@@ -37,10 +37,20 @@ import {
   type DiscoveryDraftBuilderPrefill,
   type DiscoveryOfferDraft
 } from "@/lib/marketplace/discovery-draft-import";
+import { buildDisputeBuilderHref } from "@/lib/dashboard/builder-handoff";
 import {
   defaultNodeClientBaseUrlForForms,
   validateNodeClientBaseUrl
 } from "@/lib/node-client-base-url";
+import { LanePublishFitPanel } from "@/components/marketplace/lane-publish-fit-panel";
+import {
+  DEFAULT_SERVICE_LANE_TEMPLATE_ID,
+  SERVICE_LANE_TEMPLATES,
+  SERVICE_LANE_TEMPLATE_BY_ID,
+  SERVICE_LANE_TEMPLATE_BY_SERVICE_TYPE,
+  resolveLaneTemplateForServiceType,
+  type ServiceLaneTemplate
+} from "@/lib/marketplace/lane-templates";
 import {
   legacyButtonStyle,
   legacyCodePanelStyle,
@@ -73,6 +83,12 @@ export type MarketplaceEventBuilderProps = {
   showDiscoveryImport?: boolean;
   initialMode?: BuilderMode;
   prefillOrderId?: string;
+  prefillMilestoneId?: string;
+  providerEligibility?: {
+    thresholdMet: boolean;
+    incomingActiveVouchWeight: number;
+    threshold: number;
+  } | null;
 };
 
 type FixturePreset = "acceptFlow" | "timeoutFlow";
@@ -137,18 +153,6 @@ type LaneStarterPreset = {
   notesHash: string;
   buyerRefundCredits: string;
   providerRewardCredits: string;
-};
-
-type ServiceLaneTemplate = {
-  id: string;
-  label: string;
-  serviceType: string;
-  unitDefinition: string;
-  deliveryMode: string;
-  allowedEvidenceFormats: string[];
-  defaultMilestoneEvidenceFormat: string;
-  strict: boolean;
-  description: string;
 };
 
 type ComputeDeliveryHints = {
@@ -330,127 +334,6 @@ const LANE_STARTER_PRESETS: Record<BuilderLaneStarter, LaneStarterPreset> = {
   }
 };
 
-const SERVICE_LANE_TEMPLATES: ServiceLaneTemplate[] = [
-  {
-    id: "software-fixes",
-    label: "Software Fixes",
-    serviceType: "software-fixes",
-    unitDefinition: "fix per issue",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Narrow artifact-verifiable fixes for bugs and defects."
-  },
-  {
-    id: "feature-work",
-    label: "Small Feature Work",
-    serviceType: "feature-work",
-    unitDefinition: "feature increment",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Small bounded feature increments with explicit deliverables."
-  },
-  {
-    id: "documentation",
-    label: "Documentation",
-    serviceType: "documentation",
-    unitDefinition: "doc update",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Structured documentation improvements anchored by artifacts."
-  },
-  {
-    id: "translation",
-    label: "Translation",
-    serviceType: "translation",
-    unitDefinition: "translation package",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Translation deliverables for docs and structured text assets."
-  },
-  {
-    id: "testing",
-    label: "Testing and Reproduction",
-    serviceType: "testing",
-    unitDefinition: "test report",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Test, reproduction, and verification outputs with evidence anchors."
-  },
-  {
-    id: "research",
-    label: "Structured Research",
-    serviceType: "research",
-    unitDefinition: "research brief",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Structured analysis and research outputs with artifact proofs."
-  },
-  {
-    id: "project-maintenance",
-    label: "Project Maintenance",
-    serviceType: "project-maintenance",
-    unitDefinition: "maintenance task",
-    deliveryMode: "artifact",
-    allowedEvidenceFormats: ["artifactHash"],
-    defaultMilestoneEvidenceFormat: "artifactHash",
-    strict: false,
-    description: "Stalled-project continuation and maintenance-oriented deliverables."
-  },
-  {
-    id: "compute-job",
-    label: "Compute Job",
-    serviceType: "compute-job",
-    unitDefinition: "deterministic compute job",
-    deliveryMode: "receipt",
-    allowedEvidenceFormats: ["job-receipt-v1"],
-    defaultMilestoneEvidenceFormat: "job-receipt-v1",
-    strict: true,
-    description: "Standardized job-runner lane with deterministic receipt evidence."
-  },
-  {
-    id: "local-resource-exchange",
-    label: "Local Resource Exchange",
-    serviceType: "local-resource-exchange",
-    unitDefinition: "local exchange handoff",
-    deliveryMode: "local-community",
-    allowedEvidenceFormats: ["local-resource-receipt-v1"],
-    defaultMilestoneEvidenceFormat: "local-resource-receipt-v1",
-    strict: true,
-    description: "Offline constrained lane with deterministic local receipt format."
-  },
-  {
-    id: "physical-handoff",
-    label: "Physical Handoff",
-    serviceType: "physical-handoff",
-    unitDefinition: "in-person handoff",
-    deliveryMode: "in-person",
-    allowedEvidenceFormats: ["physical-handoff-ack-dual-v1"],
-    defaultMilestoneEvidenceFormat: "physical-handoff-ack-dual-v1",
-    strict: true,
-    description: "Offline constrained lane requiring dual acknowledgment evidence."
-  }
-];
-
-const DEFAULT_SERVICE_LANE_TEMPLATE_ID = "software-fixes";
-const SERVICE_LANE_TEMPLATE_BY_ID = new Map(
-  SERVICE_LANE_TEMPLATES.map(template => [template.id, template] as const)
-);
-const SERVICE_LANE_TEMPLATE_BY_SERVICE_TYPE = new Map(
-  SERVICE_LANE_TEMPLATES.map(template => [template.serviceType, template] as const)
-);
-
 const FLOW_STEPS: Record<FlowRoute, BuilderMode[]> = {
   acceptPath: ["offer", "order", "escrowSpend", "delivery", "accept"],
   disputePath: ["offer", "order", "escrowSpend", "delivery", "dispute", "settle"]
@@ -473,7 +356,9 @@ export function MarketplaceEventBuilder({
   onAccepted,
   showDiscoveryImport = true,
   initialMode,
-  prefillOrderId
+  prefillOrderId,
+  prefillMilestoneId,
+  providerEligibility
 }: MarketplaceEventBuilderProps = {}) {
   const searchParams = useSearchParams();
   const isTransaction = variant === "transaction";
@@ -508,6 +393,19 @@ export function MarketplaceEventBuilder({
     setDisputeOrderId(orderId);
     setSettleOrderId(orderId);
   }, [prefillOrderId]);
+
+  useEffect(() => {
+    const milestoneId = prefillMilestoneId?.trim();
+    if (!milestoneId) {
+      return;
+    }
+    setEscrowMilestoneId(milestoneId);
+    setDeliveryMilestoneId(milestoneId);
+    setAcceptMilestoneId(milestoneId);
+    setDisputeMilestoneId(milestoneId);
+    setSettleMilestoneId(milestoneId);
+  }, [prefillMilestoneId]);
+
   const [flowRoute, setFlowRoute] = useState<FlowRoute>("acceptPath");
   const [activePreset, setActivePreset] = useState<FixturePreset | null>(null);
   const [baseUrl, setBaseUrl] = useState(DEFAULT_NODE_API_BASE_URL);
@@ -593,6 +491,54 @@ export function MarketplaceEventBuilder({
   const [importedDraftMeta, setImportedDraftMeta] = useState<DiscoveryDraftBuilderPrefill | null>(
     null
   );
+
+  useEffect(() => {
+    const trimmedOrderId = prefillOrderId?.trim();
+    if (!trimmedOrderId || !isTransaction) {
+      return;
+    }
+    const hydrateOrderId = trimmedOrderId;
+
+    let cancelled = false;
+    async function hydrateMilestonesFromOrder() {
+      try {
+        const targetBaseUrl = (baseUrl.trim() || DEFAULT_NODE_API_BASE_URL).trim();
+        const client = new NodeClient({ baseUrl: targetBaseUrl });
+        const view = await client.getOrder(hydrateOrderId);
+        if (cancelled) {
+          return;
+        }
+        const orderData = (view.data as Record<string, unknown> | null) ?? null;
+        if (!orderData) {
+          return;
+        }
+
+        const milestoneIds = Array.isArray(orderData.milestone_ids)
+          ? (orderData.milestone_ids as string[]).filter((id) => typeof id === "string" && id.trim())
+          : Array.isArray(orderData.milestoneIds)
+            ? (orderData.milestoneIds as string[]).filter((id) => typeof id === "string" && id.trim())
+            : [];
+
+        if (milestoneIds.length <= 1) {
+          return;
+        }
+
+        setMilestoneRows(
+          milestoneIds.map((id, index) => ({
+            ...createDefaultMilestoneDraft(index),
+            milestoneId: id.trim()
+          }))
+        );
+      } catch {
+        // Best effort — user can still enter milestone IDs manually.
+      }
+    }
+
+    void hydrateMilestonesFromOrder();
+    return () => {
+      cancelled = true;
+    };
+  }, [prefillOrderId, isTransaction, baseUrl]);
 
   const primaryMilestoneRow = milestoneRows[0] ?? createDefaultMilestoneDraft(0);
   const milestoneId = primaryMilestoneRow.milestoneId;
@@ -1479,6 +1425,21 @@ export function MarketplaceEventBuilder({
       return;
     }
 
+    if (
+      isTransaction &&
+      mode === "offer" &&
+      providerEligibility &&
+      !providerEligibility.thresholdMet
+    ) {
+      setSubmitError({
+        status: null,
+        code: "client_preflight",
+        message: `Provider admission not met: vouch weight ${providerEligibility.incomingActiveVouchWeight} is below threshold ${providerEligibility.threshold}. Ask sponsors for vouches before publishing.`,
+        payload: { field: "providerEligibility" }
+      });
+      return;
+    }
+
     const currentRequirements = modeRequirements(mode, {
       offerId,
       serviceType,
@@ -1781,7 +1742,7 @@ export function MarketplaceEventBuilder({
       ) : null}
 
       {showDiscoveryImport ? (
-        <div style={{ marginBottom: "0.9rem" }}>
+        <div id="discovery-draft-import" style={{ marginBottom: "0.9rem" }}>
           <DiscoveryDraftImportPanel onImport={applyDiscoveryDraft} variant="inline" />
         </div>
       ) : null}
@@ -2299,10 +2260,30 @@ export function MarketplaceEventBuilder({
 
         {mode === "offer" ? (
           <>
+            {isTransaction && providerEligibility && !providerEligibility.thresholdMet ? (
+              <div className="mb-4 rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-sm">
+                <p className="font-medium text-foreground">Provider admission required</p>
+                <p className="mt-1 text-muted-foreground">
+                  Your vouch weight is {providerEligibility.incomingActiveVouchWeight} — the node
+                  requires {providerEligibility.threshold} to publish offers. Sponsor vouches are
+                  for <span className="font-medium text-foreground">admission</span> only; milestone
+                  settlement still follows locked escrow terms.
+                </p>
+                <Link href="/dashboard" className="mt-2 inline-flex text-sm font-medium text-primary hover:underline">
+                  Open trust bootstrap on Overview
+                </Link>
+              </div>
+            ) : null}
             {isTransaction ? (
               <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
                 Start with the basics buyers care about: what you offer, how pricing works, how proof is delivered, and when the offer expires.
               </div>
+            ) : null}
+            {isTransaction ? (
+              <LanePublishFitPanel
+                template={activeLaneTemplate}
+                customLane={serviceLaneTemplateId === "custom"}
+              />
             ) : null}
             <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
@@ -2642,15 +2623,13 @@ export function MarketplaceEventBuilder({
                 placeholder="mk-demo-order"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={escrowMilestoneId}
-                onChange={event => setEscrowMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
+            <MilestoneIdField
+              label={isTransaction ? "Milestone" : "milestoneId"}
+              value={escrowMilestoneId}
+              onChange={setEscrowMilestoneId}
+              rows={milestoneRows}
+              isTransaction={isTransaction}
+            />
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Amount to fund" : "amount"}
               <input
@@ -2726,15 +2705,13 @@ export function MarketplaceEventBuilder({
                 placeholder="mk-demo-order"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={deliveryMilestoneId}
-                onChange={event => setDeliveryMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
+            <MilestoneIdField
+              label={isTransaction ? "Milestone" : "milestoneId"}
+              value={deliveryMilestoneId}
+              onChange={setDeliveryMilestoneId}
+              rows={milestoneRows}
+              isTransaction={isTransaction}
+            />
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Proof format" : "evidenceFormat"}
               <input
@@ -2843,7 +2820,11 @@ export function MarketplaceEventBuilder({
                   If work does not meet the locked terms, use the guided dispute branch instead of accepting.
                 </p>
                 <Link
-                  href={`/dashboard/builder?branch=dispute&step=dispute${acceptOrderId.trim() ? `&order=${encodeURIComponent(acceptOrderId.trim())}` : ""}`}
+                  href={buildDisputeBuilderHref(
+                    acceptOrderId.trim() || null,
+                    "dispute",
+                    acceptMilestoneId.trim() || null
+                  )}
                   className="mt-2 inline-flex text-sm font-medium text-primary hover:underline"
                 >
                   Open dispute resolution
@@ -2860,15 +2841,13 @@ export function MarketplaceEventBuilder({
                 placeholder="mk-demo-order"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={acceptMilestoneId}
-                onChange={event => setAcceptMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
+            <MilestoneIdField
+              label={isTransaction ? "Milestone" : "milestoneId"}
+              value={acceptMilestoneId}
+              onChange={setAcceptMilestoneId}
+              rows={milestoneRows}
+              isTransaction={isTransaction}
+            />
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Accepted at" : "acceptedAt"}
               <input
@@ -2914,15 +2893,13 @@ export function MarketplaceEventBuilder({
                 placeholder="mk-demo-order"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={disputeMilestoneId}
-                onChange={event => setDisputeMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
+            <MilestoneIdField
+              label={isTransaction ? "Milestone" : "milestoneId"}
+              value={disputeMilestoneId}
+              onChange={setDisputeMilestoneId}
+              rows={milestoneRows}
+              isTransaction={isTransaction}
+            />
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Dispute reason" : "reasonCode"}
               {isTransaction ? (
@@ -3038,15 +3015,13 @@ export function MarketplaceEventBuilder({
                 placeholder="mk-demo-order"
               />
             </label>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
-              {isTransaction ? "Milestone ID" : "milestoneId"}
-              <input
-                value={settleMilestoneId}
-                onChange={event => setSettleMilestoneId(event.target.value)}
-                style={fieldStyle}
-                placeholder="m1"
-              />
-            </label>
+            <MilestoneIdField
+              label={isTransaction ? "Milestone" : "milestoneId"}
+              value={settleMilestoneId}
+              onChange={setSettleMilestoneId}
+              rows={milestoneRows}
+              isTransaction={isTransaction}
+            />
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Settlement outcome" : "outcome"}
               <Select
@@ -4319,10 +4294,6 @@ function isObjectRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function resolveLaneTemplateForServiceType(serviceType: string): ServiceLaneTemplate | null {
-  return SERVICE_LANE_TEMPLATE_BY_SERVICE_TYPE.get(serviceType.trim()) ?? null;
-}
-
 function validateLaneTemplateConstraints(input: {
   mode: BuilderMode;
   serviceType: string;
@@ -4502,6 +4473,50 @@ async function sha256Hex(value: string): Promise<string> {
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
+}
+
+function MilestoneIdField({
+  label,
+  value,
+  onChange,
+  rows,
+  isTransaction,
+  placeholder = "m1"
+}: {
+  label: string;
+  value: string;
+  onChange: (nextValue: string) => void;
+  rows: OrderMilestoneDraft[];
+  isTransaction: boolean;
+  placeholder?: string;
+}) {
+  const useSelect = isTransaction && rows.length > 1;
+
+  return (
+    <label style={{ display: "block", marginBottom: "0.5rem" }}>
+      {label}
+      {useSelect ? (
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          style={fieldStyle}
+        >
+          {rows.map((row, index) => (
+            <option key={row.milestoneId} value={row.milestoneId}>
+              {`Milestone ${index + 1} (${row.milestoneId})`}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          style={fieldStyle}
+          placeholder={placeholder}
+        />
+      )}
+    </label>
+  );
 }
 
 const transactionSectionStyle = {

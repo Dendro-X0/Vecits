@@ -17,6 +17,6 @@ User-facing copy lives in the client at `/help`. Protocol and operator truth sta
 - [../frontend-spec.md](../frontend-spec.md) — UI rules and acceptance criteria
 - [../frontend-phase1-completion.md](../frontend-phase1-completion.md) — deal loop Phase 1
 - [../frontend-phase2-completion.md](../frontend-phase2-completion.md) — workspace Phase 2 (complete)
-- [../frontend-phase3-plan.md](../frontend-phase3-plan.md) — trust, lanes, production readiness (next)
+- [../frontend-phase3-completion.md](../frontend-phase3-completion.md) — trust, lanes, production readiness (complete)
 
 ← [Docs home](../README.md)

@@ -14,6 +14,10 @@ const STORAGE_KEY = "vectis.workspace.order_notes.v1";
 
 let memoryCache: { publicKeyHex: string; store: OrderWorkspaceStore } | null = null;
 
+export function readWorkspaceStoreDocument(): unknown {
+  return readRawDocument();
+}
+
 function readRawDocument(): unknown {
   if (typeof window === "undefined") {
     return null;

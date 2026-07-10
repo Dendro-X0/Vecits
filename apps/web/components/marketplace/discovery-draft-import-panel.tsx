@@ -3,6 +3,7 @@
 import { Upload } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -101,9 +102,10 @@ export function DiscoveryDraftImportPanel({
   return (
     <div className={cn(shellClass, className)}>
       <div className="space-y-1">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Upload className="h-4 w-4 text-primary" />
           <p className="font-medium">Import a discovery draft</p>
+          <Badge variant="outline">Draft ≠ live offer</Badge>
         </div>
         <p className="text-sm text-muted-foreground">{discoveryDraftImportNote()}</p>
       </div>

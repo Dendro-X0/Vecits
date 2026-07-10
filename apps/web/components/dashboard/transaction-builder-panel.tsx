@@ -11,7 +11,12 @@ import {
 } from "@/app/components/marketplace-event-builder";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { loadActiveSession } from "@/lib/auth/session";
 import { buildDisputeBuilderHref } from "@/lib/dashboard/builder-handoff";
+import {
+  loadTrustBootstrapSnapshot,
+  type ProviderEligibility
+} from "@/lib/dashboard/trust-bootstrap";
 import { cn } from "@/lib/utils";
 
 const TRANSACTION_STEPS: Array<{
@@ -100,6 +105,8 @@ export function TransactionBuilderPanel() {
   const branchParam = searchParams.get("branch");
   const operatorParam = searchParams.get("operator");
   const orderParam = searchParams.get("order");
+  const milestoneParam = searchParams.get("milestone");
+  const importParam = searchParams.get("import");
 
   const [flow, setFlow] = useState<BuilderFlow>(() =>
     branchParam === "dispute" ? "dispute" : "happy"
@@ -120,8 +127,42 @@ export function TransactionBuilderPanel() {
   const [operatorInitialMode, setOperatorInitialMode] = useState<MarketplaceBuilderMode | undefined>(
     () => (operatorParam === "dispute" ? "dispute" : undefined)
   );
-  const [showImport, setShowImport] = useState(false);
+  const [showImport, setShowImport] = useState(() => importParam === "discovery");
   const [lastCompletedStep, setLastCompletedStep] = useState<MarketplaceBuilderMode | null>(null);
+  const [providerEligibility, setProviderEligibility] = useState<ProviderEligibility | null>(null);
+
+  useEffect(() => {
+    const session = loadActiveSession();
+    const publicKeyHex = session?.publicKeyHex;
+    if (!publicKeyHex) {
+      setProviderEligibility(null);
+      return;
+    }
+
+    let cancelled = false;
+    void loadTrustBootstrapSnapshot(publicKeyHex).then((snapshot) => {
+      if (!cancelled && snapshot.kind === "live") {
+        setProviderEligibility(snapshot.provider);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (importParam !== "discovery" || step !== "offer" || !showImport) {
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("discovery-draft-import")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [importParam, showImport, step]);
 
   useEffect(() => {
     if (branchParam === "dispute") {
@@ -172,6 +213,7 @@ export function TransactionBuilderPanel() {
           variant="full"
           initialMode={operatorInitialMode}
           prefillOrderId={orderParam ?? undefined}
+          prefillMilestoneId={milestoneParam ?? undefined}
         />
       </div>
     );
@@ -359,6 +401,8 @@ export function TransactionBuilderPanel() {
             onAccepted={handleAccepted}
             showDiscoveryImport={flow === "happy" && showImport}
             prefillOrderId={orderParam ?? undefined}
+            prefillMilestoneId={milestoneParam ?? undefined}
+            providerEligibility={providerEligibility}
           />
         </div>
       </section>
@@ -391,7 +435,7 @@ export function TransactionBuilderPanel() {
             nativeButton={false}
             render={
               <Link
-                href={buildDisputeBuilderHref(orderParam, "dispute")}
+                href={buildDisputeBuilderHref(orderParam, "dispute", milestoneParam)}
               />
             }
             variant="outline"

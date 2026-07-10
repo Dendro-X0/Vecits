@@ -1,5 +1,7 @@
 import { ShieldCheck } from "lucide-react";
 
+import { TrustPhaseLabel } from "@/components/dashboard/trust-phase-label";
+
 type MarketplaceTrustBarProps = {
   nodeLabel: string;
   asOf?: string;
@@ -20,6 +22,8 @@ export function MarketplaceTrustBar({ nodeLabel, asOf, mockMode }: MarketplaceTr
             </>
           ) : null}
         </span>
+        <span className="hidden h-3 w-px bg-border sm:block" />
+        <TrustPhaseLabel compact />
         <span className="hidden h-3 w-px bg-border sm:block" />
         <span className="hidden sm:inline">
           Credits are in-protocol units, not fiat money. No ads. No paid ranking.

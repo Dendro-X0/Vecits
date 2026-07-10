@@ -92,7 +92,14 @@ async function main() {
   }
 
   const helpArticles = await readUtf8("apps/web/lib/help/articles.ts");
-  const requiredHelpSlugs = ["deal-flow", "disputes", "identity", "node-connection"];
+  const requiredHelpSlugs = [
+    "deal-flow",
+    "disputes",
+    "identity",
+    "node-connection",
+    "trust-bootstrap",
+    "credits-path"
+  ];
   for (const slug of requiredHelpSlugs) {
     if (!new RegExp(`slug:\\s*"${slug}"`).test(helpArticles)) {
       failures.push(`help articles missing slug: ${slug}`);
@@ -103,7 +110,11 @@ async function main() {
     "apps/web/components/marketplace/order-action-hub.tsx",
     "apps/web/lib/dashboard/workspace-role.ts",
     "apps/web/components/workspace/order-workspace-notes-panel.tsx",
-    "apps/web/lib/marketplace/milestone-draft.ts"
+    "apps/web/lib/marketplace/milestone-draft.ts",
+    "apps/web/components/dashboard/trust-bootstrap-panel.tsx",
+    "apps/web/lib/dashboard/trust-bootstrap.ts",
+    "apps/web/lib/marketplace/trust-signals.ts",
+    "apps/web/components/marketplace/provider-trust-signals.tsx"
   ];
   for (const relative of phase2Surfaces) {
     try {
@@ -111,6 +122,83 @@ async function main() {
     } catch {
       failures.push(`missing Phase 2 surface: ${relative}`);
     }
+  }
+
+  const phase3LaneSurfaces = [
+    "apps/web/lib/marketplace/lane-templates.ts",
+    "apps/web/components/marketplace/marketplace-lane-catalog.tsx",
+    "apps/web/components/marketplace/lane-publish-fit-panel.tsx",
+    "apps/web/components/marketplace/discovery-draft-import-cta.tsx",
+    "apps/web/app/marketplace/lanes/page.tsx"
+  ];
+  for (const relative of phase3LaneSurfaces) {
+    try {
+      await fs.access(path.join(WORKSPACE_ROOT, relative));
+    } catch {
+      failures.push(`missing Phase 3 lane surface: ${relative}`);
+    }
+  }
+
+  const marketplaceHero = await readUtf8("apps/web/components/marketplace/marketplace-hero.tsx");
+  if (!/Lane catalog/.test(marketplaceHero) || !/DiscoveryDraftImportCta/.test(marketplaceHero)) {
+    failures.push("marketplace hero missing lane catalog or discovery import CTA");
+  }
+
+  const marketplaceToolbar = await readUtf8("apps/web/components/marketplace/marketplace-toolbar.tsx");
+  if (!/DiscoveryDraftImportCta/.test(marketplaceToolbar)) {
+    failures.push("marketplace toolbar missing discovery import CTA");
+  }
+
+  const discoveryImportPanel = await readUtf8(
+    "apps/web/components/marketplace/discovery-draft-import-panel.tsx"
+  );
+  if (!/Draft ≠ live offer/.test(discoveryImportPanel)) {
+    failures.push("discovery draft import panel missing draft disclaimer badge");
+  }
+
+  const transactionBuilder = await readUtf8(
+    "apps/web/components/dashboard/transaction-builder-panel.tsx"
+  );
+  if (!/importParam/.test(transactionBuilder)) {
+    failures.push("transaction builder missing discovery import deep link handling");
+  }
+
+  const eventBuilder = await readUtf8("apps/web/app/components/marketplace-event-builder.tsx");
+  if (!/LanePublishFitPanel/.test(eventBuilder)) {
+    failures.push("marketplace event builder missing lane publish fit panel");
+  }
+  if (!/discovery-draft-import/.test(eventBuilder)) {
+    failures.push("marketplace event builder missing discovery import anchor");
+  }
+
+  const overviewPage = await readUtf8("apps/web/components/dashboard/overview-page.tsx");
+  if (!/flushDueOrderReminders/.test(overviewPage)) {
+    failures.push("overview page missing workspace reminder flush");
+  }
+
+  const orderActionHub = await readUtf8("apps/web/components/marketplace/order-action-hub.tsx");
+  if (!/Local note/.test(orderActionHub) || !/loadOrderWorkspaceSummary/.test(orderActionHub)) {
+    failures.push("order action hub missing local note workspace chip");
+  }
+
+  const phase3WorkspaceSurfaces = [
+    "apps/web/lib/workspace/workspace-backup.ts",
+    "apps/web/components/workspace/workspace-backup-panel.tsx"
+  ];
+  for (const relative of phase3WorkspaceSurfaces) {
+    try {
+      await fs.access(path.join(WORKSPACE_ROOT, relative));
+    } catch {
+      failures.push(`missing Phase 3 workspace surface: ${relative}`);
+    }
+  }
+
+  const advancedPanel = await readUtf8("apps/web/components/dashboard/dashboard-advanced-panel.tsx");
+  if (!/WorkspaceBackupPanel/.test(advancedPanel)) {
+    failures.push("advanced settings missing workspace backup export");
+  }
+  if (!/OperationsCommandTools/.test(advancedPanel) || !/v1:preflight/.test(advancedPanel)) {
+    failures.push("settings advanced panel missing operator preflight/evidence tools");
   }
 
   const transactionsPage = await readUtf8("apps/web/components/dashboard/transactions-page.tsx");
@@ -138,12 +226,6 @@ async function main() {
   if (/\/operator/.test(siteHeader)) {
     failures.push("site header still links to operator console in primary nav");
   }
-
-  const advancedPanel = await readUtf8("apps/web/components/dashboard/dashboard-advanced-panel.tsx");
-  if (!/OperationsCommandTools/.test(advancedPanel) || !/v1:preflight/.test(advancedPanel)) {
-    failures.push("settings advanced panel missing operator preflight/evidence tools");
-  }
-
 
   const security = await readUtf8("docs/runbooks/operator-security-guide.md");
   if (!/SOC-01|Off-platform payment/i.test(security)) {

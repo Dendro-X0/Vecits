@@ -39,7 +39,11 @@ export default async function HelpArticlePage({ params }: HelpArticlePageProps) 
 
       <div className="space-y-8">
         {article.sections.map((section) => (
-          <section key={section.heading} className="space-y-3">
+          <section
+            key={section.heading}
+            id={slugifyHelpSectionId(section.heading)}
+            className="scroll-mt-24 space-y-3"
+          >
             <h2 className="text-lg font-medium">{section.heading}</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">{section.body}</p>
             {section.bullets?.length ? (
@@ -54,4 +58,25 @@ export default async function HelpArticlePage({ params }: HelpArticlePageProps) 
       </div>
     </article>
   );
+}
+
+function slugifyHelpSectionId(heading: string): string {
+  const normalized = heading
+    .replace(/^Step \d+ — /i, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  if (normalized.startsWith("file-a-contribution")) {
+    return "claim";
+  }
+  if (normalized.startsWith("collect-attestations")) {
+    return "attest";
+  }
+  if (normalized.startsWith("mint-credits")) {
+    return "mint";
+  }
+  if (normalized.startsWith("fund-escrow")) {
+    return "fund";
+  }
+  return normalized;
 }

@@ -147,11 +147,11 @@ Acceptance checks:
 - **Identity portability**: settings security section leads with backup/passkey guidance before advanced technical controls.
 - **Transactions handoff**: live order cards deep-link to the matching guided builder step when the viewer needs to act.
 
-**Status:** Phase 1 complete — see [frontend-phase1-completion.md](frontend-phase1-completion.md). Phase 2 complete — see [frontend-phase2-completion.md](frontend-phase2-completion.md). Phase 3 plan: [frontend-phase3-plan.md](frontend-phase3-plan.md).
+**Status:** Phase 1 complete — see [frontend-phase1-completion.md](frontend-phase1-completion.md). Phase 2 complete — see [frontend-phase2-completion.md](frontend-phase2-completion.md). Phase 3 complete — see [frontend-phase3-completion.md](frontend-phase3-completion.md).
 
 ### In-app user help
 
-- Routes: `/help`, `/help/deal-flow`, `/help/disputes`, `/help/identity`, `/help/node-connection`
+- Routes: `/help`, `/help/deal-flow`, `/help/disputes`, `/help/identity`, `/help/node-connection`, `/help/trust-bootstrap`, `/help/credits-path`
 - Content source: `apps/web/lib/help/articles.ts`
 - Linked from site header, footer, dashboard sidebar
 - Maintainer sync: [client/in-app-help-sync.md](client/in-app-help-sync.md)

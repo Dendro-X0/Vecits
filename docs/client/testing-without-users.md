@@ -79,26 +79,32 @@ Path: **Dashboard → Overview** and **Dashboard → Transactions**
 4. Use **Guided builder** deep link — order id prefilled from `?order=`.
 5. Scroll to **Exchange actions** panel for inline fund/deliver/accept.
 
-## 7. Multi-milestone orders (Phase 2-D)
+## 7. Multi-milestone orders (Phase 2-D / Phase 3-B)
 
 1. In guided **Place order**, add two milestones in the schedule editor.
 2. Submit order; confirm `milestones[]` in explorer or signed payload preview.
 3. On **Transactions**, confirm milestone strip and “N of M milestones” badge when applicable.
 4. Fund/deliver/accept first milestone; confirm active milestone advances on queue card.
-5. If `orderExpiresAt` is near, confirm **Expires soon** or **Order expired** badge.
+5. On downstream builder steps (fund / deliver / accept / dispute), confirm **milestone picker** when `milestones.length > 1`.
+6. From order hub or transactions card, open guided builder — confirm `?milestone=` prefills the active milestone.
+7. If `orderExpiresAt` is near, confirm **Expires soon** or **Order expired** badge.
+8. When milestone terms use “N days after funding”, confirm relative due hint after escrow is funded (label only).
 
-## 8. Off-protocol workspace notes (Phase 2-E)
+## 8. Off-protocol workspace notes (Phase 2-E / Phase 3-E)
 
 1. Open order detail as buyer or provider.
 2. Add a note in **Workspace notes** — confirm **Not on chain** labeling.
 3. Save; reload page — note persists (encrypted local storage).
 4. Optional: set a local reminder; grant notification permission when prompted.
 5. On **Transactions**, confirm **Note** / **Reminder** badges when applicable.
+6. On **order action hub**, confirm **Local note** chip when a note exists.
+7. Visit **Dashboard → Overview** with a due reminder — confirm browser notification fires (permission granted).
+8. **Settings → Advanced → Workspace notes backup** — export encrypted blob; confirm off-protocol copy.
 
 ## 9. In-app help
 
 - `/help` index loads from header or dashboard sidebar
-- Spot-check: `deal-flow`, `disputes`, `identity`, `node-connection`
+- Spot-check: `deal-flow`, `disputes`, `identity`, `node-connection`, `trust-bootstrap`, `credits-path`
 
 ## 10. Explorer cross-check
 
@@ -112,11 +118,11 @@ npm run r4:client-audit    # C1–C4 + Phase 2 surface + help slug checks
 npm run v1:readiness
 ```
 
-The audit script verifies: kernel-truth patterns, SOC-01 on marketplace entry, help article slugs, order action hub, role-aware transactions, and workspace notes panel.
+The audit script verifies: kernel-truth patterns, SOC-01 on marketplace entry, help article slugs, order action hub, role-aware transactions, workspace notes panel, Phase 3 lane/trust/workspace surfaces.
 
 For lane drills: `npm run r2:exchange-drill`, `npm run r6:compute-job:drill` (see runbooks).
 
-Trust bootstrap proof (optional): `npm run r2:genesis-drill`
+Trust bootstrap proof: `npm run r2:genesis-drill` then walk guided UI (section 13 below).
 
 ## 12. Phase 2 smoke checklist (quick pass)
 
@@ -130,12 +136,63 @@ Run after client changes touching dashboard, marketplace, or builder:
 - [ ] Multi-milestone order compose (2+ rows)
 - [ ] `pnpm typecheck` and `npm run r4:client-audit` pass
 
-## 13. What still needs humans
+## 13. Phase 3 smoke checklist (trust, lanes, workspace)
+
+Run after client changes touching trust bootstrap, marketplace signals, lane catalog, or workspace depth.
+
+### Trust bootstrap (P3-A)
+
+Prerequisite: `npm run r2:genesis-drill` (or fixture state with low vouch weight + zero balance identities).
+
+| Check | Expected |
+| --- | --- |
+| Overview trust panel | Vouch weight vs threshold; sponsor helper; credits-path checklist |
+| Offer step guard | Below-threshold provider sees admission warning before submit |
+| Founding network label | Marketplace trust bar shows honest phase label + disclaimer link |
+| Help articles | `/help/trust-bootstrap`, `/help/credits-path` load from panel links |
+
+### Marketplace trust signals (P3-C)
+
+| Check | Expected |
+| --- | --- |
+| Offer detail | Provider eligibility or reputation snippet with kernel-truth disclaimer |
+| Listing rows | Trust badges when `getReputation` returns lane data |
+| Discovery section | Informational disclaimer on discovery scores |
+
+### Lane catalog + publish guidance (P3-D)
+
+| Check | Expected |
+| --- | --- |
+| Lane catalog | `/marketplace/lanes` lists community + specialized lanes |
+| Hero / sidebar | Links to lane catalog; discovery import CTA with **Draft ≠ live offer** |
+| Offer step lane fit | Delivery mode + evidence formats for selected template |
+| Experimental lanes | Strict lanes show experimental badge before publish |
+| Discovery import deep link | `/dashboard/builder?step=offer&import=discovery` opens import panel |
+
+### Workspace depth (P3-E)
+
+| Check | Expected |
+| --- | --- |
+| Overview reminder flush | Due reminders fire on Overview load (notification permission granted) |
+| Order hub chip | **Local note** badge when encrypted note exists |
+| Workspace backup | Settings → Advanced exports identity-bound encrypted blob |
+
+### Phase 3 quick pass
+
+- [ ] Trust bootstrap panel on Overview (signed in)
+- [ ] Offer detail trust signals + listing trust badges
+- [ ] Lane catalog + lane-fit panel on offer step
+- [ ] Discovery import CTA (marketplace + builder)
+- [ ] Multi-milestone picker on downstream builder steps
+- [ ] Local note chip on order hub; workspace backup in Advanced settings
+- [ ] `pnpm typecheck`, `npm run r4:client-audit`, `npm run r2:genesis-drill` pass
+
+## 14. What still needs humans
 
 - Mobile pinned-node field proof (R7-M2)
 - Post-deployment community lane proof (R6-PD) with a second operator host
 - Subjective UX feedback on copy and layout
 
-Everything else in Phase 1–2 client work can be validated solo with fixtures + two keys.
+Everything else in Phase 1–3 client work can be validated solo with fixtures + two keys.
 
 ← [Client docs](README.md)

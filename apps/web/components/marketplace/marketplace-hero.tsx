@@ -1,9 +1,15 @@
 import Link from "next/link";
-import { ArrowRight, Handshake, Sparkles, UserCircle } from "lucide-react";
+import { ArrowRight, Handshake, LayoutGrid, Sparkles, UserCircle } from "lucide-react";
 
+import { DiscoveryDraftImportCta } from "@/components/marketplace/discovery-draft-import-cta";
 import { Button } from "@/components/ui/button";
+import { STATIC_QUERY_PARAMS } from "@/lib/static-query-params";
+import { buildMarketplaceHref } from "@/lib/marketplace/node";
 
 export function MarketplaceHero() {
+  const query = STATIC_QUERY_PARAMS;
+  const lanesHref = buildMarketplaceHref("/marketplace/lanes", query);
+
   return (
     <section className="relative overflow-hidden border-b border-border">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.14),transparent_42%)]" />
@@ -39,6 +45,15 @@ export function MarketplaceHero() {
             </Button>
             <Button
               nativeButton={false}
+              render={<Link href={lanesHref} />}
+              variant="outline"
+              size="lg"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Lane catalog
+            </Button>
+            <Button
+              nativeButton={false}
               render={<Link href="/dashboard" />}
               variant="ghost"
               size="lg"
@@ -47,6 +62,8 @@ export function MarketplaceHero() {
               Identity workspace
             </Button>
           </div>
+
+          <DiscoveryDraftImportCta searchParams={query} variant="banner" />
         </div>
 
         <div className="surface-card space-y-5 p-6">

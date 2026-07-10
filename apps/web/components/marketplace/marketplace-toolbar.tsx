@@ -1,5 +1,6 @@
 import type { QueryParams } from "@/app/explorer/lib";
 import { getOptionalParam, getSingleParam } from "@/app/explorer/lib";
+import { DiscoveryDraftImportCta } from "@/components/marketplace/discovery-draft-import-cta";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
 import type { SortOption } from "@/lib/marketplace/lanes";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
@@ -29,14 +30,17 @@ export function MarketplaceToolbar({
         </p>
       </div>
 
-      <MarketplaceFilters
+      <div className="flex flex-col gap-3 lg:items-end">
+        <DiscoveryDraftImportCta searchParams={searchParams} />
+        <MarketplaceFilters
         pathname={pathname}
         initialQuery={query}
         initialSort={currentSort}
         signedIn={signedIn}
         baseUrl={getOptionalParam(searchParams, "base_url")}
         asOf={getOptionalParam(searchParams, "as_of")}
-      />
+        />
+      </div>
     </div>
   );
 }

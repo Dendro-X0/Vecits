@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, NotebookPen } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { loadActiveSession } from "@/lib/auth/session";
 import { deriveTransactionProgress } from "@/lib/dashboard/transaction-progress";
+import type {
+  MilestoneProgressSummary,
+  TransactionProgressStep
+} from "@/lib/dashboard/transaction-progress";
+import type { OrderDeadlineHint } from "@/lib/dashboard/order-deadline-hints";
 import {
   compensationModeLabel,
   type OfferCompensationSummary
 } from "@/lib/marketplace/offer-normalize";
 import type { NormalizedOrderExchange } from "@/lib/marketplace/order-normalize";
+import {
+  isOrderParticipant,
+  loadOrderWorkspaceSummary,
+  type OrderWorkspaceSummary
+} from "@/lib/workspace/order-notes";
 import { cn } from "@/lib/utils";
 
 type OrderActionHubProps = {
@@ -30,11 +40,31 @@ export function OrderActionHub({
   onScrollToActions
 }: OrderActionHubProps) {
   const [publicKeyHex, setPublicKeyHex] = useState<string | null>(null);
+  const [workspaceSummary, setWorkspaceSummary] = useState<OrderWorkspaceSummary | null>(null);
 
   useEffect(() => {
     const session = loadActiveSession();
     setPublicKeyHex(session?.publicKeyHex ?? null);
   }, []);
+
+  useEffect(() => {
+    const session = loadActiveSession();
+    if (!session || !isOrderParticipant(exchange, session.publicKeyHex)) {
+      setWorkspaceSummary(null);
+      return;
+    }
+
+    let cancelled = false;
+    void loadOrderWorkspaceSummary(session, exchange.orderId).then((summary) => {
+      if (!cancelled) {
+        setWorkspaceSummary(summary.hasNote || summary.hasReminder ? summary : null);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [exchange]);
 
   const viewerRole = useMemo(() => {
     if (!publicKeyHex) {
@@ -103,6 +133,18 @@ export function OrderActionHub({
         <CardContent className="space-y-4 p-5">
           <div className="flex flex-wrap items-center gap-2">
             {roleLabel ? <Badge variant="outline">{roleLabel}</Badge> : null}
+            {progress?.milestoneTotal && progress.milestoneTotal > 1 ? (
+              <Badge variant="outline">
+                {progress.activeMilestoneIndex} of {progress.milestoneTotal} milestones
+              </Badge>
+            ) : null}
+            {progress?.deadlineHint ? <DeadlineBadge hint={progress.deadlineHint} /> : null}
+            {workspaceSummary?.hasNote ? (
+              <Badge variant="outline" className="border-warning/40 text-warning">
+                <NotebookPen className="mr-1 size-3" />
+                Local note
+              </Badge>
+            ) : null}
             {progress?.needsViewerAction ? (
               <Badge variant="default">Your turn</Badge>
             ) : progress?.isDisputed ? (
@@ -139,6 +181,13 @@ export function OrderActionHub({
               </div>
 
               <StepIndicator steps={progress.steps} />
+
+              {progress.milestoneSummaries.length > 1 ? (
+                <MilestoneProgressStrip summaries={progress.milestoneSummaries} />
+              ) : null}
+              {progress.deadlineHint ? (
+                <p className="text-xs text-muted-foreground">{progress.deadlineHint.detail}</p>
+              ) : null}
 
               <div className="flex flex-wrap gap-2">
                 {progress.isDisputed && progress.disputeBuilderHref ? (
@@ -198,7 +247,7 @@ export function OrderActionHub({
 function StepIndicator({
   steps
 }: {
-  steps: ReturnType<typeof deriveTransactionProgress>["steps"];
+  steps: TransactionProgressStep[];
 }) {
   return (
     <ol className="grid gap-2 sm:grid-cols-4">
@@ -225,6 +274,44 @@ function StepIndicator({
             />
           )}
           <span className="leading-snug">{step.label}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function DeadlineBadge({ hint }: { hint: OrderDeadlineHint }) {
+  const tone =
+    hint.kind === "order_expired" || hint.kind === "past_due"
+      ? "border-destructive/40 text-destructive"
+      : "border-amber-500/40 text-amber-700 dark:text-amber-300";
+
+  return (
+    <Badge variant="outline" className={tone} title={hint.detail}>
+      {hint.label}
+    </Badge>
+  );
+}
+
+function MilestoneProgressStrip({ summaries }: { summaries: MilestoneProgressSummary[] }) {
+  return (
+    <ol className="flex flex-wrap gap-2">
+      {summaries.map((milestone) => (
+        <li
+          key={milestone.id}
+          className={cn(
+            "rounded-lg border px-3 py-1.5 text-xs",
+            milestone.phase === "active"
+              ? "border-primary/30 bg-primary/10 text-foreground"
+              : milestone.phase === "complete"
+                ? "border-primary/20 bg-primary/5 text-foreground"
+                : milestone.phase === "disputed"
+                  ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : "border-border bg-muted/30 text-muted-foreground"
+          )}
+        >
+          <span className="font-medium">{milestone.label}</span>
+          <span className="ml-2 text-muted-foreground">{milestone.status}</span>
         </li>
       ))}
     </ol>

@@ -7,22 +7,26 @@ import {
   CalendarClock,
   Coins,
   FileCode2,
-  Shield,
-  UserRound
+  Shield
 } from "lucide-react";
 
 import type { QueryParams } from "@/app/explorer/lib";
 import { getNodeBaseUrl, getOptionalParam, toErrorMessage } from "@/app/explorer/lib";
 import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
+import { ProviderTrustSignalsCard } from "@/components/marketplace/provider-trust-signals";
 import { StartExchangePanel } from "@/components/marketplace/start-exchange-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { normalizeOfferTerms } from "@/lib/marketplace/offer-normalize";
 import { SHOWCASE_LISTINGS } from "@/lib/marketplace/listings";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
+import {
+  loadProviderTrustSignals,
+  type ProviderTrustSignals
+} from "@/lib/marketplace/trust-signals";
 import { marketplaceOfferStaticParams } from "@/lib/desktop-static-params";
 import { STATIC_QUERY_PARAMS } from "@/lib/static-query-params";
-import { formatCredits, formatServiceType, truncatePubkey } from "@/lib/utils";
+import { formatCredits, formatServiceType } from "@/lib/utils";
 
 export function generateStaticParams() {
   return marketplaceOfferStaticParams();
@@ -47,6 +51,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
   let offer: Record<string, unknown> | null = null;
   let error: string | null = null;
   let replayAsOf: string | undefined;
+  let providerTrustSignals: ProviderTrustSignals | null = null;
 
   if (!showcase) {
     try {
@@ -95,6 +100,10 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
 
   const backHref = buildMarketplaceHref("/marketplace", query);
   const exchangeTerms = showcase ? null : normalizeOfferTerms(id, offer);
+
+  if (!showcase && !error) {
+    providerTrustSignals = await loadProviderTrustSignals(baseUrl, provider, serviceType, asOf);
+  }
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -153,21 +162,12 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Provider</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <DetailRow icon={UserRound} label="Public key" value={truncatePubkey(provider)} />
-              {listing ? (
-                <DetailRow
-                  icon={BadgeCheck}
-                  label="Kernel reputation"
-                  value={`Global ${listing.global_score} · Lane ${listing.lane_score}`}
-                />
-              ) : null}
-            </CardContent>
-          </Card>
+          <ProviderTrustSignalsCard
+            providerPubKey={provider}
+            serviceType={serviceType}
+            signals={providerTrustSignals}
+            showcase={Boolean(showcase)}
+          />
         </div>
 
         <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
@@ -191,8 +191,8 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
                 <div className="rounded-xl border border-sky-400/20 bg-sky-400/10 p-4 text-sm">
                   <p className="font-medium text-foreground">Alignment signal</p>
                   <p className="mt-1 text-muted-foreground">
-                    Discovery fit score {listing.discovery_score} from kernel replay ranking — not a
-                    promoted placement.
+                    Discovery fit score {listing.discovery_score} · lane score {listing.lane_score}{" "}
+                    — informational kernel replay ranking, not a promoted placement.
                   </p>
                 </div>
               ) : null}

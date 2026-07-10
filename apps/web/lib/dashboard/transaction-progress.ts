@@ -115,7 +115,8 @@ function milestoneScopeLabel(exchange: NormalizedOrderExchange, index: number): 
 function resolveBuilderHandoff(
   currentStep: TransactionProgressStep["id"] | null,
   needsViewerAction: boolean,
-  orderId: string
+  orderId: string,
+  milestoneId?: string | null
 ): Pick<TransactionProgress, "builderStep" | "builderHref" | "disputeBuilderHref"> {
   if (!needsViewerAction || !currentStep || currentStep === "placed") {
     return { builderStep: null, builderHref: null, disputeBuilderHref: null };
@@ -130,10 +131,20 @@ function resolveBuilderHandoff(
 
   return {
     builderStep,
-    builderHref: buildBuilderHref(builderStep, orderId),
+    builderHref: buildBuilderHref(builderStep, orderId, milestoneId),
     disputeBuilderHref:
-      currentStep === "accepted" ? buildDisputeBuilderHref(orderId, "dispute") : null
+      currentStep === "accepted" ? buildDisputeBuilderHref(orderId, "dispute", milestoneId) : null
   };
+}
+
+function deriveDeadlineHintForMilestone(
+  exchange: NormalizedOrderExchange,
+  milestone: NormalizedMilestone | null,
+  dueWindow?: string | null
+): OrderDeadlineHint | null {
+  return deriveOrderDeadlineHint(exchange.orderExpiresAt, dueWindow ?? null, {
+    milestoneFunded: milestone ? milestoneFunded(milestone) : false
+  });
 }
 
 function withBuilderHandoff(
@@ -156,12 +167,17 @@ function withBuilderHandoff(
   const activeMilestone = exchange.milestones[activeIndex] ?? null;
   return {
     ...progress,
-    ...resolveBuilderHandoff(currentStep, progress.needsViewerAction, orderId),
+    ...resolveBuilderHandoff(
+      currentStep,
+      progress.needsViewerAction,
+      orderId,
+      activeMilestone?.id
+    ),
     activeMilestoneId: activeMilestone?.id ?? null,
     activeMilestoneIndex: activeIndex + 1,
     milestoneTotal: exchange.milestones.length,
     milestoneSummaries: buildMilestoneSummaries(exchange),
-    deadlineHint: deriveOrderDeadlineHint(exchange.orderExpiresAt, null)
+    deadlineHint: deriveDeadlineHintForMilestone(exchange, activeMilestone)
   };
 }
 
@@ -200,12 +216,12 @@ export function deriveTransactionProgress(
       isDisputed: true,
       builderStep: null,
       builderHref: null,
-      disputeBuilderHref: buildDisputeBuilderHref(exchange.orderId, "settle"),
+      disputeBuilderHref: buildDisputeBuilderHref(exchange.orderId, "settle", milestone.id),
       activeMilestoneId: milestone.id,
       activeMilestoneIndex: activeIndex + 1,
       milestoneTotal: exchange.milestones.length,
       milestoneSummaries: buildMilestoneSummaries(exchange),
-      deadlineHint: deriveOrderDeadlineHint(exchange.orderExpiresAt, null)
+      deadlineHint: deriveDeadlineHintForMilestone(exchange, milestone)
     };
   }
 
