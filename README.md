@@ -15,7 +15,7 @@ BIN="$(npm run -s v1:resolve-release)"
 "$BIN" node serve --data-dir ./.data/default --bind 127.0.0.1:7878
 ```
 
-See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbooks/operator-quickstart.md`](docs/runbooks/operator-quickstart.md) to run a node.
+See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbooks/operator-quickstart.md`](docs/runbooks/operator-quickstart.md) to run a node · [`docs/runbooks/release-packaging-ci.md`](docs/runbooks/release-packaging-ci.md) for CI release artifacts.
 
 ## Workspace
 
@@ -36,6 +36,7 @@ See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbook
 - `cargo run --bin cli -- fixtures run`
 - `pnpm install` && `pnpm dev:web`
 - `pnpm r4:client-audit`
+- `pnpm ci:readiness` — PR CI gate bundle
 - `pnpm r8:transport:smoke` — R8 QR/bundle/handoff smoke
 
 Full CLI reference: `cargo run --bin cli -- --help`

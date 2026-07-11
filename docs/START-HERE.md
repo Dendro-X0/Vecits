@@ -68,6 +68,7 @@ pnpm v3:aperio-import:smoke            # Aperio JSONL → Vectis offer drafts
 pnpm v3:aperio-live-drill              # Aperio engine → import → review → ingest
 pnpm r7:mobile:readiness               # Android scaffold + mobile pinned-node wiring
 pnpm r7:client:readiness               # desktop cargo check + R4 audit + web + mobile bundle
+pnpm ci:readiness                        # PR CI gate (typecheck, audits, smokes)
 ```
 
 ## Pick your path

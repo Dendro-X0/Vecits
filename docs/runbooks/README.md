@@ -18,7 +18,8 @@ Operator install, deployment, backup, security, and recurring cadence.
 | [mobile-remote-pinned-node-operator-runbook.md](mobile-remote-pinned-node-operator-runbook.md) | Operator guide for mobile pinned node (R7-M2) |
 | [r7-m2-remote-node-smoke-runbook.md](r7-m2-remote-node-smoke-runbook.md) | Mobile remote node smoke (R7-M2) |
 | [operator-genesis-runbook.md](operator-genesis-runbook.md) | Founding vouch bootstrap (L4) |
-| [alpha-operations-runbook.md](alpha-operations-runbook.md) | Closed-alpha workflow |
+| [desktop-release-build.md](desktop-release-build.md) | Tauri desktop installers (R7-D5) |
+| [release-packaging-ci.md](release-packaging-ci.md) | Multi-platform CI packaging matrix |
 | [phase1-preflight-checklist.md](phase1-preflight-checklist.md) | GA1–GA6 preflight |
 | [phase1-operations-cadence.md](phase1-operations-cadence.md) | Recurring ops rhythm |
 

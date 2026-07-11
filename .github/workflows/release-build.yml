@@ -2,24 +2,48 @@ name: Release Build
 
 on:
   workflow_dispatch:
+    inputs:
+      include_desktop:
+        description: Build Tauri desktop installers (slow)
+        type: boolean
+        default: true
+      include_android:
+        description: Build Android APK (experimental)
+        type: boolean
+        default: false
   push:
     tags:
       - "v*"
 
+env:
+  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || format('manual-{0}', github.run_id) }}
+
 jobs:
-  build:
+  kernel:
+    name: Kernel binaries (${{ matrix.label }})
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
+            label: linux-x64
             target: x86_64-unknown-linux-gnu
             artifact: vectis-node
           - os: windows-latest
+            label: windows-x64
             target: x86_64-pc-windows-msvc
             artifact: vectis-node.exe
+          - os: macos-latest
+            label: macos-arm64
+            target: aarch64-apple-darwin
+            artifact: vectis-node
+          - os: macos-latest
+            label: macos-x64
+            target: x86_64-apple-darwin
+            artifact: vectis-node
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -33,11 +57,184 @@ jobs:
       - name: Build release binaries
         run: cargo build --release --bin cli --bin vectis-node --target ${{ matrix.target }}
 
-      - name: Upload release artifact
+      - name: Upload kernel artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vectis-node-${{ matrix.target }}
+          name: kernel-${{ matrix.label }}
           path: |
             target/${{ matrix.target }}/release/${{ matrix.artifact }}
             target/${{ matrix.target }}/release/cli*
+          if-no-files-found: error
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build production image
+        run: docker build -t vectis-node:${{ env.RELEASE_TAG }} .
+
+      - name: Export Docker image tarball
+        run: docker save vectis-node:${{ env.RELEASE_TAG }} -o vectis-node-docker.tar
+
+      - name: Upload Docker artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: vectis-node-docker.tar
+          if-no-files-found: error
+
+  web-shell:
+    name: Static web shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-vectis-build
+
+      - name: Build static web export
+        run: node ./scripts/build-web-static.mjs
+
+      - name: Upload web shell artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-static
+          path: |
+            apps/web/out/**
+            dist/web-static/web-static-manifest.json
+          if-no-files-found: error
+
+  desktop:
+    name: Desktop installer (${{ matrix.label }})
+    if: github.event_name != 'workflow_dispatch' || inputs.include_desktop
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            label: windows
+            bundle: nsis
+          - os: macos-latest
+            label: macos
+            bundle: dmg
+          - os: ubuntu-22.04
+            label: linux
+            bundle: deb
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux desktop dependencies
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            xdg-utils
+
+      - uses: ./.github/actions/setup-vectis-build
+
+      - name: Build desktop installer
+        env:
+          TAURI_BUNDLE_TARGET: ${{ matrix.bundle }}
+        run: npm run build:desktop
+
+      - name: Desktop release smoke
+        run: npm run r7:desktop:release-smoke
+
+      - name: Upload desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.label }}
+          path: |
+            target/release/bundle/**/*
+            apps/desktop/src-tauri/target/release/bundle/**/*
+            dist/desktop/desktop-build-manifest.json
+            apps/desktop/src-tauri/binaries/**
+          if-no-files-found: error
+
+  android:
+    name: Android APK (experimental)
+    if: github.event_name == 'workflow_dispatch' && inputs.include_android
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-vectis-build
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android targets
+        run: |
+          rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+      - name: Build Android release APK
+        run: npm run r7:mobile:android:build -- --release --pinned-node-url https://example.invalid
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            apps/desktop/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+            apps/desktop/src-tauri/gen/android/app/build/outputs/bundle/**/*.aab
+          if-no-files-found: warn
+
+  release-manifest:
+    name: Release manifest
+    needs:
+      - kernel
+      - docker
+      - web-shell
+    if: always() && !cancelled() && needs.kernel.result == 'success' && needs.docker.result == 'success' && needs.web-shell.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Write release manifest
+        run: |
+          cat > release-manifest.json <<EOF
+          {
+            "tag": "${{ env.RELEASE_TAG }}",
+            "builtAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "artifacts": {
+              "kernel": ["linux-x64", "windows-x64", "macos-arm64", "macos-x64"],
+              "docker": "vectis-node-docker.tar",
+              "webStatic": "web-static",
+              "desktop": "see desktop-* artifacts when the desktop job ran"
+            },
+            "notes": [
+              "Download job artifacts from this workflow run.",
+              "Self-hosted path: docker image or kernel binary + static web shell + reverse proxy to vectis-node.",
+              "Desktop installers bundle vectis-node as a sidecar."
+            ]
+          }
+          EOF
+          cat release-manifest.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: release-manifest.json
           if-no-files-found: error

@@ -169,7 +169,7 @@ Communities customize via **policy packs**, not kernel forks:
 | `RDG-1` | Non-author installs from release artifact in < 30 minutes | timed runbook drill |
 | `RDG-2` | Health endpoint reports version + data dir status | API test |
 | `RDG-3` | Backup + restore yields identical replay hash | scripted restore test |
-| `RDG-4` | Docker compose brings up node + passes preflight | CI job |
+| `RDG-4` | Docker compose brings up node + passes preflight | CI job (`.github/workflows/ci.yml`) |
 | `RDG-5` | Alpha runbook works with release binary, not `cargo run` | GA6 drill variant | `npm run v1:ga6-drill:release` |
 
 ## Implementation slices

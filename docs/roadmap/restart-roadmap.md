@@ -91,7 +91,7 @@ Goal: make the Rust kernel operable as a release artifact with clear boundaries.
 | `R1-K3` | `completed` | Reason-code registry consolidation | `reason_code_for_protocol_error` in `protocol-core` |
 | `R1-K4` | `completed` | `GET /health` endpoint | version + data-dir status; AB-13 |
 | `R1-K5` | `completed` | Data dir manifest on init | `manifest.json` with kernel versions |
-| `R1-D1` | `completed` | Release binary build (Linux + Windows) | `scripts/build-release.mjs`, `.github/workflows/release-build.yml` |
+| `R1-D1` | `completed` | Release binary build (Linux + Windows + macOS) | `scripts/build-release.mjs`, `.github/workflows/release-build.yml`, `.github/workflows/ci.yml` |
 | `R1-D2` | `completed` | `vectis-node init` command | `node init --data-dir` |
 | `R1-D3` | `completed` | Docker compose deployment | `Dockerfile`, `docker-compose.yml`, `npm run v1:docker-smoke` |
 | `R1-D4` | `completed` | Operator quickstart + install scripts | `docs/runbooks/operator-quickstart.md`, `scripts/install.sh` |

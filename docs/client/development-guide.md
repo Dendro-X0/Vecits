@@ -47,6 +47,7 @@ The dev script picks an available port (see `scripts/ensure-dev-web-port.mjs`). 
 ```bash
 cd apps/web && pnpm typecheck
 npm run r4:client-audit    # from repo root — kernel boundary checks
+npm run ci:readiness       # PR CI gate bundle
 npm run r8:transport:smoke # R8 QR/bundle/handoff smoke
 ```
 

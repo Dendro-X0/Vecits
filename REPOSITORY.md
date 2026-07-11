@@ -45,6 +45,7 @@ cargo run --bin cli -- fixtures run
 pnpm install
 pnpm dev:web
 pnpm r4:client-audit
+pnpm ci:readiness
 pnpm r8:transport:smoke
 ```
 

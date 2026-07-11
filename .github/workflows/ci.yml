@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  readiness:
+    name: Client + protocol readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-vectis-build
+
+      - name: Run CI readiness bundle
+        run: npm run ci:readiness
+
+  docker-smoke:
+    name: Docker node smoke (RDG-4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-vectis-build
+        with:
+          install-deps: "false"
+
+      - name: Docker compose smoke
+        run: npm run v1:docker-smoke

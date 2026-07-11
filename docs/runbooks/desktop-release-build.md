@@ -66,6 +66,8 @@ Record actual sizes from `r7:desktop:release-smoke` output when cutting a releas
 
 Build on the target OS (or CI matrix job). Cross-compiling DMG/deb from Windows is not supported by the default script.
 
+Tag releases and manual workflow runs build installers via [release-packaging-ci.md](release-packaging-ci.md) (`desktop-windows`, `desktop-macos`, `desktop-linux` artifacts).
+
 ## Static export constraints
 
 Desktop builds set `TAURI_BUILD=1`, enabling `output: "export"` in `apps/web/next.config.ts`. The legacy `/operator` console is replaced by a stub in desktop bundles; use **Settings → Advanced** or the web deployment for the full operator surface.

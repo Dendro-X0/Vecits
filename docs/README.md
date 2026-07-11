@@ -84,6 +84,7 @@ docs/
 | [runbooks/operator-security-guide.md](runbooks/operator-security-guide.md) | Keys, TLS, off-platform payment warning |
 | [runbooks/operator-backup-runbook.md](runbooks/operator-backup-runbook.md) | Backup, evidence export, restore |
 | [runbooks/r2-persistent-deployment-runbook.md](runbooks/r2-persistent-deployment-runbook.md) | Persistent host deployment |
+| [runbooks/release-packaging-ci.md](runbooks/release-packaging-ci.md) | Multi-platform CI release artifacts |
 | [runbooks/r2-exchange-runbook.md](runbooks/r2-exchange-runbook.md) | Exchange drill |
 
 ## Specifications

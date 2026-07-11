@@ -1,0 +1,42 @@
+name: Setup Vectis build
+description: Install Node, pnpm, and Rust for Vectis CI/release jobs.
+
+inputs:
+  node-version:
+    description: Node.js version
+    required: false
+    default: "20"
+  pnpm-version:
+    description: pnpm version (matches packageManager in root package.json)
+    required: false
+    default: "9.15.9"
+  rust-cache:
+    description: Enable Swatinem/rust-cache
+    required: false
+    default: "true"
+  install-deps:
+    description: Run pnpm install --frozen-lockfile
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - uses: dtolnay/rust-toolchain@stable
+
+    - uses: Swatinem/rust-cache@v2
+      if: inputs.rust-cache == 'true'
+
+    - name: Install workspace dependencies
+      if: inputs.install-deps == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile

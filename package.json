@@ -7,6 +7,8 @@
     "dev:web": "node ./scripts/ensure-dev-web-port.mjs && pnpm --filter @new-start/sdk-ts build && node ./scripts/dev-web.mjs",
     "dev:desktop": "pnpm --filter @vectis/desktop dev",
     "build:desktop": "node ./scripts/build-desktop.mjs",
+    "build:web-static": "node ./scripts/build-web-static.mjs",
+    "ci:readiness": "node ./scripts/ci-readiness.mjs",
     "r7:desktop:release-smoke": "node ./scripts/r7-desktop-release-smoke.mjs",
     "r7:discovery-draft:smoke": "node ./scripts/r7-discovery-draft-import-smoke.mjs",
     "r7:mobile:android:init": "pnpm --filter @vectis/desktop run android:init",
