@@ -41,6 +41,12 @@ Resume after a partial build:
 node ./scripts/build-desktop.mjs --tauri-only
 ```
 
+Before `cargo check` on a clean checkout, stage the sidecar Tauri expects:
+
+```bash
+npm run stage:tauri-sidecar
+```
+
 Requires ~10 GB free disk for the release Tauri compile on Windows.
 
 ## Size budget notes

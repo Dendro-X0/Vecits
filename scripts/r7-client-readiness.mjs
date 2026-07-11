@@ -53,6 +53,11 @@ async function main() {
 
   const steps = [
     {
+      name: "Stage Tauri sidecar binary",
+      command: process.execPath,
+      args: ["./scripts/stage-tauri-sidecar.mjs"],
+    },
+    {
       name: "Desktop Tauri cargo check",
       command: "cargo",
       args: ["check", "--manifest-path", "apps/desktop/src-tauri/Cargo.toml"],
