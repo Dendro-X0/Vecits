@@ -24,7 +24,12 @@ export function MobilePinnedNodeNotice({ className }: MobilePinnedNodeNoticeProp
       <strong>Kernel unreachable:</strong> {error}{" "}
       <Link href="/dashboard/settings" className="underline underline-offset-4">
         Open settings
+      </Link>{" "}
+      or{" "}
+      <Link href="/dashboard/import" className="underline underline-offset-4">
+        import a transport bundle
       </Link>
+      .
     </p>
   );
 }

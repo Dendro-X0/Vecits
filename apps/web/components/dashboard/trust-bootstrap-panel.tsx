@@ -13,6 +13,8 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import { TrustPhaseLabel } from "@/components/dashboard/trust-phase-label";
+import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
+import { TransportBundleSharePanel } from "@/components/transport/transport-bundle-share-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +25,8 @@ import {
   parseSponsorPubKeys,
   type TrustBootstrapSnapshot
 } from "@/lib/dashboard/trust-bootstrap";
+import { buildVouchRequestBundle } from "@/lib/transport/bundle";
+import { resolveNodeConnectionInfo } from "@/lib/node-client-base-url";
 import { truncatePubkey } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -126,6 +130,22 @@ export function TrustBootstrapPanel({ publicKeyHex, compact = false }: TrustBoot
       baseUrl: snapshot.nodeLabel
     });
   }, [publicKeyHex, requestedSponsors, snapshot]);
+
+  const vouchRequestBundle = useMemo(() => {
+    if (snapshot?.kind !== "live" || requestedSponsors.length === 0) {
+      return null;
+    }
+    const nodeUrl = resolveNodeConnectionInfo().baseUrl;
+    if (!nodeUrl.trim()) {
+      return null;
+    }
+    return buildVouchRequestBundle({
+      subjectPubKey: publicKeyHex,
+      nodeUrl,
+      identityEventId: snapshot.provider.identityEventId,
+      displayLabel: undefined
+    });
+  }, [publicKeyHex, requestedSponsors.length, snapshot]);
 
   async function handleRefresh() {
     setLoading(true);
@@ -319,6 +339,23 @@ export function TrustBootstrapPanel({ publicKeyHex, compact = false }: TrustBoot
                   </div>
                   {copyMessage ? (
                     <p className="text-xs text-primary">{copyMessage}</p>
+                  ) : null}
+                  {shareMessage.trim() && requestedSponsors.length > 0 ? (
+                    <TransportQrPanel
+                      value={shareMessage}
+                      title="Share vouch request (text)"
+                      description="Sponsors can scan to copy the same request text you would paste manually."
+                      mode="text"
+                      downloadFilename="vectis-vouch-request-qr.svg"
+                    />
+                  ) : null}
+                  {vouchRequestBundle ? (
+                    <TransportBundleSharePanel
+                      bundle={vouchRequestBundle}
+                      title="Share vouch request (bundle)"
+                      description="Structured Tier 1 bundle — sponsors import on /dashboard/import to review before signing."
+                      downloadFilename="vectis-vouch-request-bundle-qr.svg"
+                    />
                   ) : null}
                 </div>
               ) : null}

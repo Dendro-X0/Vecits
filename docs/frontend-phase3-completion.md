@@ -48,5 +48,8 @@ Manual smoke: [client/testing-without-users.md](client/testing-without-users.md)
 
 - Post-deployment community lane proof (R6-PD) with a second operator host
 - Mobile pinned-node field proof (R7-M2)
-- Production UX for experimental offline lanes (`physical-handoff`, `local-resource-exchange`)
 - On-device mobile node sidecar (R7-M3 — spec only)
+
+## Completed after Phase 3
+
+- **R8 convenience transport** — Tier 0 QR, Tier 1 signed bundles, Tier 2 experimental handoff wizard — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md)

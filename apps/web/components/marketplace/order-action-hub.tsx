@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { loadActiveSession } from "@/lib/auth/session";
 import { deriveTransactionProgress } from "@/lib/dashboard/transaction-progress";
+import { useAbsoluteClientUrl } from "@/lib/transport/absolute-url";
+import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
+import { TransportBundleSharePanel } from "@/components/transport/transport-bundle-share-panel";
+import { buildOrderResumeBundle } from "@/lib/transport/bundle";
+import { resolveNodeConnectionInfo } from "@/lib/node-client-base-url";
 import type {
   MilestoneProgressSummary,
   TransactionProgressStep
@@ -30,6 +35,7 @@ type OrderActionHubProps = {
   exchange: NormalizedOrderExchange;
   compensation: OfferCompensationSummary | null;
   offerHref: string;
+  serviceType?: string | null;
   onScrollToActions: () => void;
 };
 
@@ -37,6 +43,7 @@ export function OrderActionHub({
   exchange,
   compensation,
   offerHref,
+  serviceType,
   onScrollToActions
 }: OrderActionHubProps) {
   const [publicKeyHex, setPublicKeyHex] = useState<string | null>(null);
@@ -85,6 +92,28 @@ export function OrderActionHub({
     }
     return deriveTransactionProgress(exchange, viewerRole);
   }, [exchange, viewerRole]);
+
+  const builderShareUrl = useAbsoluteClientUrl(progress?.builderHref ?? null);
+
+  const orderResumeBundle = useMemo(() => {
+    if (!progress?.builderHref) {
+      return null;
+    }
+    const nodeUrl = resolveNodeConnectionInfo().baseUrl;
+    if (!nodeUrl.trim()) {
+      return null;
+    }
+    return buildOrderResumeBundle({
+      nodeUrl,
+      payload: {
+        orderId: exchange.orderId,
+        milestoneId: progress.activeMilestoneId ?? undefined,
+        builderStep: progress.builderStep ?? (progress.isDisputed ? "dispute" : "delivery"),
+        buyerPubKey: exchange.buyerPubKey,
+        providerPubKey: exchange.providerPubKey
+      }
+    });
+  }, [exchange, progress]);
 
   const roleLabel =
     viewerRole === "buyer" ? "Buying" : viewerRole === "provider" ? "Selling" : null;
@@ -232,6 +261,37 @@ export function OrderActionHub({
                   </Button>
                 ) : null}
               </div>
+
+              {builderShareUrl ? (
+                <TransportQrPanel
+                  value={builderShareUrl}
+                  title="Resume on another device (link)"
+                  description="Opens guided builder at the current step for this order."
+                  mode="url"
+                  downloadFilename="vectis-builder-resume-qr.svg"
+                />
+              ) : null}
+              {orderResumeBundle ? (
+                <TransportBundleSharePanel
+                  bundle={orderResumeBundle}
+                  title="Resume on another device (bundle)"
+                  description="Structured Tier 1 bundle with order and milestone context."
+                  downloadFilename="vectis-order-resume-bundle-qr.svg"
+                />
+              ) : null}
+              {serviceType === "physical-handoff" ? (
+                <Button
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href={`/dashboard/handoff?order=${encodeURIComponent(exchange.orderId)}`}
+                    />
+                  }
+                  variant="outline"
+                >
+                  In-person handoff wizard
+                </Button>
+              ) : null}
             </>
           ) : (
             <p className="text-sm text-muted-foreground">

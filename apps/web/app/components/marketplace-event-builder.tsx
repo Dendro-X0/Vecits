@@ -37,6 +37,11 @@ import {
   type DiscoveryDraftBuilderPrefill,
   type DiscoveryOfferDraft
 } from "@/lib/marketplace/discovery-draft-import";
+import {
+  clearTransportOfferDraft,
+  readTransportOfferDraft
+} from "@/lib/transport/bundle-storage";
+import type { OfferDraftPayload } from "@/lib/transport/bundle";
 import { buildDisputeBuilderHref } from "@/lib/dashboard/builder-handoff";
 import {
   defaultNodeClientBaseUrlForForms,
@@ -1709,6 +1714,77 @@ export function MarketplaceEventBuilder({
     setChecklistMessage("Discovery draft imported — review fields before sign+submit.");
     setTimeout(() => setChecklistMessage(""), 2200);
   }
+
+  function applyTransportOfferDraft(draft: OfferDraftPayload) {
+    const evidenceFormats =
+      draft.allowedEvidenceFormats?.map((value) => value.trim()).filter(Boolean) ?? [];
+    const laneTemplateId =
+      SERVICE_LANE_TEMPLATE_BY_SERVICE_TYPE.get(draft.serviceType)?.id ?? null;
+
+    setSessionAcceptedEvents([]);
+    resetBuilderInputs();
+    setFlowRoute("acceptPath");
+    setModeWithContext("offer");
+    setActivePreset(null);
+
+    if (laneTemplateId) {
+      applyServiceLaneTemplate(laneTemplateId);
+    } else {
+      setServiceLaneTemplateId("custom");
+      setServiceType(draft.serviceType);
+      if (draft.unitDefinition) {
+        setUnitDefinition(draft.unitDefinition);
+      }
+      if (draft.deliveryMode) {
+        setDeliveryMode(draft.deliveryMode);
+      }
+      if (evidenceFormats.length > 0) {
+        setAllowedEvidenceFormats(evidenceFormats.join(","));
+        updatePrimaryMilestone({ evidenceFormat: evidenceFormats[0] });
+        setDeliveryEvidenceFormat(evidenceFormats[0]);
+      }
+    }
+
+    const slug =
+      draft.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 40) || "transport-draft";
+    const offerId = `${slug}-offer`;
+    const termsHash = `transport-draft:${Date.now()}`;
+
+    setOfferId(offerId);
+    setTermsHash(termsHash);
+    setImportedDraftMeta({
+      serviceType: draft.serviceType,
+      unitDefinition: draft.unitDefinition ?? "",
+      deliveryMode: draft.deliveryMode ?? "",
+      allowedEvidenceFormats: evidenceFormats.join(","),
+      milestoneEvidenceFormat: evidenceFormats[0] ?? "",
+      offerId,
+      termsHash,
+      laneTemplateId,
+      title: draft.title,
+      description: draft.description ?? "",
+      suggestedLane: "transport-bundle",
+      signalId: "transport-bundle"
+    });
+    setChecklistMessage("Transport offer draft imported — review fields before sign+submit.");
+    setTimeout(() => setChecklistMessage(""), 2200);
+  }
+
+  useEffect(() => {
+    if (searchParams.get("import") !== "transport-draft") {
+      return;
+    }
+    const draft = readTransportOfferDraft();
+    if (!draft) {
+      return;
+    }
+    applyTransportOfferDraft(draft);
+    clearTransportOfferDraft();
+  }, [searchParams]);
 
   function applyComputeDeliveryHints() {
     try {

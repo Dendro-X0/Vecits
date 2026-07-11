@@ -2685,6 +2685,17 @@ Primary files:
   - `npm run r6:compute-job:drill -- --no-build` (pass)
   - `npm run v2:compute-receipt:smoke` (pass)
 
+## R8 convenience transport — planning slice (July 2026)
+
+- **Context:** Human counterparty field proof (R6-PD-C) blocked by social trust cold-start; operator requested roadmap for QR/offline-friendly coordination without weakening settlement.
+- **Added:**
+  - `docs/specs/r8-convenience-transport-spec.md` — Tier 0 (unsigned deep links), Tier 1 (signed bundles), Tier 2 (offline lane UX); security copy; acceptance gates R8-G0..G5
+  - `docs/roadmap/r8-convenience-transport-execution-plan.md` — slices R8-A..D
+  - Index updates: `restart-roadmap.md`, `protocol-priority-backlog.md`, `docs/README.md`, `START-HERE.md`, `client/testing-without-users.md` §15
+- **Status:** R8-D complete — `/dashboard/handoff` physical-handoff wizard + deferred queue
+- **Verification:** `pnpm typecheck`, `npm run r4:client-audit`, `npm run r8:transport:smoke`, `npm run r6:offline-lanes:smoke` (pass)
+- **Verification:** docs-only slice — no code changes
+
 ## Update protocol
 
 - update this file after each substantive implementation step

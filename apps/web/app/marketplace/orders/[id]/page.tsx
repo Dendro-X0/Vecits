@@ -100,6 +100,10 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
   const exchange = order ? normalizeOrderExchange(id, order, milestones) : null;
   const backHref = buildMarketplaceHref(`/marketplace/offers/${offerId}`, query);
   const compensation = readOfferCompensationSummary(offer);
+  const serviceType =
+    (offer?.service_type as string | undefined) ??
+    (offer?.serviceType as string | undefined) ??
+    null;
 
   return (
     <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
@@ -151,6 +155,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             searchParams={query}
             compensation={compensation}
             offerHref={backHref}
+            serviceType={serviceType}
           />
         ) : null}
       </div>

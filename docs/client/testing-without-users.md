@@ -195,4 +195,27 @@ Prerequisite: `npm run r2:genesis-drill` (or fixture state with low vouch weight
 
 Everything else in Phase 1–3 client work can be validated solo with fixtures + two keys.
 
+## 15. R8 convenience transport (when a low-trust counterparty appears)
+
+Complete client track: [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md) · Spec: [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md).
+
+Use these asks when someone is willing to **look** but not yet **trust** the full app:
+
+| Ask level | What you show | What they do | Trust required |
+| --- | --- | --- | --- |
+| **Intro only** | Identity intro QR or pubkey copy | Verify pubkey matches your display name | Minimal |
+| **Sponsor vouch** | Vouch request bundle (Tier 1) | Sign `Vouch` in their own vault | Low — they never give you keys |
+| **Draft offer** | Discovery import or offer draft link | Review in builder; sign `ServiceOffer` themselves | Medium — they control signature |
+| **Small exchange** | Reference lane (`software-fixes`) order | Fund/deliver/accept with explicit kernel-truth labels | Medium — bounded escrow amount |
+
+**Solo smoke for R8 (before any human):**
+
+| Tier | Method |
+| --- | --- |
+| Tier 0 | **Show QR** on Overview (vouch request), order hub (builder resume), marketplace discovery import, or Settings → Connection (absolute node URL). Scan with phone → confirm route or text. |
+| Tier 1 | Two browsers or `/dashboard/import` paste; confirm expiry and warning copy; optional camera scan on mobile; `npm run r8:transport:smoke` |
+| Tier 2 | `/dashboard/handoff` wizard against SCN-18 fixture order (two browsers / two keys); `npm run r6:offline-lanes:smoke` |
+
+Label evidence honestly: **maintainer smoke** ≠ **field proof** (same rule as R6-PD-C).
+
 ← [Client docs](README.md)

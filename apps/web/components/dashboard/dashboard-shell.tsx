@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { ArrowLeftRight, BookOpen, LayoutDashboard, PenLine, Settings, Store } from "lucide-react";
+import { ArrowLeftRight, BookOpen, Handshake, LayoutDashboard, PenLine, QrCode, Settings, Store } from "lucide-react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
 import { WorkspaceRoleHint } from "@/components/dashboard/workspace-role-hint";
@@ -32,12 +32,16 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Act",
-    items: [{ href: "/dashboard/builder", label: "Publish & transact", icon: PenLine, exact: true }]
+    items: [
+      { href: "/dashboard/builder", label: "Publish & transact", icon: PenLine, exact: true },
+      { href: "/dashboard/handoff", label: "In-person handoff", icon: Handshake, exact: true }
+    ]
   },
   {
     label: "Operate",
     items: [
       { href: "/dashboard/settings", label: "Settings", icon: Settings, exact: true },
+      { href: "/dashboard/import", label: "Import link", icon: QrCode, exact: true },
       { href: "/help", label: "Help", icon: BookOpen, exact: false }
     ]
   }
@@ -46,6 +50,20 @@ const NAV_GROUPS: NavGroup[] = [
 const FLAT_NAV: NavItem[] = NAV_GROUPS.flatMap((group) => group.items);
 
 function pageMeta(pathname: string): { title: string; description: string } {
+  if (pathname.startsWith("/dashboard/handoff")) {
+    return {
+      title: "In-person handoff",
+      description:
+        "Experimental physical-handoff lane — dual acknowledgment hashes, review before sign, optional offline queue."
+    };
+  }
+  if (pathname.startsWith("/dashboard/import")) {
+    return {
+      title: "Import link",
+      description:
+        "Paste, upload, or scan a Tier 1 transport bundle. Review every field before signing — imports never auto-submit."
+    };
+  }
   if (pathname.startsWith("/dashboard/settings")) {
     return {
       title: "Settings",

@@ -13,7 +13,7 @@ Operators: [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md). I
 | **Kernel / protocol** | R0–R2 complete; reference-lane procedure guards GAP-01..07 closed |
 | **Trust bootstrap** | Spec locked — [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) |
 | **Discovery bridge** | Classifier + offer drafts + Aperio import — [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| **Client** | R4-C1..C4 complete; frontend Phase 1–3 complete ([frontend-phase3-completion.md](frontend-phase3-completion.md)) — layout: [../REPOSITORY.md](../REPOSITORY.md) |
+| **Client** | R4-C1..C4 complete; frontend Phase 1–3 complete ([frontend-phase3-completion.md](frontend-phase3-completion.md)); **R8 convenience transport** complete — [specs/r8-convenience-transport-spec.md](specs/r8-convenience-transport-spec.md) |
 | **Gates** | RG-1..RG-4 pass; RG-5 partial (Aperio live CLI optional) |
 
 Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md) · Evidence: [roadmap/progress.md](roadmap/progress.md)
@@ -26,7 +26,7 @@ Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md
 | Operator / first deploy | [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md) |
 | Protocol / fixtures | [architecture/software-fixes-lane.md](architecture/software-fixes-lane.md) → [v0/v0-scenario-fixture-matrix.md](v0/v0-scenario-fixture-matrix.md) |
 | Discovery (Aperio → Vectis) | [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
-| What's next (client UX) | [frontend-phase3-completion.md](frontend-phase3-completion.md) · [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
+| What's next (client UX) | [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) · R6-PD field proof · R7-M1 iOS scaffold |
 | Client dev + solo testing | [client/development-guide.md](client/development-guide.md) · [client/testing-without-users.md](client/testing-without-users.md) |
 | What's next (protocol) | [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) |
 | Maintainer / R-track | [roadmap/restart-roadmap.md](roadmap/restart-roadmap.md) |
@@ -47,7 +47,7 @@ docs/
   foundation/        thesis, economics, doctrine
   v0/                fixtures, abuse matrix, evidence
   runbooks/          operator install and ops
-  roadmap/           R0–R7 tracks and progress
+  roadmap/           R0–R8 tracks and progress
   client/            official client dev + in-app help sync
 ```
 
@@ -59,6 +59,7 @@ docs/
 | [frontend-phase1-completion.md](frontend-phase1-completion.md) | Deal loop Phase 1 completion record |
 | [frontend-phase2-plan.md](frontend-phase2-plan.md) | Role workspace + order hub Phase 2 plan |
 | [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) | Cold-start: vouches + contribution mint → first exchange |
+| [specs/r8-convenience-transport-spec.md](specs/r8-convenience-transport-spec.md) | QR/deep-link transport; offline handoff UX tiers |
 | [architecture/software-fixes-lane.md](architecture/software-fixes-lane.md) | Reference v1 digital lane |
 | [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) | Aperio Rust engine → Vectis offer drafts |
 | [v0/protocol-fixture-gap-audit.md](v0/protocol-fixture-gap-audit.md) | Marketplace procedure guard fixtures |
@@ -68,8 +69,9 @@ docs/
 
 | Document | Purpose |
 | --- | --- |
-| [roadmap/restart-roadmap.md](roadmap/restart-roadmap.md) | Canonical R0–R7 plan and gates |
-| [roadmap/r7-professional-client-execution-plan.md](roadmap/r7-professional-client-execution-plan.md) | Tauri v2 official client (parallel) |
+| [roadmap/restart-roadmap.md](roadmap/restart-roadmap.md) | Canonical R0–R8 plan and gates |
+| [roadmap/r7-professional-client-execution-plan.md](roadmap/r7-professional-client-execution-plan.md) | Tauri v2 official client (complete) |
+| [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md) | QR, deep links, offline-friendly handoff UX |
 | [roadmap/r2-deployment-proof-execution-plan.md](roadmap/r2-deployment-proof-execution-plan.md) | R2 deployment proof (complete) |
 | [roadmap/progress.md](roadmap/progress.md) | Milestone and evidence index |
 | [roadmap/working-context-log.md](roadmap/working-context-log.md) | Rolling session handoff |

@@ -48,6 +48,7 @@
     "r2:restore-drill": "node ./scripts/r2-restore-drill.mjs",
     "r2:evidence-pack": "node ./scripts/r2-evidence-pack.mjs",
     "r4:client-audit": "node ./scripts/r4-client-audit.mjs",
+    "r8:transport:smoke": "node ./scripts/r8-transport-smoke.mjs",
     "r2:exchange-drill": "node ./scripts/r2-exchange-drill.mjs",
     "r2:genesis-drill": "node ./scripts/r2-genesis-drill.mjs",
     "r5:policy-pack:export": "node ./scripts/r5-policy-pack-export.mjs",

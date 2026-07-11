@@ -45,14 +45,17 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 | Professional desktop client (R7) | R7-D1–D5 + R7-X1 — `RG-7` pass |
 | Mobile client wiring (R7-M2) | Remote pinned node — `pnpm r7:mobile:readiness` |
 | Mobile scaffold (R7-M1) | Android complete; iOS tooling ready (macOS host) |
+| Convenience transport (R8) | Tier 0 QR → Tier 1 bundles → Tier 2 handoff wizard — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md) |
 
 ### Not the current focus
 
 - Federation at scale
-- Offline `physical-handoff` lane production deployment (fixture proven — SCN-18)
+- Offline `physical-handoff` lane **production** deployment (fixture proven — SCN-18; R8-D adds experimental UX only)
 - `OrderAmend` event kind (use new order or paired settle for now)
 
 **Client work (no live users required):** use [client/testing-without-users.md](client/testing-without-users.md) — fixtures + two local keys + `/help` guides.
+
+**In-person / low-trust onboarding (complete):** [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md) — QR, signed bundles, and experimental handoff wizard without weakening settlement.
 
 Stack-ranked backlog: [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md)
 
@@ -103,10 +106,12 @@ pnpm r7:client:readiness               # desktop cargo check + R4 audit + web + 
 
 [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) — suggested slices:
 
-1. R7-M1 iOS scaffold on macOS host — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
-2. Mobile sidecar policy (locked) — [specs/mobile-sidecar-policy-spec.md](specs/mobile-sidecar-policy-spec.md)
-3. R7-M2 remote pinned node wiring (complete) — [specs/r7-m2-remote-pinned-node-wiring-spec.md](specs/r7-m2-remote-pinned-node-wiring-spec.md)
-4. R6-PD post-deployment lane proof — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+1. R6-PD post-deployment lane proof — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+2. R7-M1 iOS scaffold on macOS host — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
+3. Mobile sidecar policy (locked) — [specs/mobile-sidecar-policy-spec.md](specs/mobile-sidecar-policy-spec.md)
+4. R7-M2 remote pinned node wiring (complete) — [specs/r7-m2-remote-pinned-node-wiring-spec.md](specs/r7-m2-remote-pinned-node-wiring-spec.md)
+
+R8 convenience transport is complete — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md)
 
 ## Doc map (when you need more)
 
@@ -117,7 +122,7 @@ pnpm r7:client:readiness               # desktop cargo check + R4 audit + web + 
 | [foundation/](foundation/README.md) | Thesis, economics, doctrine |
 | [v0/](v0/README.md) | Fixture matrices, abuse tests, evidence |
 | [runbooks/](runbooks/README.md) | Operator commands |
-| [roadmap/](roadmap/README.md) | R0–R7 tracks, progress, session log |
+| [roadmap/](roadmap/README.md) | R0–R8 tracks, progress, session log |
 | [archive/](archive/legacy-dcos-index.md) | Legacy — not normative |
 
 Full index: [README.md](README.md)

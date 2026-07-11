@@ -78,3 +78,20 @@ Examples:
 - `/explorer/identity?id=<pubkey>`
 - `/explorer/balance?id=<pubkey>&as_of=2026-03-01T00:00:00Z`
 - `/explorer/policy?as_of=2026-03-02T12:00:00Z&limit=20`
+
+## Dashboard and transport (R7–R8)
+
+Operator workspace routes (in addition to `/dashboard` overview):
+
+- `/dashboard/builder` — guided publish and transact
+- `/dashboard/transactions` — live order queue
+- `/dashboard/import` — Tier 1 signed transport bundle import + QR scan
+- `/dashboard/handoff` — Tier 2 experimental physical-handoff wizard
+
+Transport components live under `components/transport/` and `lib/transport/`. Verification from repo root:
+
+```bash
+pnpm typecheck                 # in apps/web
+npm run r4:client-audit
+npm run r8:transport:smoke
+```

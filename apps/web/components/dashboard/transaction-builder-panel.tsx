@@ -165,6 +165,13 @@ export function TransactionBuilderPanel() {
   }, [importParam, showImport, step]);
 
   useEffect(() => {
+    if (importParam === "transport-draft") {
+      setFlow("happy");
+      setStep("offer");
+    }
+  }, [importParam]);
+
+  useEffect(() => {
     if (branchParam === "dispute") {
       setFlow("dispute");
       if (isDisputeStepMode(stepParam)) {

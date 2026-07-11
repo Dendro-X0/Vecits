@@ -18,6 +18,8 @@ import { KeyBackupPanel } from "@/components/auth/key-backup-panel";
 import { PasskeyVaultPanel } from "@/components/auth/passkey-vault-panel";
 import { DashboardSettingsTechnicalPanel } from "@/components/dashboard/dashboard-settings-technical-panel";
 import { SettingsAdvancedDisclosure } from "@/components/dashboard/settings-advanced-disclosure";
+import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
+import { TransportBundleSharePanel } from "@/components/transport/transport-bundle-share-panel";
 import {
   SettingsCategoryNav,
   SettingsRow,
@@ -44,6 +46,8 @@ import {
   resolveNodeConnectionInfo,
   validateMobilePinnedNodeUrl
 } from "@/lib/node-client-base-url";
+import { isAbsoluteHttpUrl } from "@/lib/transport/absolute-url";
+import { buildIdentityIntroBundle } from "@/lib/transport/bundle";
 import { truncatePubkey } from "@/lib/utils";
 
 const THEME_LABELS = {
@@ -95,6 +99,15 @@ export function DashboardSettingsPanel() {
   }
 
   const connectionIssue = validateMobilePinnedNodeUrl(nodeInfo.baseUrl);
+  const identityIntroBundle =
+    session && isAbsoluteHttpUrl(nodeInfo.baseUrl)
+      ? buildIdentityIntroBundle({
+          pubKey: session.publicKeyHex,
+          nodeUrl: nodeInfo.baseUrl,
+          displayLabel: profile.displayName || undefined,
+          bio: profile.bio || undefined
+        })
+      : null;
   const connectionBadge = connectionIssue ? (
     <Badge variant="outline" className="border-destructive/40 text-destructive">
       Needs attention
@@ -208,9 +221,19 @@ export function DashboardSettingsPanel() {
                 description="Your identity reference used for signing marketplace events."
               >
                 {session ? (
-                  <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
-                    {session.publicKeyHex}
-                  </p>
+                  <div className="space-y-3">
+                    <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
+                      {session.publicKeyHex}
+                    </p>
+                    {identityIntroBundle ? (
+                      <TransportBundleSharePanel
+                        bundle={identityIntroBundle}
+                        title="Share identity intro"
+                        description="Low-trust meetup handoff — others import on /dashboard/import to copy your pubkey."
+                        downloadFilename="vectis-identity-intro-qr.svg"
+                      />
+                    ) : null}
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">No unlocked identity on this device.</p>
                 )}
@@ -241,6 +264,27 @@ export function DashboardSettingsPanel() {
                       operator tools.
                     </p>
                   )}
+                  {isAbsoluteHttpUrl(nodeInfo.baseUrl) ? (
+                    <TransportQrPanel
+                      value={nodeInfo.baseUrl}
+                      title="Join this node"
+                      description="Scan on another device to paste into mobile pinned-node settings. Confirm the hostname before connecting."
+                      mode="url"
+                      downloadFilename="vectis-node-join-qr.svg"
+                    />
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      QR join appears when this client uses an absolute node URL (desktop sidecar or
+                      mobile pinned node override).
+                    </p>
+                  )}
+                  <p className="text-sm text-muted-foreground">
+                    Received a transport bundle?{" "}
+                    <Link href="/dashboard/import" className="text-primary hover:underline">
+                      Import on dashboard
+                    </Link>
+                    .
+                  </p>
                 </div>
               </SettingsRow>
             </SettingsSection>

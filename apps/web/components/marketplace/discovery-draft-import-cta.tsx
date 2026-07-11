@@ -1,11 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { Upload } from "lucide-react";
 
 import type { QueryParams } from "@/app/explorer/lib";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
 import { discoveryDraftImportNote } from "@/lib/marketplace/discovery-draft-import";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
+import { useAbsoluteClientUrl } from "@/lib/transport/absolute-url";
 import { cn } from "@/lib/utils";
 
 type DiscoveryDraftImportCtaProps = {
@@ -23,6 +27,7 @@ export function DiscoveryDraftImportCta({
     step: "offer",
     import: "discovery"
   });
+  const shareUrl = useAbsoluteClientUrl(href);
 
   if (variant === "banner") {
     return (
@@ -40,23 +45,40 @@ export function DiscoveryDraftImportCta({
           </div>
           <p className="text-sm text-muted-foreground">{discoveryDraftImportNote()}</p>
         </div>
-        <Button nativeButton={false} render={<Link href={href} />} variant="outline" size="sm">
-          Import in builder
-        </Button>
+        <div className="flex flex-col gap-3 sm:items-end">
+          <Button nativeButton={false} render={<Link href={href} />} variant="outline" size="sm">
+            Import in builder
+          </Button>
+          {shareUrl ? (
+            <TransportQrPanel
+              value={shareUrl}
+              title="Share import link"
+              description="Opens offer builder with discovery import — still a draft until you sign."
+              mode="url"
+              className="w-full sm:max-w-sm"
+              downloadFilename="vectis-discovery-import-qr.svg"
+            />
+          ) : null}
+        </div>
       </div>
     );
   }
 
   return (
-    <Button
-      nativeButton={false}
-      render={<Link href={href} />}
-      variant="outline"
-      size="sm"
-      className={className}
-    >
-      <Upload className="size-4" />
-      Import discovery draft
-    </Button>
+    <div className={cn("flex flex-col gap-3", className)}>
+      <Button nativeButton={false} render={<Link href={href} />} variant="outline" size="sm">
+        <Upload className="size-4" />
+        Import discovery draft
+      </Button>
+      {shareUrl ? (
+        <TransportQrPanel
+          value={shareUrl}
+          title="Share import link"
+          description="Opens offer builder with discovery import on another device."
+          mode="url"
+          downloadFilename="vectis-discovery-import-qr.svg"
+        />
+      ) : null}
+    </div>
   );
 }

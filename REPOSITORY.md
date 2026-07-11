@@ -25,7 +25,7 @@ Build artifacts (gitignored): `target/`, `node_modules/`, `dist/`, `apps/web/.ne
 | --- | --- |
 | Change protocol / replay | `crates/` + `fixtures/` |
 | Run or change the node binary | `apps/cli/` |
-| Marketplace / dashboard / explorer UI | `apps/web/` |
+| Marketplace / dashboard / explorer / transport UI | `apps/web/` |
 | Desktop or mobile shell | `apps/desktop/` |
 | Client API types and fetch helpers | `packages/sdk-ts/` |
 | Run maintainer drills | `package.json` scripts → `scripts/` |
@@ -45,6 +45,7 @@ cargo run --bin cli -- fixtures run
 pnpm install
 pnpm dev:web
 pnpm r4:client-audit
+pnpm r8:transport:smoke
 ```
 
 Operator node (local):

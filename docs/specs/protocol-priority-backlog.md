@@ -27,9 +27,15 @@ Last updated: July 2026
 
 ## Suggested next slices (pick one)
 
-1. R7-M1 iOS scaffold init/dev on macOS host (`pnpm r7:mobile:ios:init`, `pnpm r7:ios:scaffold-smoke`)
-2. R7-M3 on-device mobile sidecar — **spec drafted** (`docs/specs/r7-m3-on-device-sidecar-spec.md`); implementation deferred
-3. Post-R6 lane operator deployment proof — spec + runbook: `docs/specs/r6-post-deployment-proof-spec.md`, `pnpm r6:post-deployment:readiness`
+### Client (R8 — convenience transport)
+
+R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md).
+
+### Protocol / deployment
+
+4. R7-M1 iOS scaffold init/dev on macOS host (`pnpm r7:mobile:ios:init`, `pnpm r7:ios:scaffold-smoke`)
+5. R7-M3 on-device mobile sidecar — **spec drafted** (`docs/specs/r7-m3-on-device-sidecar-spec.md`); implementation deferred
+6. Post-R6 lane operator deployment proof — spec + runbook: `docs/specs/r6-post-deployment-proof-spec.md`, `pnpm r6:post-deployment:readiness`
 
 ## Explicit non-goals (current band)
 
@@ -40,6 +46,7 @@ Last updated: July 2026
 ## Related docs
 
 - [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md)
+- [r8-convenience-transport-spec.md](r8-convenience-transport-spec.md)
 - [../v0/protocol-fixture-gap-audit.md](../v0/protocol-fixture-gap-audit.md)
 - [../v0/v0-scenario-fixture-matrix.md](../v0/v0-scenario-fixture-matrix.md)
 - [../roadmap/restart-roadmap.md](../roadmap/restart-roadmap.md)

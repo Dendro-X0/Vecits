@@ -1294,3 +1294,25 @@ This file tracks high-level progress over time.
     - `npm.cmd run v1:lane-fixtures`
     - `npm.cmd run -w @new-start/web typecheck`
     - `npm.cmd run typecheck`
+- **R8 convenience transport (planning, July 2026):**
+  - `docs/specs/r8-convenience-transport-spec.md` — QR/deep-link/offline handoff tiers (0 unsigned, 1 signed bundles, 2 offline lane wizard)
+  - `docs/roadmap/r8-convenience-transport-execution-plan.md` — R8-A..D execution slices
+  - Indexed from `restart-roadmap.md`, `protocol-priority-backlog.md`, `docs/README.md`, `START-HERE.md`, `client/testing-without-users.md` §15
+  - Next implementation slice: R8-B Tier 0 QR display on web surfaces
+- **R8-B convenience transport (July 2026):**
+  - `apps/web/components/transport/transport-qr-panel.tsx` — shared QR display (copy, download SVG, mandatory warning)
+  - `apps/web/lib/transport/copy.ts`, `absolute-url.ts`
+  - Wired: trust bootstrap vouch request, order action hub builder resume, discovery import CTA, settings node join
+  - Dependency: `react-qr-code` in `@new-start/web`
+  - verified: `pnpm typecheck`, `npm run r4:client-audit`
+  - Next: R8-C Tier 1 signed bundles + mobile scan
+- **R8-C signed transport bundles (July 2026):**
+  - `/dashboard/import` — bundle paste + QR scan review
+  - `lib/transport/bundle*.ts`, `components/transport/transport-bundle-*`
+  - `scripts/r8-transport-smoke.mjs`, `npm run r8:transport:smoke`
+  - verified: `pnpm typecheck`, `npm run r4:client-audit`, `npm run r8:transport:smoke`
+  - Next: R8-D Tier 2 physical-handoff wizard
+- **R8-D physical handoff wizard (July 2026):**
+  - `/dashboard/handoff` — experimental lane wizard with dual-ack delivery + offline queue
+  - `lib/marketplace/physical-handoff-delivery.ts`, `lib/transport/handoff-*`
+  - verified: `pnpm typecheck`, `npm run r4:client-audit`, `npm run r8:transport:smoke`, `npm run r6:offline-lanes:smoke`

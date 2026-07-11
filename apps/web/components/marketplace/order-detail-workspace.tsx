@@ -16,6 +16,7 @@ type OrderDetailWorkspaceProps = {
   searchParams: QueryParams;
   compensation: OfferCompensationSummary | null;
   offerHref: string;
+  serviceType?: string | null;
 };
 
 export function OrderDetailWorkspace({
@@ -23,7 +24,8 @@ export function OrderDetailWorkspace({
   exchange,
   searchParams,
   compensation,
-  offerHref
+  offerHref,
+  serviceType
 }: OrderDetailWorkspaceProps) {
   const exchangeRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,7 @@ export function OrderDetailWorkspace({
         exchange={exchange}
         compensation={compensation}
         offerHref={offerHref}
+        serviceType={serviceType}
         onScrollToActions={scrollToActions}
       />
 

@@ -15,6 +15,7 @@ Kickoff: July 2026
 7. `discovery-bridge-spec.md` — Aperio → Vectis integration contract
 8. `trust-bootstrap-and-credits-path-spec.md` — genesis admission + credits issuance path
 9. `protocol-priority-backlog.md` — stack-ranked protocol work tracker
+10. `r8-convenience-transport-spec.md` — QR/deep-link/offline handoff transport (client band)
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 
@@ -48,3 +49,4 @@ These specs **do not replace** v0 protocol documentation. They define the restar
 | `r7-m1-ios-scaffold-spec.md` | `draft` |
 | `r7-m3-on-device-sidecar-spec.md` | `draft` (deferred) |
 | `r6-post-deployment-proof-spec.md` | `draft` |
+| `r8-convenience-transport-spec.md` | `locked` |

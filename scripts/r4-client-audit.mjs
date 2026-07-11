@@ -216,6 +216,88 @@ async function main() {
     failures.push("order detail workspace missing off-protocol notes panel");
   }
 
+  const transportQr = await readUtf8("apps/web/components/transport/transport-qr-panel.tsx");
+  if (!/TransportQrPanel/.test(transportQr) || !/TRANSPORT_QR_WARNING/.test(transportQr)) {
+    failures.push("transport QR panel missing component or kernel-truth warning copy");
+  }
+
+  const transportCopy = await readUtf8("apps/web/lib/transport/copy.ts");
+  if (!/Scanning does not publish offers or move credits/.test(transportCopy)) {
+    failures.push("transport copy missing mandatory R8 warning");
+  }
+
+  const trustBootstrap = await readUtf8("apps/web/components/dashboard/trust-bootstrap-panel.tsx");
+  if (!/TransportQrPanel/.test(trustBootstrap)) {
+    failures.push("trust bootstrap panel missing transport QR share");
+  }
+
+  if (!/TransportQrPanel/.test(orderActionHub)) {
+    failures.push("order action hub missing transport QR share");
+  }
+
+  const discoveryCta = await readUtf8("apps/web/components/marketplace/discovery-draft-import-cta.tsx");
+  if (!/TransportQrPanel/.test(discoveryCta)) {
+    failures.push("discovery draft import CTA missing transport QR share");
+  }
+
+  const settingsPanel = await readUtf8("apps/web/components/dashboard/dashboard-settings-panel.tsx");
+  if (!/TransportQrPanel/.test(settingsPanel) || !/Join this node/.test(settingsPanel)) {
+    failures.push("settings connection panel missing node join QR");
+  }
+
+  const r8TransportSurfaces = [
+    "apps/web/lib/transport/bundle.ts",
+    "apps/web/lib/transport/bundle-actions.ts",
+    "apps/web/lib/transport/bundle-storage.ts",
+    "apps/web/lib/transport/handoff-staging.ts",
+    "apps/web/lib/transport/handoff-queue.ts",
+    "apps/web/lib/marketplace/physical-handoff-delivery.ts",
+    "apps/web/lib/dashboard/load-physical-handoff-orders.ts",
+    "apps/web/components/transport/transport-bundle-import-panel.tsx",
+    "apps/web/components/transport/transport-bundle-review.tsx",
+    "apps/web/components/transport/transport-bundle-share-panel.tsx",
+    "apps/web/components/transport/transport-qr-scanner.tsx",
+    "apps/web/components/transport/physical-handoff-wizard.tsx",
+    "apps/web/components/transport/handoff-queue-panel.tsx",
+    "apps/web/app/dashboard/import/page.tsx",
+    "apps/web/app/dashboard/handoff/page.tsx"
+  ];
+  for (const relative of r8TransportSurfaces) {
+    try {
+      await fs.access(path.join(WORKSPACE_ROOT, relative));
+    } catch {
+      failures.push(`missing R8-C transport surface: ${relative}`);
+    }
+  }
+
+  const transportBundle = await readUtf8("apps/web/lib/transport/bundle.ts");
+  if (!/parseTransportBundleInput/.test(transportBundle) || !/buildVouchRequestBundle/.test(transportBundle)) {
+    failures.push("transport bundle library missing parse/build helpers");
+  }
+
+  const transportImport = await readUtf8("apps/web/components/transport/transport-bundle-import-panel.tsx");
+  if (!/TransportQrScanner/.test(transportImport) || !/parseTransportBundleInput/.test(transportImport)) {
+    failures.push("transport import panel missing scan or parse wiring");
+  }
+
+  if (!/TransportBundleSharePanel/.test(trustBootstrap)) {
+    failures.push("trust bootstrap panel missing Tier 1 bundle share");
+  }
+
+  const handoffWizard = await readUtf8("apps/web/components/transport/physical-handoff-wizard.tsx");
+  if (!/Experimental lane/.test(handoffWizard) || !/physical-handoff-ack-dual-v1/.test(handoffWizard)) {
+    failures.push("physical handoff wizard missing experimental labeling or evidence format");
+  }
+
+  if (!/In-person handoff wizard/.test(orderActionHub)) {
+    failures.push("order action hub missing physical handoff wizard link");
+  }
+
+  const dashboardShell = await readUtf8("apps/web/components/dashboard/dashboard-shell.tsx");
+  if (!/\/dashboard\/import/.test(dashboardShell) || !/\/dashboard\/handoff/.test(dashboardShell)) {
+    failures.push("dashboard shell missing import or handoff routes");
+  }
+
   const siteHeader = await readUtf8("apps/web/components/shell/site-header.tsx");
   if (!/\/help/.test(siteHeader)) {
     failures.push("site header missing Help nav link");
@@ -249,6 +331,9 @@ async function main() {
   console.log(`  scanned ${webFiles.length} web app source files`);
   console.log("  AB-15: session state gated on kernel ingest");
   console.log("  SOC-01-doc: onboarding + operator-security-guide + marketplace entry");
+  console.log("  R8-B: transport QR surfaces (trust, order hub, discovery, settings)");
+  console.log("  R8-C: transport bundle parse/import/share surfaces");
+  console.log("  R8-D: physical-handoff wizard + deferred queue");
 }
 
 main().catch(error => {

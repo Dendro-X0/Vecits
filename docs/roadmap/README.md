@@ -8,7 +8,8 @@ Active restart-era planning, progress tracking, and session handoff.
 | [frontend-phase1-completion.md](../frontend-phase1-completion.md) | Client Phase 1 deal loop (complete) |
 | [restart-roadmap.md](restart-roadmap.md) | Canonical R0–R7 plan and gates |
 | [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) | **What is done / what's next** (protocol stack) |
-| [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) | **Active:** Tauri v2 official client |
+| [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) | Tauri v2 official client (complete) |
+| [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) | **Active:** QR, deep links, offline-friendly handoff UX |
 | [r0-spec-lock-execution-plan.md](r0-spec-lock-execution-plan.md) | R0 tracker |
 | [r2-deployment-proof-execution-plan.md](r2-deployment-proof-execution-plan.md) | R2 deployment proof |
 | [progress.md](progress.md) | Milestone evidence index |

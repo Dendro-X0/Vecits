@@ -37,6 +37,8 @@ The dev script picks an available port (see `scripts/ensure-dev-web-port.mjs`). 
 | `/dashboard` | Overview workspace |
 | `/dashboard/builder` | Guided publish & transact |
 | `/dashboard/transactions` | Live order queue |
+| `/dashboard/import` | Tier 1 transport bundle import + QR scan |
+| `/dashboard/handoff` | Tier 2 experimental physical-handoff wizard |
 | `/help` | In-app user guides |
 | `/explorer` | Kernel inspection tools |
 
@@ -45,6 +47,7 @@ The dev script picks an available port (see `scripts/ensure-dev-web-port.mjs`). 
 ```bash
 cd apps/web && pnpm typecheck
 npm run r4:client-audit    # from repo root — kernel boundary checks
+npm run r8:transport:smoke # R8 QR/bundle/handoff smoke
 ```
 
 ## Desktop (Tauri)
@@ -65,6 +68,7 @@ See [../runbooks/desktop-release-build.md](../runbooks/desktop-release-build.md)
 | Transactions queue | `lib/dashboard/load-transactions.ts`, `lib/dashboard/transaction-progress.ts` |
 | User help | `lib/help/articles.ts`, `app/help/**` |
 | Settings / identity | `components/dashboard/dashboard-settings-panel.tsx` |
+| Transport (R8) | `components/transport/*`, `lib/transport/*` |
 
 ## Docs discipline
 

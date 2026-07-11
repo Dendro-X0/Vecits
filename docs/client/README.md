@@ -18,5 +18,7 @@ User-facing copy lives in the client at `/help`. Protocol and operator truth sta
 - [../frontend-phase1-completion.md](../frontend-phase1-completion.md) — deal loop Phase 1
 - [../frontend-phase2-completion.md](../frontend-phase2-completion.md) — workspace Phase 2 (complete)
 - [../frontend-phase3-completion.md](../frontend-phase3-completion.md) — trust, lanes, production readiness (complete)
+- [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md) — QR, deep links, offline handoff (complete)
+- [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md) — transport tiers and security rules
 
 ← [Docs home](../README.md)

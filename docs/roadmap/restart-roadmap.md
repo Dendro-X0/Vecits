@@ -28,7 +28,7 @@ The reference implementation proved protocol credibility in alpha conditions. It
 
 Transform Vectis from a maintainer-operated reference implementation into a **deployable coordination kernel** plus a **professional official client** (marketplace platform, Tauri v2 desktop/mobile) that independent operators can run, customize, and trust—without fiat rails, platform admins, or speculative token economics.
 
-**Active focus (July 2026):** kernel core complete for v1; **R7 professional client** band complete; **R6 lane expansion** is the next implementation track.
+**Active focus (July 2026):** kernel core complete for v1; **R7 professional client** and **R8 convenience transport** complete; **R6-PD field proof** when a counterparty is available; **R7-M1 iOS** on macOS host.
 
 ## Pre-implementation gate
 
@@ -57,7 +57,9 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
                          │
                          └──────────→ R4 Client shell hardening (parallel)
                          │
-                         └──────────→ R7 Professional client (Tauri v2) ← ACTIVE
+                         └──────────→ R7 Professional client (Tauri v2) ← COMPLETE
+                         │
+                         └──────────→ R8 Convenience transport (QR / offline UX) ← ACTIVE
                          │
                          └──────────→ R5 Federation + policy packs
                          │
@@ -72,6 +74,7 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
 | **R3** | Aperio → Vectis discovery bridge | 2–3 weeks |
 | **R4** | Client/SDK contract hardening | parallel with R1–R2 | **C1–C5 complete** (C5 via R7-D3) |
 | **R7** | Professional official client (Tauri v2) | **complete** (desktop MVP) | see [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) |
+| **R8** | Convenience transport (QR, deep links, offline handoff UX) | 2–4 weeks (Tier 0–1) | see [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) |
 | **R5** | Policy packs + federation polish | 3–6 weeks |
 | **R6** | Lane expansion and community templates | ongoing |
 
@@ -164,6 +167,21 @@ Execution plan: [r7-professional-client-execution-plan.md](r7-professional-clien
 
 **Next atomic step:** Complete R7-M1 iOS scaffold on macOS host. R7-M3 remains spec-only until remote pinned node is proven in the field.
 
+## Track R8: Convenience transport (QR, deep links, offline-friendly handoff)
+
+Goal: reduce in-person and low-trust onboarding friction without weakening kernel authority — especially when human counterparty field proof (R6-PD-C) is blocked by social cold-start.
+
+| ID | Status | Scope | Acceptance |
+| --- | --- | --- | --- |
+| `R8-A` | `completed` | Spec + execution plan + doc index | `docs/specs/r8-convenience-transport-spec.md`, `docs/roadmap/r8-convenience-transport-execution-plan.md` |
+| `R8-B` | `completed` | Tier 0 — QR display from existing hrefs (web) | `transport-qr-panel.tsx`; `npm run r4:client-audit` |
+| `R8-C` | `completed` | Tier 1 — signed bundles + mobile scan (R7-M2) | `/dashboard/import`, `npm run r8:transport:smoke` |
+| `R8-D` | `completed` | Tier 2 — offline lane wizard (`physical-handoff`) | `/dashboard/handoff`, `npm run r6:offline-lanes:smoke` |
+
+Execution plan: [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md)
+
+**Next atomic step:** R6-PD-C field proof when a counterparty is available, or R7-M1 iOS scaffold on macOS host.
+
 ## Track R5: Customization and federation
 
 Goal: communities deploy with policy packs; multi-node sync is operator-boring.
@@ -243,6 +261,8 @@ npm run r4:client-audit
 | R2 | deployment evidence packet, `progress.md` |
 | R3 | `specs/discovery-bridge-spec.md` |
 | R4 | SDK README, `r4-client-kernel-audit.md`, `operator-security-guide.md` |
+| R7 | `r7-professional-client-execution-plan.md`, mobile sidecar specs |
+| R8 | `specs/r8-convenience-transport-spec.md`, `r8-convenience-transport-execution-plan.md` |
 | R5+ | `event-versioning-strategy.md`, policy pack docs |
 
 ## Relationship to v0 roadmap
@@ -258,4 +278,4 @@ npm run r4:client-audit
 
 Protocol reference-lane guards GAP-01..07 closed. See [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) for next slices.
 
-Orientation: [../START-HERE.md](../START-HERE.md). R7 desktop MVP complete (`RG-7` pass). R7-M2 mobile remote pinned node complete. **Next (Windows-friendly):** R6-PD post-deployment lane proof — [../runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md). iOS: [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md).
+Orientation: [../START-HERE.md](../START-HERE.md). R7 desktop MVP complete (`RG-7` pass). R7-M2 mobile remote pinned node complete. **Active client track:** R8 convenience transport — [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md). **Field proof (when counterparty available):** R6-PD — [../runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md). iOS: [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md).

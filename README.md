@@ -6,7 +6,7 @@ This repo hosts the reference implementation: Rust kernel, `vectis-node` operato
 
 **Repository map:** [`REPOSITORY.md`](REPOSITORY.md)
 
-**Restart (July 2026):** R0–R2 and R4-C1–C4 complete. Local operator path:
+**Restart (July 2026):** R0–R2, R4-C1–C4, R7 professional client, and **R8 convenience transport** complete. Local operator path:
 
 ```bash
 npm run v1:build-release
@@ -23,7 +23,7 @@ See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbook
 | --- | --- |
 | `crates/` | Rust kernel — protocol-core, policy, state-engine, reputation, node |
 | `apps/cli` | Key generation, signing, replay, fixtures, `vectis-node` binary |
-| `apps/web` | Next.js client (marketplace, dashboard, explorer) |
+| `apps/web` | Next.js client (marketplace, dashboard, explorer, transport import/handoff) |
 | `apps/desktop` | Tauri v2 desktop + mobile scaffold |
 | `packages/sdk-ts` | Typed HTTP client for the node API |
 | `fixtures/` | Checked-in valid/invalid JSONL event logs |
@@ -36,6 +36,7 @@ See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbook
 - `cargo run --bin cli -- fixtures run`
 - `pnpm install` && `pnpm dev:web`
 - `pnpm r4:client-audit`
+- `pnpm r8:transport:smoke` — R8 QR/bundle/handoff smoke
 
 Full CLI reference: `cargo run --bin cli -- --help`
 
