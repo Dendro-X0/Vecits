@@ -1,14 +1,8 @@
 import { Suspense } from "react";
 
-import { PhysicalHandoffWizard } from "@/components/transport/physical-handoff-wizard";
+import { DashboardHandoffContent } from "./handoff-content";
 
-type HandoffPageProps = {
-  searchParams: Promise<{ order?: string }>;
-};
-
-export default async function DashboardHandoffPage({ searchParams }: HandoffPageProps) {
-  const params = await searchParams;
-
+export default function DashboardHandoffPage() {
   return (
     <div className="w-full px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl space-y-6">
@@ -20,7 +14,7 @@ export default async function DashboardHandoffPage({ searchParams }: HandoffPage
           </p>
         </div>
         <Suspense fallback={<p className="text-sm text-muted-foreground">Loading wizard…</p>}>
-          <PhysicalHandoffWizard initialOrderId={params.order ?? null} />
+          <DashboardHandoffContent />
         </Suspense>
       </div>
     </div>

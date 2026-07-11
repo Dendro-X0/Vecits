@@ -98,6 +98,8 @@ jobs:
       - uses: ./.github/actions/setup-vectis-build
 
       - name: Build static web export
+        env:
+          TAURI_BUILD: "1"
         run: node ./scripts/build-web-static.mjs
 
       - name: Upload web shell artifact
@@ -111,6 +113,7 @@ jobs:
 
   desktop:
     name: Desktop installer (${{ matrix.label }})
+    continue-on-error: true
     if: github.event_name != 'workflow_dispatch' || inputs.include_desktop
     strategy:
       fail-fast: false
@@ -238,3 +241,75 @@ jobs:
           name: release-manifest
           path: release-manifest.json
           if-no-files-found: error
+
+  publish-release:
+    name: Publish GitHub Release
+    needs:
+      - kernel
+      - docker
+      - web-shell
+      - release-manifest
+    if: github.ref_type == 'tag' && !cancelled() && needs.kernel.result == 'success' && needs.docker.result == 'success' && needs.web-shell.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download kernel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: kernel-*
+          path: release-files
+          merge-multiple: true
+
+      - name: Download docker artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: release-files
+
+      - name: Download web static artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-static
+          path: release-files/web-static
+
+      - name: Download release manifest
+        uses: actions/download-artifact@v4
+        with:
+          name: release-manifest
+          path: release-files
+
+      - name: Download desktop artifacts
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          path: release-files/desktop
+          merge-multiple: true
+
+      - name: Package web static archive
+        run: tar -czf release-files/vectis-web-static.tar.gz -C release-files/web-static .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Vectis ${{ github.ref_name }}
+          generate_release_notes: true
+          fail_on_unmatched_files: false
+          body: |
+            Multi-platform self-hosted artifacts for Vectis ${{ github.ref_name }}.
+
+            | Artifact | Contents |
+            | --- | --- |
+            | `kernel-*` | `vectis-node` + `cli` per OS/arch |
+            | `vectis-node-docker.tar` | Container image for Linux hosts |
+            | `vectis-web-static.tar.gz` | Static web shell for nginx + node |
+            | `desktop-*` | Platform installers when desktop jobs succeeded |
+
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          files: |
+            release-files/**/*
+            !release-files/web-static/**

@@ -25,6 +25,18 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
+**Where files appear:** successful tag builds publish a [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases) with attached binaries. If a release job fails, kernel/docker artifacts may still exist under **Actions → workflow run → Artifacts** (90-day retention).
+
+**Re-run after a failed build:** push fixes to `main`, move the tag, and push again:
+
+```bash
+git tag -f v0.1.0
+git push origin main
+git push origin v0.1.0 --force
+```
+
+Only force-move tags when you intend to replace a broken release artifact set.
+
 Manual release (optional desktop/Android toggles):
 
 GitHub → Actions → **Release Build** → **Run workflow**
@@ -101,9 +113,18 @@ Do not use T3 as first feedback on small UI changes.
 
 ## Gaps and next steps
 
-- **GitHub Release attachment** — artifacts upload to Actions today; add `softprops/action-gh-release` when signing/notarization policy is locked.
-- **iOS CI** — requires macOS runner + Apple signing; follow [r7-m1-ios-mac-host-handoff-runbook.md](r7-m1-ios-mac-host-handoff-runbook.md).
 - **Code signing** — Windows/macOS installers are unsigned in CI; operators may need SmartScreen/Gatekeeper overrides until signing secrets are configured.
+- **iOS CI** — requires macOS runner + Apple signing; follow [r7-m1-ios-mac-host-handoff-runbook.md](r7-m1-ios-mac-host-handoff-runbook.md).
+- **Android CI** — experimental manual dispatch; may need extra web/mobile build steps before reliable.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Tag exists but no Release assets | Workflow failed before `publish-release`, or ran before publish job existed | Check [Actions](https://github.com/Dendro-X0/Vecits/actions) run log; re-tag after fixes |
+| Only zip/tar.gz on Tags page | GitHub source archives — not CI artifacts | Open **Releases** or **Actions → Artifacts** |
+| `web-shell` / `desktop` job failed | Next.js static export constraints | Run `npm run build:web-static` locally; fix, push, re-tag |
+| Kernel artifacts exist, desktop missing | Desktop job is `continue-on-error` | Download kernel/docker/web from Release; desktop optional |
 
 ## Related docs
 
