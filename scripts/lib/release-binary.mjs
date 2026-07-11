@@ -1,16 +1,10 @@
 import { spawn, spawnSync } from "node:child_process";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { rustTargetTriple } from "./rust-target-triple.mjs";
 
 function targetTriple() {
-  const arch = process.arch;
-  const platform =
-    process.platform === "win32"
-      ? "pc-windows-msvc"
-      : process.platform === "darwin"
-        ? "apple-darwin"
-        : "unknown-linux-gnu";
-  return `${arch}-${platform}`;
+  return rustTargetTriple();
 }
 
 async function readVersion(workspaceRoot) {

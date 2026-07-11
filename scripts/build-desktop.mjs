@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { rustTargetTriple } from "./lib/rust-target-triple.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BINARIES_DIR = path.join(WORKSPACE_ROOT, "apps", "desktop", "src-tauri", "binaries");
@@ -19,14 +20,7 @@ const OPERATOR_PAGE_DESKTOP = path.join(
 );
 
 function targetTriple() {
-  const arch = process.arch === "x64" ? "x86_64" : process.arch;
-  if (process.platform === "win32") {
-    return `${arch}-pc-windows-msvc`;
-  }
-  if (process.platform === "darwin") {
-    return `${arch}-apple-darwin`;
-  }
-  return `${arch}-unknown-linux-gnu`;
+  return rustTargetTriple();
 }
 
 function run(command, args, options = {}) {

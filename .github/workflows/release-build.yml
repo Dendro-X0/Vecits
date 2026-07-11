@@ -290,7 +290,10 @@ jobs:
           merge-multiple: true
 
       - name: Package web static archive
-        run: tar -czf release-files/vectis-web-static.tar.gz -C release-files/web-static .
+        run: tar -czf release-files/vectis-web-static.tar.gz -C release-files/web-static apps/web/out dist/web-static/web-static-manifest.json
+
+      - name: Assemble release upload bundle
+        run: node ./scripts/assemble-release-upload.mjs release-files release-upload
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -298,18 +301,16 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Vectis ${{ github.ref_name }}
           generate_release_notes: true
-          fail_on_unmatched_files: false
+          fail_on_unmatched_files: true
           body: |
             Multi-platform self-hosted artifacts for Vectis ${{ github.ref_name }}.
 
             | Artifact | Contents |
             | --- | --- |
-            | `kernel-*` | `vectis-node` + `cli` per OS/arch |
+            | `vectis-node` / `cli` | Kernel binaries per OS/arch |
             | `vectis-node-docker.tar` | Container image for Linux hosts |
             | `vectis-web-static.tar.gz` | Static web shell for nginx + node |
-            | `desktop-*` | Platform installers when desktop jobs succeeded |
+            | `*.exe` / `*.dmg` / `*.deb` | Desktop installers when build jobs succeeded |
 
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          files: |
-            release-files/**/*
-            !release-files/web-static/**
+          files: release-upload/*
