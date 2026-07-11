@@ -14,9 +14,10 @@ Last updated: July 2026
 Local equivalent before push:
 
 ```bash
-npm run ci:readiness
-npm run v1:docker-smoke
+npm run ci:verify:local
 ```
+
+This runs `ci:readiness`, `build:web-static`, and `v1:docker-smoke` when Docker Compose is available. On Windows without Docker Desktop, the Docker step is skipped locally but still runs in GitHub Actions.
 
 Tag release (builds all packaging jobs):
 
