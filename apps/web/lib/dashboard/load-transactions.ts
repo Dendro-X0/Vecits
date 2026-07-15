@@ -1,6 +1,7 @@
 import { NodeClient, type ParticipantOrderRow } from "@new-start/sdk-ts";
 
 import { humanizeMarketplaceError } from "@/lib/marketplace/status-message";
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 import { normalizeOrderExchange } from "@/lib/marketplace/order-normalize";
 import {
   deriveTransactionProgress,
@@ -10,9 +11,6 @@ import {
   summarizeWorkspaceRoles,
   type WorkspaceRoleSummary
 } from "@/lib/dashboard/workspace-role";
-
-const DEFAULT_NODE =
-  process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
 
 const ORDER_LIMIT = 40;
 
@@ -105,8 +103,9 @@ async function loadOrderExchange(
 }
 
 export async function loadTransactions(publicKeyHex: string): Promise<TransactionsState> {
+  const nodeLabel = resolveNodeClientBaseUrl();
   try {
-    const client = new NodeClient({ baseUrl: DEFAULT_NODE });
+    const client = new NodeClient({ baseUrl: nodeLabel });
     const ordersView = await client.getParticipantOrders({
       participant: publicKeyHex,
       role: "any",
@@ -140,7 +139,7 @@ export async function loadTransactions(publicKeyHex: string): Promise<Transactio
     if (summaries.length === 0) {
       return {
         kind: "empty",
-        nodeLabel: DEFAULT_NODE,
+        nodeLabel,
         asOf: ordersView.as_of
       };
     }
@@ -152,12 +151,12 @@ export async function loadTransactions(publicKeyHex: string): Promise<Transactio
       orders: sorted,
       roleSummary: summarizeWorkspaceRoles(sorted),
       asOf: ordersView.as_of,
-      nodeLabel: DEFAULT_NODE
+      nodeLabel
     };
   } catch (error) {
     return {
       kind: "error",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel,
       message: humanizeMarketplaceError(
         error instanceof Error ? error.message : "Unable to load transactions."
       )

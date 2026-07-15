@@ -16,3 +16,10 @@ export function humanizeMarketplaceError(error: string | undefined): string {
 
   return error;
 }
+
+export function isMarketplaceConnectionError(
+  loaded: { error?: string; mockMode: boolean },
+  listingsLength: number
+): boolean {
+  return Boolean(loaded.error) && listingsLength === 0 && !loaded.mockMode;
+}

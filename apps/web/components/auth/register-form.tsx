@@ -19,14 +19,14 @@ import { Label } from "@/components/ui/label";
 import { saveSession, mirrorSessionToBrowserStorage } from "@/lib/auth/session";
 import { isDesktopVaultAvailable, saveDesktopVault } from "@/lib/auth/desktop-vault";
 import {
+  defaultNodeClientBaseUrlForForms,
   resolveNodeConnectionInfo,
   resolveNodeClientBaseUrl,
   resolveMobilePinnedNodeError
 } from "@/lib/node-client-base-url";
 import { cn, truncatePubkey } from "@/lib/utils";
 
-const DEFAULT_NODE_API_BASE_URL =
-  process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
+const DEFAULT_NODE_API_BASE_URL = defaultNodeClientBaseUrlForForms();
 
 type RegisterFormProps = {
   nextPath?: string;

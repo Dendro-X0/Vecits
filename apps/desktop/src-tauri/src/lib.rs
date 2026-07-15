@@ -105,6 +105,7 @@ pub fn run() {
                     #[cfg(mobile)]
                     inject_runtime_globals(&window, None)?;
                 }
+                let _ = window.set_shadow(false);
                 window.show()?;
                 window.set_focus()?;
             }

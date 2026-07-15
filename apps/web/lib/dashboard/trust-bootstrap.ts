@@ -1,7 +1,6 @@
 import { NodeClient } from "@new-start/sdk-ts";
 
-const DEFAULT_NODE =
-  process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 
 const DEFAULT_ONBOARDING_THRESHOLD = 2;
 const HEX64_REGEX = /^[0-9a-fA-F]{64}$/;
@@ -112,7 +111,7 @@ export function buildSponsorRequestMessage(input: {
     "Please sign and submit a Vouch event with payload:",
     JSON.stringify({ subjectPubKey: input.identityPubKey }, null, 2),
     "",
-    `Node target: ${input.baseUrl ?? DEFAULT_NODE}/events`,
+    `Node target: ${input.baseUrl ?? resolveNodeClientBaseUrl()}/events`,
     "",
     "Admission vouches help you publish offers. They are separate from milestone settlement —",
     "escrow, delivery, and accept events still follow locked terms on each order."
@@ -128,7 +127,7 @@ export async function loadProviderEligibility(
     return null;
   }
 
-  const baseUrl = options.baseUrl?.trim() || DEFAULT_NODE;
+  const baseUrl = options.baseUrl?.trim() || resolveNodeClientBaseUrl();
   const client = new NodeClient({ baseUrl });
   const asOf = options.asOf;
 
@@ -156,22 +155,22 @@ export async function loadTrustBootstrapSnapshot(
   if (!HEX64_REGEX.test(normalizedKey)) {
     return {
       kind: "error",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel: resolveNodeClientBaseUrl(),
       message: "Invalid identity public key."
     };
   }
 
   try {
-    const client = new NodeClient({ baseUrl: DEFAULT_NODE });
+    const client = new NodeClient({ baseUrl: resolveNodeClientBaseUrl() });
     const [provider, balanceView] = await Promise.all([
-      loadProviderEligibility(normalizedKey, { baseUrl: DEFAULT_NODE }),
+      loadProviderEligibility(normalizedKey, { baseUrl: resolveNodeClientBaseUrl() }),
       client.getBalance(normalizedKey).catch(() => null)
     ]);
 
     if (!provider) {
       return {
         kind: "error",
-        nodeLabel: DEFAULT_NODE,
+        nodeLabel: resolveNodeClientBaseUrl(),
         message: "Could not compute provider eligibility."
       };
     }
@@ -183,7 +182,7 @@ export async function loadTrustBootstrapSnapshot(
 
     return {
       kind: "live",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel: resolveNodeClientBaseUrl(),
       provider,
       buyer: {
         effectiveBalance,
@@ -193,7 +192,7 @@ export async function loadTrustBootstrapSnapshot(
   } catch (error) {
     return {
       kind: "error",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel: resolveNodeClientBaseUrl(),
       message: error instanceof Error ? error.message : "Could not load trust bootstrap status."
     };
   }

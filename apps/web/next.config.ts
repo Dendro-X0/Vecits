@@ -6,6 +6,7 @@ const nodeProxyTarget =
   process.env.NODE_API_BASE_URL?.replace(/\/+$/, "") ?? "http://127.0.0.1:7878";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   ...(isTauriBuild
     ? {
         output: "export",

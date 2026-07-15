@@ -17,6 +17,8 @@ import { TrustPhaseLabel } from "@/components/dashboard/trust-phase-label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadActiveSession } from "@/lib/auth/session";
+import { useDesktopNodeReady } from "@/lib/desktop/use-desktop-node-ready";
+import { useDesktopNodeRetry } from "@/lib/desktop/use-desktop-node-retry";
 import {
   loadLiveOverviewStats,
   type LiveOverviewState
@@ -351,6 +353,21 @@ export function OverviewPage() {
   const [overviewState, setOverviewState] = useState<LiveOverviewState | null>(null);
   const [transactionsState, setTransactionsState] = useState<TransactionsState | null>(null);
   const [loadingLive, setLoadingLive] = useState(false);
+  const nodeReady = useDesktopNodeReady();
+
+  const reloadLiveData = () => {
+    if (!pubkey) {
+      return;
+    }
+    setLoadingLive(true);
+    void Promise.all([loadLiveOverviewStats(pubkey), loadTransactions(pubkey)]).then(
+      ([overview, transactions]) => {
+        setOverviewState(overview);
+        setTransactionsState(transactions);
+        setLoadingLive(false);
+      }
+    );
+  };
 
   useEffect(() => {
     setPubkey(loadActiveSession()?.publicKeyHex ?? null);
@@ -365,9 +382,14 @@ export function OverviewPage() {
   }, [pubkey]);
 
   useEffect(() => {
-    if (!pubkey) {
-      setOverviewState(null);
-      setTransactionsState(null);
+    if (!pubkey || !nodeReady) {
+      if (pubkey && !nodeReady) {
+        setLoadingLive(true);
+      }
+      if (!pubkey) {
+        setOverviewState(null);
+        setTransactionsState(null);
+      }
       return;
     }
 
@@ -386,7 +408,12 @@ export function OverviewPage() {
     return () => {
       cancelled = true;
     };
-  }, [pubkey]);
+  }, [pubkey, nodeReady]);
+
+  useDesktopNodeRetry(
+    overviewState?.kind === "error" || transactionsState?.kind === "error",
+    reloadLiveData
+  );
 
   const status = resolveStatus(pubkey, loadingLive, overviewState);
   const roleSummary =

@@ -41,6 +41,29 @@ Path: **Dashboard → Publish & transact**
 
 Deep-link resume: `/dashboard/builder?step=delivery&order=<orderId>`
 
+### Automated desktop deal-loop smoke
+
+With `pnpm dev:desktop` running (sidecar + Next dev web):
+
+```bash
+pnpm desktop:deal-loop:smoke
+```
+
+The script:
+
+1. Seeds R2 fixture identities, sponsor vouches, and buyer credits on the local sidecar (`http://127.0.0.1:7878`).
+2. Drives the guided builder in Playwright via the dev web proxy (`/api/node`): sign in → offer → order → escrow → delivery → accept.
+3. Verifies the order reaches `closed` on the node.
+
+Override targets when needed:
+
+```bash
+VECTIS_WEB_URL=http://127.0.0.1:4602 pnpm desktop:deal-loop:smoke
+VECTIS_NODE_URL=http://127.0.0.1:7878 pnpm desktop:deal-loop:smoke
+```
+
+Uses deterministic R2 test keys from `scripts/lib/r2-exchange-core.mjs` — dev-only, never commit real secrets.
+
 ## 4. Dispute branch without operator chrome (Phase 2-C)
 
 Path: **Publish & transact → Resolve a problem**

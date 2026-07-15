@@ -297,6 +297,17 @@ jobs:
       - name: Assemble release upload bundle
         run: node ./scripts/assemble-release-upload.mjs release-files release-upload
 
+      - name: Clear stale release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release_id="$(gh api repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} --jq .id 2>/dev/null || true)"
+          if [ -n "$release_id" ]; then
+            gh api repos/${{ github.repository }}/releases/"$release_id"/assets --paginate --jq '.[].id' | while read -r asset_id; do
+              gh api --method DELETE repos/${{ github.repository }}/releases/assets/"$asset_id" || true
+            done
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -304,15 +315,27 @@ jobs:
           name: Vectis ${{ github.ref_name }}
           generate_release_notes: true
           fail_on_unmatched_files: true
+          overwrite_files: true
           body: |
-            Multi-platform self-hosted artifacts for Vectis ${{ github.ref_name }}.
+            Official Vectis self-hosted client and node artifacts for ${{ github.ref_name }}.
 
-            | Artifact | Contents |
+            | Download | Use when |
             | --- | --- |
-            | `vectis-node` / `cli` | Kernel binaries per OS/arch |
-            | `vectis-node-docker.tar` | Container image for Linux hosts |
-            | `vectis-web-static.tar.gz` | Static web shell for nginx + node |
-            | `*.exe` / `*.dmg` / `*.deb` | Desktop installers when build jobs succeeded |
+            | `vectis-desktop-windows-x64-setup.exe` | Windows desktop app (recommended for most users) |
+            | `vectis-desktop-macos.dmg` | macOS desktop app |
+            | `vectis-desktop-linux-amd64.deb` | Linux desktop app (Debian/Ubuntu) |
+            | `vectis-node-docker.tar` | Server operators using Docker |
+            | `vectis-web-static.tar.gz` | Self-hosted web UI behind nginx |
+            | `vectis-node` / `cli` | Advanced operators running the kernel binary directly |
+
+            Installers bundle the local `vectis-node` sidecar. Unsigned builds may show OS trust prompts until code-signing secrets are configured.
 
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          files: release-upload/*
+          files: |
+            release-upload/vectis-node-docker.tar
+            release-upload/vectis-web-static.tar.gz
+            release-upload/release-manifest.json
+            release-upload/vectis-node*
+            release-upload/cli*
+            release-upload/vectis-desktop-*
+            release-upload/vectis-android.*

@@ -22,6 +22,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { loadActiveSession } from "@/lib/auth/session";
+import { useDesktopNodeReady } from "@/lib/desktop/use-desktop-node-ready";
+import { useDesktopNodeRetry } from "@/lib/desktop/use-desktop-node-retry";
 import {
   loadTransactions,
   type TransactionOrderSummary,
@@ -363,8 +365,20 @@ export function TransactionsPage() {
   const [workspaceSummaries, setWorkspaceSummaries] = useState<
     Map<string, OrderWorkspaceSummary>
   >(new Map());
+  const nodeReady = useDesktopNodeReady();
   const roleFilter = parseRoleFilter(searchParams.get("role"));
   const status = resolveStatus(pubkey, loading, state);
+
+  const reloadTransactions = () => {
+    if (!pubkey) {
+      return;
+    }
+    setLoading(true);
+    void loadTransactions(pubkey).then((next) => {
+      setState(next);
+      setLoading(false);
+    });
+  };
 
   useEffect(() => {
     const session = loadActiveSession();
@@ -372,9 +386,14 @@ export function TransactionsPage() {
   }, []);
 
   useEffect(() => {
-    if (!pubkey) {
-      setLoading(false);
-      setState(null);
+    if (!pubkey || !nodeReady) {
+      if (pubkey && !nodeReady) {
+        setLoading(true);
+      }
+      if (!pubkey) {
+        setLoading(false);
+        setState(null);
+      }
       return;
     }
 
@@ -396,7 +415,9 @@ export function TransactionsPage() {
     return () => {
       cancelled = true;
     };
-  }, [pubkey]);
+  }, [pubkey, nodeReady]);
+
+  useDesktopNodeRetry(state?.kind === "error", reloadTransactions);
 
   useEffect(() => {
     if (!pubkey || state?.kind !== "live") {

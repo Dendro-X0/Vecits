@@ -68,6 +68,17 @@ Record actual sizes from `r7:desktop:release-smoke` output when cutting a releas
 4. Open marketplace — listings or showcase previews load from the local node.
 5. Optional: run `npm run r2:exchange-drill` against the desktop data dir (`%APPDATA%/com.vectis.desktop/vectis-data` on Windows).
 
+### Dev-side smokes (before cutting an installer)
+
+With `pnpm dev:desktop` running:
+
+```bash
+pnpm desktop:connection:smoke
+pnpm desktop:deal-loop:smoke
+```
+
+Connection smoke verifies sidecar health and the Next `/api/node` proxy. Deal-loop smoke seeds R2 fixture identities, then drives the guided builder (offer → order → escrow → delivery → accept) and asserts the order reaches `closed`.
+
 ## macOS / Linux CI
 
 Build on the target OS (or CI matrix job). Cross-compiling DMG/deb from Windows is not supported by the default script.

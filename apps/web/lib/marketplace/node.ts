@@ -2,11 +2,11 @@ import { NodeClient, type DiscoveryOfferRow, type DiscoveryView } from "@new-sta
 
 import type { QueryParams } from "@/app/explorer/lib";
 import {
-  getNodeBaseUrl,
   getOptionalParam,
   validateAsOf,
   validateBaseUrl
 } from "@/app/explorer/lib";
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 
 export type MarketplaceDiscoveryResult =
   | {
@@ -22,7 +22,11 @@ export type MarketplaceDiscoveryResult =
     };
 
 export function resolveMarketplaceNodeUrl(searchParams: QueryParams): string {
-  return getNodeBaseUrl(searchParams);
+  const baseFromQuery = getOptionalParam(searchParams, "base_url");
+  if (baseFromQuery && !validateBaseUrl(baseFromQuery)) {
+    return baseFromQuery;
+  }
+  return resolveNodeClientBaseUrl();
 }
 
 export async function fetchMarketplaceDiscovery(

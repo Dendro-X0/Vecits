@@ -5,10 +5,10 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { rustTargetTriple } from "./lib/rust-target-triple.mjs";
+import { ensureTauriIcons } from "./lib/ensure-tauri-icons.mjs";
 
 const WORKSPACE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BINARIES_DIR = path.join(WORKSPACE_ROOT, "apps", "desktop", "src-tauri", "binaries");
-const ICONS_DIR = path.join(WORKSPACE_ROOT, "apps", "desktop", "src-tauri", "icons");
 const OPERATOR_PAGE = path.join(WORKSPACE_ROOT, "apps", "web", "app", "operator", "page.tsx");
 const OPERATOR_PAGE_DESKTOP = path.join(
   WORKSPACE_ROOT,
@@ -49,20 +49,7 @@ function bundleTarget() {
 }
 
 async function ensureIcons() {
-  const required = ["icon.ico", "32x32.png", "128x128.png", "128x128@2x.png"];
-  const missing = [];
-  for (const name of required) {
-    try {
-      await fs.access(path.join(ICONS_DIR, name));
-    } catch {
-      missing.push(name);
-    }
-  }
-  if (missing.length === 0) {
-    return;
-  }
-  console.log(`Generating desktop icons (missing: ${missing.join(", ")})`);
-  run("pnpm", ["brand:icons"]);
+  await ensureTauriIcons();
 }
 
 async function stageNodeBinary() {

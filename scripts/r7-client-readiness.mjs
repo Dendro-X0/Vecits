@@ -40,6 +40,7 @@ async function writeSummary({ outDir, steps }) {
     workspaceRoot: WORKSPACE_ROOT,
     notes: [
       "Desktop release installer smoke (r7:desktop:release-smoke) is not included — run after build:desktop.",
+      "Desktop dev smokes (desktop:connection:smoke, desktop:deal-loop:smoke) require pnpm dev:desktop or pnpm dev:web plus a healthy sidecar.",
       "iOS scaffold smoke runs inside r7:mobile:readiness only when gen/ios exists.",
     ],
   };

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { MarketplaceLaneCatalog } from "@/components/marketplace/marketplace-lane-catalog";
-import { MarketplaceTrustBar } from "@/components/shell/marketplace-trust-bar";
+import { MarketplaceTrustBarLive } from "@/components/shell/marketplace-trust-bar-live";
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 import { STATIC_QUERY_PARAMS } from "@/lib/static-query-params";
 
 export default function MarketplaceLanesPage() {
@@ -9,7 +10,7 @@ export default function MarketplaceLanesPage() {
 
   return (
     <>
-      <MarketplaceTrustBar nodeLabel={process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878"} />
+      <MarketplaceTrustBarLive nodeLabel={resolveNodeClientBaseUrl()} />
       <section className="border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">

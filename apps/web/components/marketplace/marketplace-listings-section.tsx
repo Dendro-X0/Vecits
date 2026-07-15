@@ -4,7 +4,10 @@ import { ListingGridWithSession } from "@/components/marketplace/listing-grid-wi
 import { MarketplaceStatusPanel } from "@/components/marketplace/marketplace-status-panel";
 import { MarketplaceToolbar } from "@/components/marketplace/marketplace-toolbar";
 import type { MarketplaceListing } from "@/lib/marketplace/listings";
-import { humanizeMarketplaceError } from "@/lib/marketplace/status-message";
+import {
+  humanizeMarketplaceError,
+  isMarketplaceConnectionError
+} from "@/lib/marketplace/status-message";
 
 type MarketplaceListingsSectionProps = {
   searchParams: QueryParams;
@@ -28,7 +31,7 @@ export function MarketplaceListingsSection({
   toolbarPathname,
   emptyMessage
 }: MarketplaceListingsSectionProps) {
-  const connectionError = loaded.error && listings.length === 0 && !loaded.mockMode;
+  const connectionError = isMarketplaceConnectionError(loaded, listings.length);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">

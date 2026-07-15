@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { loadActiveSession } from "@/lib/auth/session";
+import { useDesktopNodeReady } from "@/lib/desktop/use-desktop-node-ready";
 import { loadTransactions } from "@/lib/dashboard/load-transactions";
 import type { WorkspaceRoleSummary } from "@/lib/dashboard/workspace-role";
 
 export function WorkspaceRoleHint() {
   const [summary, setSummary] = useState<WorkspaceRoleSummary | null>(null);
+  const nodeReady = useDesktopNodeReady();
 
   useEffect(() => {
     const session = loadActiveSession();
-    if (!session) {
+    if (!session || !nodeReady) {
       setSummary(null);
       return;
     }
@@ -27,7 +29,7 @@ export function WorkspaceRoleHint() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [nodeReady]);
 
   if (!summary || summary.buyer.total + summary.provider.total === 0) {
     return null;

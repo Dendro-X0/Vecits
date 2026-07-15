@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { AuthCarousel } from "@/components/auth/auth-carousel";
+import { VectisBrand } from "@/components/brand/vectis-brand";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 type AuthShellProps = {
@@ -43,12 +44,7 @@ export function AuthShell({
             </div>
 
             <div className="mt-6 flex items-center justify-between gap-4">
-              <Link href="/marketplace" className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-bold text-primary">
-                  V
-                </span>
-                <span className="text-lg font-semibold tracking-tight">Vectis</span>
-              </Link>
+              <VectisBrand size="sm" showWordmark href="/marketplace" />
               {topRight ? <div className="text-right text-sm text-muted-foreground">{topRight}</div> : null}
             </div>
 

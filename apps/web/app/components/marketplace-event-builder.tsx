@@ -3377,24 +3377,16 @@ function buildOfferUnsigned(input: {
   if (input.compensationMode !== "credits" && input.barterTerms.trim().length === 0) {
     throw new Error("barterTerms is required when compensationMode is barter or mixed.");
   }
-  const barterTags = parseCommaList(input.barterTags);
 
   const payload: Record<string, unknown> = {
     offerId: requireNonEmpty(input.offerId, "offerId"),
     serviceType: requireNonEmpty(input.serviceType, "serviceType"),
     unitDefinition: requireNonEmpty(input.unitDefinition, "unitDefinition"),
     pricePerUnitCredits: price,
-    compensationMode: requireCompensationMode(input.compensationMode),
     deliveryMode: requireNonEmpty(input.deliveryMode, "deliveryMode"),
     offerExpiresAt: requireNonEmpty(input.offerExpiresAt, "offerExpiresAt"),
     allowedEvidenceFormats: evidenceFormats
   };
-  if (input.barterTerms.trim()) {
-    payload.barterTerms = input.barterTerms.trim();
-  }
-  if (barterTags.length > 0) {
-    payload.barterTags = barterTags;
-  }
   if (input.termsHash.trim()) {
     payload.termsHash = input.termsHash.trim();
   }

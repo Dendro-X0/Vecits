@@ -1,9 +1,7 @@
 import { NodeClient } from "@new-start/sdk-ts";
 
 import type { OverviewKpi, ActivityItem, LaneBar } from "@/lib/dashboard/showcase-stats";
-
-const DEFAULT_NODE =
-  process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 
 export type LiveOverviewStats = {
   kpis: OverviewKpi[];
@@ -29,8 +27,9 @@ function readPubkeyField(payload: Record<string, unknown>, ...keys: string[]): s
 }
 
 export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveOverviewState> {
+  const nodeLabel = resolveNodeClientBaseUrl();
   try {
-    const client = new NodeClient({ baseUrl: DEFAULT_NODE });
+    const client = new NodeClient({ baseUrl: nodeLabel });
 
     const [discoveryView, reputationView, authoredEvents, providerOrdersView] = await Promise.all([
       client.getDiscovery({ limit: 100, alpha_defaults: true }),
@@ -64,7 +63,7 @@ export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveO
     if (totalActivity === 0 && totalActiveOffers === 0) {
       return {
         kind: "empty",
-        nodeLabel: DEFAULT_NODE,
+        nodeLabel,
         asOf: discoveryView.as_of
       };
     }
@@ -137,13 +136,13 @@ export async function loadLiveOverviewStats(publicKeyHex: string): Promise<LiveO
         laneBars,
         activity,
         asOf: discoveryView.as_of,
-        nodeLabel: DEFAULT_NODE
+        nodeLabel
       }
     };
   } catch (error) {
     return {
       kind: "error",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel,
       message: error instanceof Error ? error.message : "Unable to load dashboard activity."
     };
   }

@@ -1,8 +1,9 @@
 import { NodeApiError } from "@new-start/sdk-ts";
 
+import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
+
 export type QueryParams = Record<string, string | string[] | undefined>;
 const RFC3339_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
-const DEFAULT_NODE_BASE_URL = "http://127.0.0.1:7878";
 
 export function getSingleParam(query: QueryParams, key: string): string {
   const value = query[key];
@@ -55,11 +56,7 @@ export function getNodeBaseUrl(query: QueryParams): string {
   if (baseFromQuery && !validateBaseUrl(baseFromQuery)) {
     return baseFromQuery;
   }
-  return (
-    process.env.NODE_API_BASE_URL ??
-    process.env.NEXT_PUBLIC_NODE_API_BASE_URL ??
-    DEFAULT_NODE_BASE_URL
-  );
+  return resolveNodeClientBaseUrl();
 }
 
 export function validateBaseUrl(value: string | undefined): string | null {

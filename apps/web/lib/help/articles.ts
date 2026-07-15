@@ -4,10 +4,13 @@ export type HelpSection = {
   bullets?: string[];
 };
 
+export type HelpArticleCategory = "getting-started" | "marketplace" | "founding";
+
 export type HelpArticle = {
   slug: string;
   title: string;
   summary: string;
+  category: HelpArticleCategory;
   sections: HelpSection[];
 };
 
@@ -15,6 +18,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "deal-flow",
     title: "How a deal works",
+    category: "marketplace",
     summary:
       "Walk through publish → order → escrow → delivery → accept using the guided builder and order pages.",
     sections: [
@@ -51,6 +55,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "disputes",
     title: "Disputes and settlement",
+    category: "marketplace",
     summary:
       "When delivery does not meet locked terms, open a dispute and propose a deterministic settlement outcome.",
     sections: [
@@ -81,6 +86,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "identity",
     title: "Identity and backup",
+    category: "getting-started",
     summary: "Protect your signing key, use passkeys where available, and export backups before switching devices.",
     sections: [
       {
@@ -105,6 +111,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "node-connection",
     title: "Connecting to a node",
+    category: "getting-started",
     summary: "The official client reads live marketplace state from a Vectis node — usually yours or one your community operates.",
     sections: [
       {
@@ -129,6 +136,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "trust-bootstrap",
     title: "Trust bootstrap and founding network",
+    category: "founding",
     summary:
       "How sponsor vouches unlock provider admission during the founding phase — and how that differs from milestone settlement.",
     sections: [
@@ -164,6 +172,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
   {
     slug: "credits-path",
     title: "Earning credits as a buyer",
+    category: "founding",
     summary:
       "The contribution path for first credits during founding: claim → attest → mint → fund escrow.",
     sections: [

@@ -1,39 +1,50 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { HELP_ARTICLES } from "@/lib/help/articles";
+import { HelpDocsShell } from "@/components/help/help-docs-shell";
+import { HELP_NAV_GROUPS } from "@/lib/help/navigation";
 
 export default function HelpIndexPage() {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 space-y-3">
-        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-          <BookOpen className="h-4 w-4 text-primary" aria-hidden="true" />
-          Help center
-        </div>
-        <h1 className="text-3xl font-semibold tracking-tight">Using Vectis</h1>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Plain-language guides for the official marketplace client. For protocol and operator
-          documentation, see the project repository under <code className="text-foreground">/docs</code>.
-        </p>
-      </div>
+    <HelpDocsShell>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-8 sm:px-8 sm:py-10 lg:px-10">
+        <header className="space-y-3 border-b border-border/70 pb-8">
+          <p className="text-sm text-muted-foreground">Vectis documentation</p>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Using Vectis</h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Plain-language guides for the official marketplace client — deals, disputes, identity,
+            node connection, and founding-network onboarding. For protocol and operator
+            documentation, see the project repository under{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 text-foreground">/docs</code>.
+          </p>
+        </header>
 
-      <div className="space-y-3">
-        {HELP_ARTICLES.map((article) => (
-          <Card key={article.slug} className="border-border/70 transition hover:border-primary/25">
-            <CardContent className="p-5">
-              <Link href={`/help/${article.slug}`} className="group block space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-lg font-medium group-hover:text-primary">{article.title}</h2>
-                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
-                </div>
-                <p className="text-sm text-muted-foreground">{article.summary}</p>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
+        <div className="space-y-8">
+          {HELP_NAV_GROUPS.filter((group) => group.id !== "start").map((group) => (
+            <section key={group.id} className="space-y-3">
+              <h2 className="text-lg font-semibold tracking-tight">{group.label}</h2>
+              <ul className="space-y-3">
+                {group.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="group block rounded-xl border border-border/70 bg-card/40 px-4 py-3 transition hover:border-primary/25 hover:bg-muted/30"
+                    >
+                      <p className="font-medium text-foreground group-hover:text-primary">
+                        {item.title}
+                      </p>
+                      {item.summary ? (
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                          {item.summary}
+                        </p>
+                      ) : null}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
       </div>
-    </section>
+    </HelpDocsShell>
   );
 }

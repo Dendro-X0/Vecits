@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -6,8 +6,10 @@ import { BookOpen, Compass, Menu, Search, Settings, UserCircle, X } from "lucide
 import { useState } from "react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
+import { VectisBrand } from "@/components/brand/vectis-brand";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { useDesktopShell } from "@/lib/desktop/use-desktop-shell";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS: Array<{
@@ -24,23 +26,23 @@ const NAV_ITEMS: Array<{
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const desktop = useDesktopShell();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-8">
-          <Link href="/marketplace" className="group flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-sm font-bold text-primary">
-              V
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-tight">Vectis</p>
-              <p className="hidden text-xs text-muted-foreground sm:block">Official marketplace client</p>
-            </div>
-          </Link>
+    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-6">
+          {!desktop ? (
+            <VectisBrand
+              size="md"
+              tagline="Official marketplace client"
+              taglineClassName="hidden sm:block"
+              className="group"
+            />
+          ) : null}
 
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className={cn("hidden items-center gap-1 md:flex", desktop && "flex")}>
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
@@ -70,7 +72,11 @@ export function SiteHeader() {
             aria-controls="mobile-site-nav"
             onClick={() => setMobileNavOpen((previous) => !previous)}
           >
-            {mobileNavOpen ? <X aria-hidden="true" className="h-4 w-4" /> : <Menu aria-hidden="true" className="h-4 w-4" />}
+            {mobileNavOpen ? (
+              <X aria-hidden="true" className="h-4 w-4" />
+            ) : (
+              <Menu aria-hidden="true" className="h-4 w-4" />
+            )}
           </Button>
           <ThemeToggle />
           <AuthStatus />

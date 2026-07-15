@@ -17,7 +17,7 @@ function run(command, args) {
   const result = spawnSync(command, args, {
     cwd: WORKSPACE_ROOT,
     stdio: "inherit",
-    shell: process.platform === "win32",
+    shell: false,
   });
   if (result.status !== 0) {
     process.exit(result.status ?? 1);

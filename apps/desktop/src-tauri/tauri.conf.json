@@ -5,8 +5,8 @@
   "identifier": "com.vectis.desktop",
   "build": {
     "frontendDist": "../../web/out",
-    "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "pnpm --filter @new-start/web dev",
+    "devUrl": "http://127.0.0.1:4900",
+    "beforeDevCommand": "node ../../scripts/dev-tauri-web.mjs",
     "beforeBuildCommand": "echo \"web assets built by scripts/build-desktop.mjs\""
   },
   "app": {
@@ -21,6 +21,9 @@
         "minHeight": 640,
         "resizable": true,
         "fullscreen": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
         "visible": false,
         "center": true
       }

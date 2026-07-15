@@ -5,9 +5,6 @@ import { normalizeOrderExchange, type NormalizedOrderExchange } from "@/lib/mark
 import { milestoneReadyForDelivery } from "@/lib/marketplace/service-delivery";
 import { resolveNodeClientBaseUrl } from "@/lib/node-client-base-url";
 
-const DEFAULT_NODE =
-  process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://127.0.0.1:7878";
-
 export type PhysicalHandoffOrderCandidate = {
   orderId: string;
   serviceType: string;
@@ -78,11 +75,12 @@ export async function loadPhysicalHandoffOrders(
   publicKeyHex: string
 ): Promise<PhysicalHandoffOrdersState> {
   if (!publicKeyHex.trim()) {
-    return { kind: "signed-out", nodeLabel: DEFAULT_NODE };
+    return { kind: "signed-out", nodeLabel: resolveNodeClientBaseUrl() };
   }
 
   try {
-    const client = new NodeClient({ baseUrl: resolveNodeClientBaseUrl(DEFAULT_NODE) });
+    const nodeLabel = resolveNodeClientBaseUrl();
+    const client = new NodeClient({ baseUrl: nodeLabel });
     const ordersView = await client.getParticipantOrders({
       participant: publicKeyHex,
       role: "any",
@@ -128,16 +126,16 @@ export async function loadPhysicalHandoffOrders(
     candidates.sort((left, right) => left.orderId.localeCompare(right.orderId));
 
     if (candidates.length === 0) {
-      return { kind: "empty", nodeLabel: DEFAULT_NODE };
+      return { kind: "empty", nodeLabel };
     }
 
-    return { kind: "live", orders: candidates, nodeLabel: DEFAULT_NODE };
+    return { kind: "live", orders: candidates, nodeLabel };
   } catch (error) {
     const message =
       error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
     return {
       kind: "error",
-      nodeLabel: DEFAULT_NODE,
+      nodeLabel: resolveNodeClientBaseUrl(),
       message: humanizeMarketplaceError(message)
     };
   }

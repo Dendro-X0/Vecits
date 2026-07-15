@@ -6,8 +6,10 @@ import type { ReactNode } from "react";
 import { ArrowLeftRight, BookOpen, Handshake, LayoutDashboard, PenLine, QrCode, Settings, Store } from "lucide-react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
+import { VectisBrand } from "@/components/brand/vectis-brand";
 import { WorkspaceRoleHint } from "@/components/dashboard/workspace-role-hint";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useDesktopShell } from "@/lib/desktop/use-desktop-shell";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -94,21 +96,14 @@ function pageMeta(pathname: string): { title: string; description: string } {
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const desktop = useDesktopShell();
   const { title, description } = pageMeta(pathname);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className={cn("flex bg-background", desktop ? "min-h-full" : "min-h-screen")}>
       <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-background md:flex">
         <div className="flex min-h-[84px] items-center border-b border-border px-5 py-4">
-          <Link href="/marketplace" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-sm font-bold text-primary">
-              V
-            </span>
-            <div>
-              <p className="text-sm font-semibold tracking-tight">Vectis</p>
-              <p className="text-xs text-muted-foreground">Identity workspace</p>
-            </div>
-          </Link>
+          <VectisBrand size="md" tagline="Identity workspace" />
         </div>
 
         <nav className="flex-1 space-y-5 p-3">

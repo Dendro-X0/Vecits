@@ -29,6 +29,24 @@ function readBrowserDesktopUrl(): string | null {
     return null;
   }
   const desktopUrl = (globalThis as { __VECTIS_NODE_URL__?: string }).__VECTIS_NODE_URL__;
+  if (!desktopUrl?.trim()) {
+    return null;
+  }
+
+  const proxyUrl = process.env.NEXT_PUBLIC_NODE_API_BASE_URL?.trim();
+  if (proxyUrl?.startsWith("/")) {
+    return proxyUrl;
+  }
+
+  return desktopUrl.trim();
+}
+
+/** Human-readable node URL for trust bars (direct sidecar URL in desktop dev). */
+export function readDesktopNodeDisplayUrl(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const desktopUrl = (globalThis as { __VECTIS_NODE_URL__?: string }).__VECTIS_NODE_URL__;
   return desktopUrl?.trim() ? desktopUrl.trim() : null;
 }
 
