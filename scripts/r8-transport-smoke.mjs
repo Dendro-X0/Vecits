@@ -4,12 +4,16 @@
  * R8-C transport bundle smoke — validates Tier 1 envelope shape in-repo (no browser).
  */
 
+function isoAt(offsetMs) {
+  return new Date(Date.now() + offsetMs).toISOString();
+}
+
 const SAMPLE_VOUCH = {
   v: 1,
   kind: "vectis.transport.v1",
   type: "vouch.request",
-  createdAt: "2026-07-10T12:00:00Z",
-  expiresAt: "2026-07-11T12:00:00Z",
+  createdAt: isoAt(-60_000),
+  expiresAt: isoAt(24 * 60 * 60 * 1000),
   nodeUrl: "https://node.example",
   payload: {
     subjectPubKey: "a".repeat(64)
@@ -18,7 +22,7 @@ const SAMPLE_VOUCH = {
 
 const SAMPLE_EXPIRED = {
   ...SAMPLE_VOUCH,
-  expiresAt: "2020-01-01T00:00:00Z"
+  expiresAt: isoAt(-24 * 60 * 60 * 1000)
 };
 
 function assert(condition, message) {
