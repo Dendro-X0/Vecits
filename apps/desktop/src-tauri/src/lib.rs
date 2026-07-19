@@ -52,7 +52,8 @@ globalThis.__VECTIS_MOBILE_PINNED_NODE_URL__ = {};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    #[allow(unused_mut)]
+    let mut builder = tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::new()
                 .level(log::LevelFilter::Info)
@@ -71,7 +72,14 @@ pub fn run() {
             key_vault::desktop_vault_clear,
             key_vault::desktop_vault_export,
             key_vault::desktop_vault_import,
-        ])
+        ]);
+
+    #[cfg(any(target_os = "android", target_os = "ios"))]
+    {
+        builder = builder.plugin(tauri_plugin_nfc::init());
+    }
+
+    builder
         .setup(|app| {
             let handle = app.handle().clone();
             if let Some(window) = app.get_webview_window("main") {

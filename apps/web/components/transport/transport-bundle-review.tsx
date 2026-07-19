@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 import { AlertTriangle, ArrowRight, Copy } from "lucide-react";
 import { useState } from "react";
 
+import { NodeJoinConfirm } from "@/components/transport/node-join-confirm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { HALO_LOCAL_OPERATOR_SHORT } from "@/lib/halo/honesty-copy";
+import { isLocalOperatorNodeUrl, parseNodeHost } from "@/lib/halo/local-operator-node";
+import { writeMobilePinnedNodeOverride } from "@/lib/node-client-base-url";
 import {
   buildVouchPayloadPreview,
   resolveTransportBundleAction
@@ -24,12 +28,16 @@ import { truncatePubkey } from "@/lib/utils";
 type TransportBundleReviewProps = {
   bundle: ParsedTransportBundle;
   expired: boolean;
+  onPinned?: (nodeUrl: string) => void;
 };
 
-export function TransportBundleReview({ bundle, expired }: TransportBundleReviewProps) {
+export function TransportBundleReview({ bundle, expired, onPinned }: TransportBundleReviewProps) {
   const router = useRouter();
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [showPinConfirm, setShowPinConfirm] = useState(false);
   const action = resolveTransportBundleAction(bundle);
+  const nodeHost = parseNodeHost(bundle.nodeUrl);
+  const localOperator = isLocalOperatorNodeUrl(bundle.nodeUrl);
 
   async function handleCopy(text: string, label: string) {
     try {
@@ -47,8 +55,13 @@ export function TransportBundleReview({ bundle, expired }: TransportBundleReview
     }
     if (action.kind === "route") {
       router.push(action.href);
-      return;
     }
+  }
+
+  function handlePinConfirm(normalizedUrl: string) {
+    writeMobilePinnedNodeOverride(normalizedUrl);
+    setShowPinConfirm(false);
+    onPinned?.(normalizedUrl);
   }
 
   return (
@@ -63,6 +76,7 @@ export function TransportBundleReview({ bundle, expired }: TransportBundleReview
           ) : (
             <Badge variant="success">Valid until {new Date(bundle.expiresAt).toLocaleString()}</Badge>
           )}
+          {localOperator ? <Badge variant="outline">{HALO_LOCAL_OPERATOR_SHORT}</Badge> : null}
         </div>
 
         <div className="space-y-2 text-sm">
@@ -79,15 +93,41 @@ export function TransportBundleReview({ bundle, expired }: TransportBundleReview
         </div>
 
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
-          <div className="rounded-lg border border-border/70 bg-muted/15 px-3 py-2">
+          <div className="rounded-lg border border-border/70 bg-muted/15 px-3 py-2 sm:col-span-2">
             <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Node URL</dt>
             <dd className="mt-1 break-all font-mono text-xs">{bundle.nodeUrl}</dd>
+            {nodeHost.hostname ? (
+              <dd className="mt-2 text-xs text-muted-foreground">
+                Host{" "}
+                <span className="font-mono font-semibold text-foreground">{nodeHost.hostname}</span>
+                {nodeHost.port ? (
+                  <>
+                    {" "}
+                    · port <span className="font-mono text-foreground">{nodeHost.port}</span>
+                  </>
+                ) : null}
+              </dd>
+            ) : null}
           </div>
           <div className="rounded-lg border border-border/70 bg-muted/15 px-3 py-2">
             <dt className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Created</dt>
             <dd className="mt-1 text-foreground">{new Date(bundle.createdAt).toLocaleString()}</dd>
           </div>
         </dl>
+
+        {!expired && !showPinConfirm ? (
+          <Button type="button" size="sm" variant="outline" onClick={() => setShowPinConfirm(true)}>
+            Pin this node
+          </Button>
+        ) : null}
+
+        {showPinConfirm ? (
+          <NodeJoinConfirm
+            nodeUrl={bundle.nodeUrl}
+            onConfirm={handlePinConfirm}
+            onCancel={() => setShowPinConfirm(false)}
+          />
+        ) : null}
 
         {bundle.type === "identity.intro" ? (
           <IdentityIntroBody bundle={bundle} onCopy={handleCopy} />

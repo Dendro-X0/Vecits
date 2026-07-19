@@ -2,11 +2,21 @@
 
 Purpose: operator steps to prove a community lane works on a live node with HTTP event submission (post-R6 band).
 
-Status: `active`
+Status: `active` (maintainer closeout available; field proof deferred)
 
 Last updated: July 2026
 
 Spec: [../specs/r6-post-deployment-proof-spec.md](../specs/r6-post-deployment-proof-spec.md)
+
+## Maintainer closeout
+
+```bash
+pnpm r6:pd
+# optional: include all seven community lanes
+pnpm r6:pd:full
+```
+
+Claim: **maintainer smoke** (A + B + C tooling). Not a substitute for human field proof.
 
 ## 1. Preflight (automated)
 

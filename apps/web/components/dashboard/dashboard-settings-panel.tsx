@@ -20,6 +20,7 @@ import { DashboardSettingsTechnicalPanel } from "@/components/dashboard/dashboar
 import { SettingsAdvancedDisclosure } from "@/components/dashboard/settings-advanced-disclosure";
 import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
 import { TransportBundleSharePanel } from "@/components/transport/transport-bundle-share-panel";
+import { NodeJoinConfirm } from "@/components/transport/node-join-confirm";
 import {
   SettingsCategoryNav,
   SettingsRow,
@@ -41,10 +42,13 @@ import {
   type AuthSession
 } from "@/lib/auth/session";
 import { EMPTY_PROFILE, loadProfile, saveProfile, type UserProfile } from "@/lib/dashboard/profile";
+import { HALO_LOCAL_OPERATOR_FULL } from "@/lib/halo/honesty-copy";
+import { isLocalOperatorNodeUrl, parseNodeHost } from "@/lib/halo/local-operator-node";
 import {
   readMobilePinnedNodeOverride,
   resolveNodeConnectionInfo,
-  validateMobilePinnedNodeUrl
+  validateMobilePinnedNodeUrl,
+  writeMobilePinnedNodeOverride
 } from "@/lib/node-client-base-url";
 import { isAbsoluteHttpUrl } from "@/lib/transport/absolute-url";
 import { buildIdentityIntroBundle } from "@/lib/transport/bundle";
@@ -67,6 +71,9 @@ export function DashboardSettingsPanel() {
   const [nodeInfo, setNodeInfo] = useState(() => resolveNodeConnectionInfo());
   const [mobilePinnedNodeDraft, setMobilePinnedNodeDraft] = useState("");
   const [mobilePinnedNodeSaved, setMobilePinnedNodeSaved] = useState(false);
+  const [joinDraft, setJoinDraft] = useState("");
+  const [pendingJoinUrl, setPendingJoinUrl] = useState<string | null>(null);
+  const [joinPinMessage, setJoinPinMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const active = loadActiveSession();
@@ -256,6 +263,22 @@ export function DashboardSettingsPanel() {
                   <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
                     {nodeInfo.baseUrl}
                   </p>
+                  {isLocalOperatorNodeUrl(nodeInfo.baseUrl) ? (
+                    <p className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-foreground">
+                      {HALO_LOCAL_OPERATOR_FULL}
+                    </p>
+                  ) : null}
+                  {isAbsoluteHttpUrl(nodeInfo.baseUrl) ? (
+                    <p className="text-xs text-muted-foreground">
+                      Host{" "}
+                      <span className="font-mono text-foreground">
+                        {parseNodeHost(nodeInfo.baseUrl).hostname}
+                      </span>
+                      {parseNodeHost(nodeInfo.baseUrl).port
+                        ? ` · port ${parseNodeHost(nodeInfo.baseUrl).port}`
+                        : null}
+                    </p>
+                  ) : null}
                   {connectionIssue ? (
                     <p className="text-destructive">{connectionIssue}</p>
                   ) : (
@@ -268,16 +291,84 @@ export function DashboardSettingsPanel() {
                     <TransportQrPanel
                       value={nodeInfo.baseUrl}
                       title="Join this node"
-                      description="Scan on another device to paste into mobile pinned-node settings. Confirm the hostname before connecting."
+                      description="Scan on another device, then confirm the hostname before pinning. Import also accepts this URL."
                       mode="url"
                       downloadFilename="vectis-node-join-qr.svg"
                     />
                   ) : (
                     <p className="text-xs text-muted-foreground">
                       QR join appears when this client uses an absolute node URL (desktop sidecar or
-                      mobile pinned node override).
+                      pinned node override).
                     </p>
                   )}
+
+                  {!nodeInfo.source.startsWith("desktop") ? (
+                    <div className="space-y-3 rounded-lg border border-border/70 bg-muted/15 p-3">
+                      <p className="text-sm font-medium text-foreground">Pin a market / LAN node</p>
+                      <p className="text-xs text-muted-foreground">
+                        Paste an absolute node URL from the operator join QR. You must confirm the
+                        hostname before it is saved on this device.
+                      </p>
+                      {pendingJoinUrl ? (
+                        <NodeJoinConfirm
+                          nodeUrl={pendingJoinUrl}
+                          onConfirm={(normalizedUrl) => {
+                            writeMobilePinnedNodeOverride(normalizedUrl);
+                            setMobilePinnedNodeDraft(normalizedUrl);
+                            setJoinDraft("");
+                            setPendingJoinUrl(null);
+                            setJoinPinMessage(`Pinned ${normalizedUrl}`);
+                            refreshNodeInfo();
+                          }}
+                          onCancel={() => setPendingJoinUrl(null)}
+                        />
+                      ) : (
+                        <form
+                          className="flex flex-wrap gap-2"
+                          onSubmit={(event) => {
+                            event.preventDefault();
+                            const trimmed = joinDraft.trim();
+                            const error = validateMobilePinnedNodeUrl(trimmed);
+                            if (error) {
+                              setJoinPinMessage(error);
+                              return;
+                            }
+                            setJoinPinMessage(null);
+                            setPendingJoinUrl(trimmed);
+                          }}
+                        >
+                          <Input
+                            value={joinDraft}
+                            onChange={(event) => setJoinDraft(event.target.value)}
+                            placeholder="http://192.168.1.10:7878"
+                            className="min-w-[16rem] flex-1 font-mono text-xs"
+                          />
+                          <Button type="submit" size="sm" disabled={!joinDraft.trim()}>
+                            Review pin
+                          </Button>
+                          {readMobilePinnedNodeOverride() ? (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                writeMobilePinnedNodeOverride("");
+                                setMobilePinnedNodeDraft("");
+                                setJoinPinMessage("Cleared local pin override.");
+                                refreshNodeInfo();
+                              }}
+                            >
+                              Clear pin
+                            </Button>
+                          ) : null}
+                        </form>
+                      )}
+                      {joinPinMessage ? (
+                        <p className="text-xs text-primary">{joinPinMessage}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+
                   <p className="text-sm text-muted-foreground">
                     Received a transport bundle?{" "}
                     <Link href="/dashboard/import" className="text-primary hover:underline">

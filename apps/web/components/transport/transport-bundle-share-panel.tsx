@@ -1,5 +1,6 @@
 "use client";
 
+import { TransportNfcWriter } from "@/components/transport/transport-nfc-writer";
 import { TransportQrPanel } from "@/components/transport/transport-qr-panel";
 import { serializeTransportBundle, type TransportBundle } from "@/lib/transport/bundle";
 
@@ -21,13 +22,16 @@ export function TransportBundleSharePanel({
   const serialized = serializeTransportBundle(bundle);
 
   return (
-    <TransportQrPanel
-      value={serialized}
-      title={title}
-      description={description}
-      mode="bundle"
-      className={className}
-      downloadFilename={downloadFilename}
-    />
+    <div className="space-y-3">
+      <TransportQrPanel
+        value={serialized}
+        title={title}
+        description={description}
+        mode="bundle"
+        className={className}
+        downloadFilename={downloadFilename}
+      />
+      <TransportNfcWriter payload={serialized} />
+    </div>
   );
 }

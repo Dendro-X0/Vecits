@@ -119,7 +119,8 @@ export function resolveNodeConnectionInfo(passedBaseUrl?: string): NodeConnectio
       return {
         baseUrl: localOverride.trim(),
         source: "mobile-local-override",
-        isMobileRuntime: true,
+        // Override may be set from web/LAN join confirm, not only mobile runtime.
+        isMobileRuntime: isMobileRuntime(),
         isMobileRelease: isMobileRelease(),
       };
     }

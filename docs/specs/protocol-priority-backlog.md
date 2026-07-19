@@ -31,11 +31,18 @@ Last updated: July 2026
 
 R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md).
 
+### Client (R9 — offline transport)
+
+1. R9 NFC + LAN halo — **R9-G0**..**R9-G5** sign-off (maintainer): [r9-offline-transport-spec.md](r9-offline-transport-spec.md) · `pnpm r9:g5` — field proof optional
+
 ### Protocol / deployment
 
-4. R7-M1 iOS scaffold init/dev on macOS host (`pnpm r7:mobile:ios:init`, `pnpm r7:ios:scaffold-smoke`)
-5. R7-M3 on-device mobile sidecar — **spec drafted** (`docs/specs/r7-m3-on-device-sidecar-spec.md`); implementation deferred
-6. Post-R6 lane operator deployment proof — spec + runbook: `docs/specs/r6-post-deployment-proof-spec.md`, `pnpm r6:post-deployment:readiness`
+1. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
+2. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
+3. R7-M1 iOS scaffold — **deferred** until macOS host
+4. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
+
+**Solo stage note (July 2026):** R9 + R6-PD maintainer bands are complete without field testers or macOS. Resume deferred items when hardware/people appear.
 
 ## Explicit non-goals (current band)
 

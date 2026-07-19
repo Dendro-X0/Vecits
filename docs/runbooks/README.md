@@ -17,6 +17,8 @@ Operator install, deployment, backup, security, and recurring cadence.
 | [r7-m1-ios-mac-host-handoff-runbook.md](r7-m1-ios-mac-host-handoff-runbook.md) | iOS scaffold on macOS host (R7-M1) |
 | [mobile-remote-pinned-node-operator-runbook.md](mobile-remote-pinned-node-operator-runbook.md) | Operator guide for mobile pinned node (R7-M2) |
 | [r7-m2-remote-node-smoke-runbook.md](r7-m2-remote-node-smoke-runbook.md) | Mobile remote node smoke (R7-M2) |
+| [r9-halo-operator-runbook.md](r9-halo-operator-runbook.md) | LAN halo / market node + pull reconcile (R9-H2) |
+| [r9-nfc-operator-runbook.md](r9-nfc-operator-runbook.md) | Android NFC Tier 1 read + write (R9-N1/N2) |
 | [operator-genesis-runbook.md](operator-genesis-runbook.md) | Founding vouch bootstrap (L4) |
 | [desktop-release-build.md](desktop-release-build.md) | Tauri desktop installers (R7-D5) |
 | [release-packaging-ci.md](release-packaging-ci.md) | Multi-platform CI packaging matrix |

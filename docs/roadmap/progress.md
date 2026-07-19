@@ -4,6 +4,24 @@ This file tracks high-level progress over time.
 
 ## 2026-07
 
+- **R9 offline transport (R9-A locked):**
+  - Spec locked: NFC as R8 Tier 1 carrier; LAN operator-node halo via pin URL + Track 4 pull sync; mesh gossip deferred
+  - Gate `R9-G0` pass — implementation authorized for R9-N / R9-H
+  - Plan: `docs/roadmap/r9-offline-transport-execution-plan.md`
+  - Spec: `docs/specs/r9-offline-transport-spec.md` (status `locked`)
+  - Indexed in START-HERE, specs README, protocol-priority-backlog, restart-roadmap
+  - **R9-N1 / R9-G1:** Android NFC read → import (`pnpm r9:nfc:read-unit`)
+  - **R9-N2 / R9-G2:** Android NFC write + QR fallback (`pnpm r9:nfc:write-unit`)
+  - **R9-H1 / R9-G3:** join confirm + LAN honesty labels (`pnpm r9:halo:join-unit`)
+  - **R9-H2 / R9-G4:** halo → upstream pull smoke (`pnpm r9:halo:smoke`)
+  - **R9-G / R9-G5:** regression closeout (`pnpm r9:g5`) — **R9 sign-off** (maintainer smoke)
+  - **Stage archived (solo):** no counterparty / no macOS. Optional later: Android NFC device smoke. Deferred: field proof, iOS.
+- **R6-PD post-deployment community lane proof (July 2026):**
+  - Spec locked (`docs/specs/r6-post-deployment-proof-spec.md`) — maintainer band; field proof deferred
+  - `R6-PD-A` readiness · `R6-PD-B` documentation drill · `R6-PD-C` tooling smoke — **pass** (re-verified)
+  - `R6-PD-B2` seven-lane drill — prior pass; re-run via `pnpm r6:pd:full`
+  - Maintainer closeout: `pnpm r6:pd`
+  - **Deferred:** human counterparty field proof on persistent host
 - **Frontend Phase 1 deal loop (complete):**
   - guided Publish & transact flow with compensation modes, milestone terms, terms lock, delivery evidence guards, submit lifecycle, dispute deep links, transactions queue + builder handoff
   - dashboard shell refinement, settings general/advanced split, explorer + marketplace polish
@@ -90,12 +108,10 @@ This file tracks high-level progress over time.
   - verified checks:
     - `pnpm r7:mobile:readiness`
     - `pnpm v1:readiness`
-- R6-PD post-deployment community lane proof (July 2026, in progress):
-  - `R6-PD-A`: readiness bundle — `pnpm r6:post-deployment:readiness` (pass)
-  - `R6-PD-B`: solo HTTP exchange drill — `pnpm r6:post-deployment:drill -- --lane documentation --no-build` (pass)
-  - `R6-PD-B2`: all seven community artifact lanes — `pnpm r6:post-deployment:multi-lane-drill -- --no-build` (pass)
-  - `R6-PD-C`: human counterparty tooling — `pnpm r6:post-deployment:phase-c:smoke` (maintainer smoke pass); field proof pending
-  - docs: `docs/specs/r6-post-deployment-proof-spec.md`, `docs/runbooks/r6-post-deployment-proof-runbook.md`
+- R6-PD post-deployment community lane proof (July 2026):
+  - Maintainer closeout complete — `pnpm r6:pd` (A + B documentation + C tooling smoke)
+  - Spec locked; human field proof deferred until a counterparty is available
+  - See top-of-file July 2026 R6-PD entry for current claim language
 
 ## 2026-04
 

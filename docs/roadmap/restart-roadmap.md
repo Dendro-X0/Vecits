@@ -28,7 +28,7 @@ The reference implementation proved protocol credibility in alpha conditions. It
 
 Transform Vectis from a maintainer-operated reference implementation into a **deployable coordination kernel** plus a **professional official client** (marketplace platform, Tauri v2 desktop/mobile) that independent operators can run, customize, and trust—without fiat rails, platform admins, or speculative token economics.
 
-**Active focus (July 2026):** kernel core complete for v1; **R7 professional client** and **R8 convenience transport** complete; **R6-PD field proof** when a counterparty is available; **R7-M1 iOS** on macOS host.
+**Active focus (July 2026):** **R7**, **R8**, **R9** (`R9-G0`..`G5`), and **R6-PD maintainer** complete and archived on this band. **Blocked / deferred:** R6-PD human field proof (no counterparty); R7-M1 iOS (no macOS host). Optional later: Android NFC device smoke when hardware is available.
 
 ## Pre-implementation gate
 
@@ -59,7 +59,9 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
                          │
                          └──────────→ R7 Professional client (Tauri v2) ← COMPLETE
                          │
-                         └──────────→ R8 Convenience transport (QR / offline UX) ← ACTIVE
+                         └──────────→ R8 Convenience transport (QR / offline UX) ← COMPLETE
+                         │
+                         └──────────→ R9 Offline transport (NFC + LAN halo) ← COMPLETE
                          │
                          └──────────→ R5 Federation + policy packs
                          │
@@ -74,7 +76,8 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
 | **R3** | Aperio → Vectis discovery bridge | 2–3 weeks |
 | **R4** | Client/SDK contract hardening | parallel with R1–R2 | **C1–C5 complete** (C5 via R7-D3) |
 | **R7** | Professional official client (Tauri v2) | **complete** (desktop MVP) | see [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) |
-| **R8** | Convenience transport (QR, deep links, offline handoff UX) | 2–4 weeks (Tier 0–1) | see [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) |
+| **R8** | Convenience transport (QR, deep links, offline handoff UX) | **complete** (July 2026) | see [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) |
+| **R9** | Offline transport (NFC + LAN halo) | **complete** (July 2026, `R9-G0`..`G5`) | see [r9-offline-transport-execution-plan.md](r9-offline-transport-execution-plan.md) |
 | **R5** | Policy packs + federation polish | 3–6 weeks |
 | **R6** | Lane expansion and community templates | ongoing |
 
@@ -159,13 +162,13 @@ Goal: ship the **official Vectis marketplace client** — self-hosted, cross-pla
 | `R7-D4` | `complete` | Secure key vault | `docs/runbooks/desktop-secure-key-vault.md` |
 | `R7-D5` | `complete` | Desktop installers | `docs/runbooks/desktop-release-build.md` |
 | `R7-X1` | `complete` | Discovery draft import (ex-R3-B5) | `r7:discovery-draft:smoke` |
-| `R7-M1` | `in_progress` | Tauri mobile scaffold (Android complete, iOS on macOS host) + sidecar policy lock | `apps/desktop/src-tauri/gen/android`, `npm run r7:mobile:scaffold-smoke`, iOS scaffold tooling (`docs/specs/r7-m1-ios-scaffold-spec.md`, `scripts/r7-mobile-ios-command.mjs`, `scripts/r7-ios-scaffold-smoke.mjs`, `npm run r7:mobile:ios:*`, `npm run r7:ios:scaffold-smoke`), `docs/specs/mobile-sidecar-policy-spec.md` |
+| `R7-M1` | `partial` | Tauri mobile scaffold — **Android complete**; **iOS deferred** (needs macOS host) | Android: `gen/android`, `r7:mobile:scaffold-smoke`. iOS handoff: [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md) |
 | `R7-M2` | `complete` | Remote pinned node wiring (mobile) | `docs/specs/r7-m2-remote-pinned-node-wiring-spec.md`, `npm run r7:m2:remote-node:smoke`, `npm run r7:mobile:readiness` |
 | `R7-M3` | `deferred` | On-device node sidecar (experimental) | `docs/specs/r7-m3-on-device-sidecar-spec.md` (draft; implement after R7-M1 iOS + R7-M2 field proof) |
 
 Execution plan: [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md)
 
-**Next atomic step:** Complete R7-M1 iOS scaffold on macOS host. R7-M3 remains spec-only until remote pinned node is proven in the field.
+**Next atomic step (Windows):** Stage complete for solo maintainer — no further gate without hardware/people. Optional: Android NFC device smoke. **Deferred:** iOS (macOS), R6-PD field proof (counterparty). R7-M3 remains spec-only.
 
 ## Track R8: Convenience transport (QR, deep links, offline-friendly handoff)
 
@@ -180,7 +183,24 @@ Goal: reduce in-person and low-trust onboarding friction without weakening kerne
 
 Execution plan: [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md)
 
-**Next atomic step:** R6-PD-C field proof when a counterparty is available, or R7-M1 iOS scaffold on macOS host.
+**Next atomic step:** Track complete. See R9 / R6-PD / deferred iOS in active focus.
+
+## Track R9: Offline transport (NFC + LAN halo)
+
+Goal: carry R8 Tier 1 intents over NFC and support temporary **LAN operator-node halos** that reconcile via existing pull-only sync — without mesh consensus or partition settlement.
+
+| ID | Status | Scope | Acceptance |
+| --- | --- | --- | --- |
+| `R9-A` | `completed` | Spec + execution plan + doc index | `docs/specs/r9-offline-transport-spec.md`, `docs/roadmap/r9-offline-transport-execution-plan.md` |
+| `R9-N1` | `completed` | Android NFC read → Tier 1 import (`pnpm r9:nfc:read-unit`) | R9-G1 |
+| `R9-N2` | `completed` | Android NFC write + QR fallback (`pnpm r9:nfc:write-unit`) | R9-G2 |
+| `R9-H1` | `completed` | Halo join / pin LAN node labels (`NodeJoinConfirm`) | R9-G3 |
+| `R9-H2` | `completed` | Two-node pull reconcile smoke (`pnpm r9:halo:smoke`) | R9-G4 |
+| `R9-G` | `completed` | Regression closeout + R9 sign-off (`pnpm r9:g5`) | R9-G5 |
+
+Execution plan: [r9-offline-transport-execution-plan.md](r9-offline-transport-execution-plan.md) · runbooks: [../runbooks/r9-halo-operator-runbook.md](../runbooks/r9-halo-operator-runbook.md), [../runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
+
+**R9 track:** `R9-G0`..`R9-G5` **pass** (maintainer smoke). Stage archived; optional Android device smoke later. Deferred: iOS (no macOS), R6-PD field (no counterparty).
 
 ## Track R5: Customization and federation
 
@@ -202,7 +222,7 @@ Goal: extend lanes after deployment proof; compute-job production-ready.
 | `R6-L1` | `completed` | Compute-job lane operator runbook | `docs/runbooks/compute-job-lane-runbook.md`, `npm run r6:compute-job:drill` |
 | `R6-L2` | `completed` | Community lane template catalog + drills | `docs/architecture/lane-template-catalog.md`, `npm run r6:lane-templates:smoke` |
 | `R6-L3` | `completed` | Offline lanes remain experimental + smoke | `docs/runbooks/offline-lane-experimental-runbook.md`, `npm run r6:offline-lanes:smoke` |
-| `R6-PD` | `in_progress` | Post-deployment community lane proof (HTTP, outside fixtures) | `docs/specs/r6-post-deployment-proof-spec.md`, `pnpm r6:post-deployment:readiness`, `pnpm r6:post-deployment:drill`, `pnpm r6:post-deployment:multi-lane-drill`, `pnpm r6:post-deployment:phase-c:packet` |
+| `R6-PD` | `completed` (maintainer); field deferred | Post-deployment community lane proof (HTTP, outside fixtures) | `pnpm r6:pd`; field: persistent host + human counterparty |
 
 ## Restart gates
 
@@ -263,6 +283,7 @@ npm run r4:client-audit
 | R4 | SDK README, `r4-client-kernel-audit.md`, `operator-security-guide.md` |
 | R7 | `r7-professional-client-execution-plan.md`, mobile sidecar specs |
 | R8 | `specs/r8-convenience-transport-spec.md`, `r8-convenience-transport-execution-plan.md` |
+| R9 | `specs/r9-offline-transport-spec.md`, `r9-offline-transport-execution-plan.md` |
 | R5+ | `event-versioning-strategy.md`, policy pack docs |
 
 ## Relationship to v0 roadmap
@@ -278,4 +299,4 @@ npm run r4:client-audit
 
 Protocol reference-lane guards GAP-01..07 closed. See [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) for next slices.
 
-Orientation: [../START-HERE.md](../START-HERE.md). R7 desktop MVP complete (`RG-7` pass). R7-M2 mobile remote pinned node complete. **Active client track:** R8 convenience transport — [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md). **Field proof (when counterparty available):** R6-PD — [../runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md). iOS: [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md).
+Orientation: [../START-HERE.md](../START-HERE.md). R7–R9 and R6-PD **maintainer** bands complete. **Deferred:** R6-PD field proof (no counterparty); R7-M1 iOS (no macOS) — [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md). Optional later: Android NFC device smoke — [../runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md).

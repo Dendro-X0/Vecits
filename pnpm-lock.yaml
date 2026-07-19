@@ -22,6 +22,9 @@ importers:
       '@new-start/sdk-ts':
         specifier: workspace:*
         version: link:../../packages/sdk-ts
+      '@tauri-apps/plugin-nfc':
+        specifier: ^2.3.5
+        version: 2.3.5
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -612,6 +615,9 @@ packages:
   '@tailwindcss/postcss@4.3.2':
     resolution: {integrity: sha512-rjVWYCa7Ngbi5AarT6k8TkxUG3Wl1QKzHdIZVsjZSzf36Jmo2IKZt/NHRAwly8oDkbBOH0YTu+CHuf9jPxMc+g==}
 
+  '@tauri-apps/api@2.11.1':
+    resolution: {integrity: sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA==}
+
   '@tauri-apps/cli-darwin-arm64@2.11.4':
     resolution: {integrity: sha512-1ryOF3ZhpZ/nemHV5zVwBQBz9jDGKmKPvWPADOhc83ig0P4bMc2iER4NbC6r9sjeIZ6RVQ4g3RZIYvezhcl4TQ==}
     engines: {node: '>= 10'}
@@ -682,6 +688,9 @@ packages:
     resolution: {integrity: sha512-R8xGtMpwyetawSqm9kYOuMmEqkhUbvcUy8n0aNXIxollKBLESUu5f4Fx+64hgASYm1H+jSWq6jCW6zqTnH6hqQ==}
     engines: {node: '>= 10'}
     hasBin: true
+
+  '@tauri-apps/plugin-nfc@2.3.5':
+    resolution: {integrity: sha512-6w6tY9maiA+YInVS3i5sEPthetZm9/9RR6nB4xAn4BbLgkt+Udd5LWBZxAlfluvKJZn7Svnkd0fVm7juf3YNXw==}
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
@@ -2471,6 +2480,8 @@ snapshots:
       postcss: 8.5.16
       tailwindcss: 4.3.2
 
+  '@tauri-apps/api@2.11.1': {}
+
   '@tauri-apps/cli-darwin-arm64@2.11.4':
     optional: true
 
@@ -2517,6 +2528,10 @@ snapshots:
       '@tauri-apps/cli-win32-arm64-msvc': 2.11.4
       '@tauri-apps/cli-win32-ia32-msvc': 2.11.4
       '@tauri-apps/cli-win32-x64-msvc': 2.11.4
+
+  '@tauri-apps/plugin-nfc@2.3.5':
+    dependencies:
+      '@tauri-apps/api': 2.11.1
 
   '@ts-morph/common@0.27.0':
     dependencies:

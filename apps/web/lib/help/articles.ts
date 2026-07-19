@@ -130,6 +130,24 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: "Kernel truth",
         body: "Only events accepted by the node appear as authoritative state. Client-side drafts, notes, or chat are not settlement unless they are signed and ingested."
+      },
+      {
+        heading: "LAN market / local operator node",
+        body: "At a meetup or market, the operator may share a Join this node QR with a LAN address (for example 192.168.x.x). Import or Settings asks you to confirm the hostname before pinning. While pinned only to that node, the client labels it as a local operator node — not yet reconciled with upstream. Events accepted there are accepted by the local node, not globally settled until peer pull catch-up.",
+        bullets: [
+          "Confirm hostname/IP before pin — open Wi-Fi can host fake nodes.",
+          "HTTP on LAN is for demo/maintainer halos; prefer HTTPS when you can.",
+          "Operator reconcile uses existing pull sync (see halo operator runbook)."
+        ]
+      },
+      {
+        heading: "NFC transport (Android)",
+        body: "On the Android Vectis app, Dashboard → Import → Scan NFC reads the same Tier 1 transport JSON carried by QR/paste. Share panels (vouch request, identity intro, and other bundles) can Write to NFC tag using MIME application/vnd.vectis.transport.v1+json. Tapping or writing does not publish offers or move credits. If write fails, use the QR on the same panel.",
+        bullets: [
+          "iOS: prefer QR or paste. NFC write is not required; read is best-effort when the OS allows it.",
+          "Expired tags show the same expired message as QR links.",
+          "Operator steps: docs/runbooks/r9-nfc-operator-runbook.md"
+        ]
       }
     ]
   },

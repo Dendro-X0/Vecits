@@ -44,7 +44,7 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 | Client/kernel boundary audit | R4-C1..C4 complete |
 | Professional desktop client (R7) | R7-D1–D5 + R7-X1 — `RG-7` pass |
 | Mobile client wiring (R7-M2) | Remote pinned node — `pnpm r7:mobile:readiness` |
-| Mobile scaffold (R7-M1) | Android complete; iOS tooling ready (macOS host) |
+| Mobile scaffold (R7-M1) | Android complete; **iOS deferred** (no macOS host) |
 | Convenience transport (R8) | Tier 0 QR → Tier 1 bundles → Tier 2 handoff wizard — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md) |
 
 ### Not the current focus
@@ -105,14 +105,16 @@ pnpm ci:readiness                        # PR CI gate (typecheck, audits, smokes
 
 ### "I want to know what's next"
 
-[specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) — suggested slices:
+Current stage is **archived for solo maintainer** (R9 + R6-PD maintainer). No required next gate without hardware or a counterparty.
 
-1. R6-PD post-deployment lane proof — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
-2. R7-M1 iOS scaffold on macOS host — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
-3. Mobile sidecar policy (locked) — [specs/mobile-sidecar-policy-spec.md](specs/mobile-sidecar-policy-spec.md)
-4. R7-M2 remote pinned node wiring (complete) — [specs/r7-m2-remote-pinned-node-wiring-spec.md](specs/r7-m2-remote-pinned-node-wiring-spec.md)
+[specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) — optional later:
 
-R8 convenience transport is complete — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md)
+1. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md)
+2. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+3. R7-M1 iOS — **deferred** (needs macOS) — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
+4. Mobile sidecar policy (locked) — [specs/mobile-sidecar-policy-spec.md](specs/mobile-sidecar-policy-spec.md)
+
+R8 + R9 signed off; R6-PD maintainer closeout via `pnpm r6:pd`.
 
 ## Doc map (when you need more)
 
@@ -123,7 +125,7 @@ R8 convenience transport is complete — [roadmap/r8-convenience-transport-execu
 | [foundation/](foundation/README.md) | Thesis, economics, doctrine |
 | [v0/](v0/README.md) | Fixture matrices, abuse tests, evidence |
 | [runbooks/](runbooks/README.md) | Operator commands |
-| [roadmap/](roadmap/README.md) | R0–R8 tracks, progress, session log |
+| [roadmap/](roadmap/README.md) | R0–R9 tracks, progress, session log |
 | [archive/](archive/legacy-dcos-index.md) | Legacy — not normative |
 
 Full index: [README.md](README.md)

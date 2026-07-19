@@ -1,0 +1,7 @@
+{
+  "identifier": "nfc",
+  "description": "R9 NFC read + write (Android/iOS)",
+  "windows": ["main"],
+  "platforms": ["android", "iOS"],
+  "permissions": ["nfc:default", "nfc:allow-write"]
+}

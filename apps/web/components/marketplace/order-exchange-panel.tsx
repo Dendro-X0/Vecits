@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MobilePinnedNodeNotice } from "@/components/mobile/mobile-pinned-node-notice";
 import { loadActiveSession } from "@/lib/auth/session";
+import { HALO_ACCEPTED_BY_LOCAL } from "@/lib/halo/honesty-copy";
+import { isLocalOperatorNodeUrl } from "@/lib/halo/local-operator-node";
 import {
   resolveNodeClientBaseUrl,
   resolveMobilePinnedNodeError
@@ -141,7 +143,9 @@ export function OrderExchangePanel({ baseUrl, exchange, searchParams }: OrderExc
           deliver: "Delivery submitted",
           accept: "Milestone accepted"
         };
-        setSuccessMessage(`${labels[kind]} for ${milestoneId}.`);
+        const base = resolveNodeClientBaseUrl(baseUrl);
+        const localNote = isLocalOperatorNodeUrl(base) ? ` ${HALO_ACCEPTED_BY_LOCAL}.` : "";
+        setSuccessMessage(`${labels[kind]} for ${milestoneId}.${localNote}`);
         router.refresh();
       } else {
         setErrorMessage(result.message ?? `The node rejected this ${kind} event.`);

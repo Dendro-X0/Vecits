@@ -1,6 +1,8 @@
 import { ShieldCheck } from "lucide-react";
 
 import { TrustPhaseLabel } from "@/components/dashboard/trust-phase-label";
+import { HALO_LOCAL_OPERATOR_FULL } from "@/lib/halo/honesty-copy";
+import { isLocalOperatorNodeUrl } from "@/lib/halo/local-operator-node";
 
 type MarketplaceTrustBarProps = {
   nodeLabel: string;
@@ -9,6 +11,8 @@ type MarketplaceTrustBarProps = {
 };
 
 export function MarketplaceTrustBar({ nodeLabel, asOf, mockMode }: MarketplaceTrustBarProps) {
+  const localOperator = isLocalOperatorNodeUrl(nodeLabel);
+
   return (
     <div className="border-b border-border bg-muted/40">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-2.5 text-xs text-muted-foreground sm:px-6 lg:px-8">
@@ -22,6 +26,14 @@ export function MarketplaceTrustBar({ nodeLabel, asOf, mockMode }: MarketplaceTr
             </>
           ) : null}
         </span>
+        {localOperator ? (
+          <>
+            <span className="hidden h-3 w-px bg-border sm:block" />
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-foreground">
+              {HALO_LOCAL_OPERATOR_FULL}
+            </span>
+          </>
+        ) : null}
         <span className="hidden h-3 w-px bg-border sm:block" />
         <TrustPhaseLabel compact />
         <span className="hidden h-3 w-px bg-border sm:block" />

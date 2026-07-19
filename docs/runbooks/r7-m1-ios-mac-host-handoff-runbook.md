@@ -2,9 +2,11 @@
 
 Purpose: complete the iOS half of R7-M1 on a **macOS machine** after Android scaffold and R7-M2 wiring are done on Windows/Linux.
 
-Status: `active`
+Status: `active` (handoff — **blocked without macOS**)
 
 Last updated: July 2026
+
+> **Maintainer note (July 2026):** Solo Windows host — iOS scaffold is **deferred**. Keep this runbook for when a macOS machine is available; do not treat R7-M1 as incomplete for Android. Android half is done.
 
 ## Prerequisites (macOS host)
 

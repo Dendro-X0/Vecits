@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { Globe, KeyRound } from "lucide-react";
 
 import { DashboardAdvancedContent } from "@/components/dashboard/dashboard-advanced-panel";
 import { SettingsRow, SettingsSection } from "@/components/dashboard/settings-primitives";
+import { NodeJoinConfirm } from "@/components/transport/node-join-confirm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,7 @@ type DashboardSettingsTechnicalPanelProps = {
 };
 
 export function DashboardSettingsTechnicalPanel({
-  session,
+  session: _session,
   nodeInfo,
   mobilePinnedNodeDraft,
   onMobilePinnedNodeDraftChange,
@@ -41,6 +42,7 @@ export function DashboardSettingsTechnicalPanel({
 }: DashboardSettingsTechnicalPanelProps) {
   const desktopVault = isDesktopVaultAvailable();
   const runtimeMobilePinnedNodeUrl = readRuntimeMobilePinnedNodeUrl();
+  const [pendingConfirmUrl, setPendingConfirmUrl] = useState<string | null>(null);
 
   const mobilePinnedNodeError =
     mobilePinnedNodeDraft.trim().length > 0
@@ -50,13 +52,23 @@ export function DashboardSettingsTechnicalPanel({
   function handleMobilePinnedNodeSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = mobilePinnedNodeDraft.trim();
-    if (trimmed) {
-      const error = validateMobilePinnedNodeUrl(trimmed);
-      if (error) {
-        return;
-      }
+    if (!trimmed) {
+      writeMobilePinnedNodeOverride("");
+      onNodeInfoRefresh();
+      onMobilePinnedNodeSaved();
+      return;
     }
-    writeMobilePinnedNodeOverride(trimmed);
+    const error = validateMobilePinnedNodeUrl(trimmed);
+    if (error) {
+      return;
+    }
+    setPendingConfirmUrl(trimmed);
+  }
+
+  function handleConfirmPin(normalizedUrl: string) {
+    writeMobilePinnedNodeOverride(normalizedUrl);
+    onMobilePinnedNodeDraftChange(normalizedUrl);
+    setPendingConfirmUrl(null);
     onNodeInfoRefresh();
     onMobilePinnedNodeSaved();
   }
@@ -64,6 +76,7 @@ export function DashboardSettingsTechnicalPanel({
   function handleMobilePinnedNodeReset() {
     writeMobilePinnedNodeOverride("");
     onMobilePinnedNodeDraftChange("");
+    setPendingConfirmUrl(null);
     onNodeInfoRefresh();
   }
 
@@ -77,7 +90,7 @@ export function DashboardSettingsTechnicalPanel({
           <SettingsRow
             icon={Globe}
             title="Mobile pinned node"
-            description="Release builds require HTTPS. Dev builds may override the pinned operator URL."
+            description="Release builds require HTTPS. Dev builds may override the pinned operator URL. Confirm hostname before save."
             badge={
               nodeInfo.isMobileRelease ? (
                 validateMobilePinnedNodeUrl(nodeInfo.baseUrl) ? (
@@ -93,38 +106,53 @@ export function DashboardSettingsTechnicalPanel({
             }
           >
             {!nodeInfo.isMobileRelease ? (
-              <form className="space-y-3" onSubmit={handleMobilePinnedNodeSubmit}>
+              <div className="space-y-3">
                 {runtimeMobilePinnedNodeUrl ? (
                   <p className="text-xs text-muted-foreground">
                     Runtime default:{" "}
                     <span className="font-mono text-foreground">{runtimeMobilePinnedNodeUrl}</span>
                   </p>
                 ) : null}
-                <div className="space-y-2">
-                  <Label htmlFor="mobilePinnedNodeUrl">Override URL</Label>
-                  <Input
-                    id="mobilePinnedNodeUrl"
-                    value={mobilePinnedNodeDraft}
-                    onChange={(event) => onMobilePinnedNodeDraftChange(event.target.value)}
-                    placeholder="https://node.example.com"
+                {pendingConfirmUrl ? (
+                  <NodeJoinConfirm
+                    nodeUrl={pendingConfirmUrl}
+                    onConfirm={handleConfirmPin}
+                    onCancel={() => setPendingConfirmUrl(null)}
                   />
-                </div>
-                {mobilePinnedNodeError ? (
-                  <p className="text-xs text-destructive">{mobilePinnedNodeError}</p>
                 ) : (
-                  <p className="text-xs text-muted-foreground">
-                    Stored locally on this device for non-release mobile builds.
-                  </p>
+                  <form className="space-y-3" onSubmit={handleMobilePinnedNodeSubmit}>
+                    <div className="space-y-2">
+                      <Label htmlFor="mobilePinnedNodeUrl">Override URL</Label>
+                      <Input
+                        id="mobilePinnedNodeUrl"
+                        value={mobilePinnedNodeDraft}
+                        onChange={(event) => onMobilePinnedNodeDraftChange(event.target.value)}
+                        placeholder="https://node.example.com"
+                      />
+                    </div>
+                    {mobilePinnedNodeError ? (
+                      <p className="text-xs text-destructive">{mobilePinnedNodeError}</p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">
+                        Stored locally on this device for non-release mobile builds.
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="submit" size="sm" disabled={Boolean(mobilePinnedNodeError)}>
+                        {mobilePinnedNodeSaved ? "Saved" : "Review pin"}
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={handleMobilePinnedNodeReset}
+                      >
+                        Reset
+                      </Button>
+                    </div>
+                  </form>
                 )}
-                <div className="flex flex-wrap gap-2">
-                  <Button type="submit" size="sm" disabled={Boolean(mobilePinnedNodeError)}>
-                    {mobilePinnedNodeSaved ? "Saved" : "Save override"}
-                  </Button>
-                  <Button type="button" size="sm" variant="outline" onClick={handleMobilePinnedNodeReset}>
-                    Reset
-                  </Button>
-                </div>
-              </form>
+              </div>
             ) : (
               <p className="text-sm text-emerald-600 dark:text-emerald-400">
                 Mobile release policy satisfied — pinned node uses HTTPS.

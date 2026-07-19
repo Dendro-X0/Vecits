@@ -16,6 +16,10 @@ Kickoff: July 2026
 8. `trust-bootstrap-and-credits-path-spec.md` — genesis admission + credits issuance path
 9. `protocol-priority-backlog.md` — stack-ranked protocol work tracker
 10. `r8-convenience-transport-spec.md` — QR/deep-link/offline handoff transport (client band)
+11. `r9-offline-transport-spec.md` — NFC carrier + LAN operator-node halo (client band)
+12. `r9-h1-halo-join-ux-design.md` — join confirm + LAN honesty labels (R9-H1)
+13. `r9-n1-android-nfc-read-design.md` — Android NFC read → import (R9-N1)
+14. `r9-n2-android-nfc-write-design.md` — Android NFC write + QR fallback (R9-N2)
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 
@@ -48,5 +52,9 @@ These specs **do not replace** v0 protocol documentation. They define the restar
 | `r7-m2-remote-pinned-node-wiring-spec.md` | `locked` |
 | `r7-m1-ios-scaffold-spec.md` | `draft` |
 | `r7-m3-on-device-sidecar-spec.md` | `draft` (deferred) |
-| `r6-post-deployment-proof-spec.md` | `draft` |
+| `r6-post-deployment-proof-spec.md` | `locked` (maintainer; field deferred) |
 | `r8-convenience-transport-spec.md` | `locked` |
+| `r9-offline-transport-spec.md` | `locked` |
+| `r9-h1-halo-join-ux-design.md` | `implemented` |
+| `r9-n1-android-nfc-read-design.md` | `implemented` |
+| `r9-n2-android-nfc-write-design.md` | `implemented` |
