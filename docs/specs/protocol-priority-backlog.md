@@ -37,12 +37,14 @@ R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-c
 
 ### Protocol / deployment
 
-1. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
-2. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
-3. R7-M1 iOS scaffold — **deferred** until macOS host
-4. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
+1. **Zero-capital operator topologies (locked)** — [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) · [../runbooks/zero-capital-operator-runbook.md](../runbooks/zero-capital-operator-runbook.md)
+2. **Staged exchange practice (locked)** — [value-layers-design.md](value-layers-design.md) · [staged-exchange-practice-design.md](staged-exchange-practice-design.md) · [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md)
+3. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
+4. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
+5. R7-M1 iOS scaffold — **deferred** until macOS host
+6. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
 
-**Solo stage note (July 2026):** R9 + R6-PD maintainer bands are complete without field testers or macOS. Resume deferred items when hardware/people appear.
+**Solo stage note (July 2026):** R9 + R6-PD maintainer bands are complete without field testers or macOS. Production default is participant-hosted (ZC); resume deferred items when hardware/people appear.
 
 ## Explicit non-goals (current band)
 
@@ -52,6 +54,10 @@ R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-c
 
 ## Related docs
 
+- [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md)
+- [value-layers-design.md](value-layers-design.md)
+- [staged-exchange-practice-design.md](staged-exchange-practice-design.md)
+- [serverless-p2p-feasibility-investigation.md](serverless-p2p-feasibility-investigation.md)
 - [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md)
 - [r8-convenience-transport-spec.md](r8-convenience-transport-spec.md)
 - [../v0/protocol-fixture-gap-audit.md](../v0/protocol-fixture-gap-audit.md)

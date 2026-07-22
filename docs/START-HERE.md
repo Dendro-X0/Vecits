@@ -105,14 +105,24 @@ pnpm ci:readiness                        # PR CI gate (typecheck, audits, smokes
 
 ### "I want to know what's next"
 
-Current stage is **archived for solo maintainer** (R9 + R6-PD maintainer). No required next gate without hardware or a counterparty.
+**Zero-capital production (locked):** run on your own hardware — no VPS required.
 
-[specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md) — optional later:
+1. [specs/zero-capital-operator-topology-design.md](specs/zero-capital-operator-topology-design.md) — topologies ZC-1..ZC-4
+2. [runbooks/zero-capital-operator-runbook.md](runbooks/zero-capital-operator-runbook.md) — operator steps
+3. Verify: `pnpm zc:s4` (or `pnpm zc:s4:quick`)
+4. Background: [specs/serverless-p2p-feasibility-investigation.md](specs/serverless-p2p-feasibility-investigation.md)
 
-1. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md)
-2. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
-3. R7-M1 iOS — **deferred** (needs macOS) — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
-4. Mobile sidecar policy (locked) — [specs/mobile-sidecar-policy-spec.md](specs/mobile-sidecar-policy-spec.md)
+**Staged value exchange (locked):** credits at each milestone accept — not passive yield.
+
+1. [specs/value-layers-design.md](specs/value-layers-design.md) · [specs/staged-exchange-practice-design.md](specs/staged-exchange-practice-design.md)
+2. [runbooks/staged-exchange-operator-runbook.md](runbooks/staged-exchange-operator-runbook.md)
+3. In-app: `/help/staged-exchanges`
+
+Optional later (hardware / counterparty gated):
+
+1. Android NFC device smoke — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md)
+2. R6-PD field proof — **deferred** — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+3. R7-M1 iOS — **deferred** — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
 
 R8 + R9 signed off; R6-PD maintainer closeout via `pnpm r6:pd`.
 

@@ -48,7 +48,51 @@ export const HELP_ARTICLES: HelpArticle[] = [
       },
       {
         heading: "Credits are not money",
-        body: "Credits are coordination fuel inside the protocol. They expire, they are not transferable wealth, and they do not replace fiat payment rails. Never move settlement off-platform unless you accept that risk."
+        body: "Credits are coordination fuel inside the protocol. They expire, they are not transferable wealth, and they do not replace fiat payment rails. Never move settlement off-platform unless you accept that risk. Durable upside is delivery history — not a savings balance."
+      },
+      {
+        heading: "Staged digital vs offline one-shot",
+        body: "Virtual resources (compute, API grants, proprietary code) should use multiple milestones — credits release when each phase is accepted. Offline goods or meets usually use a single milestone. See the staged exchanges guide for templates.",
+        bullets: [
+          "Help → Staged exchanges for Profile A / Profile B.",
+          "Operator runbook: docs/runbooks/staged-exchange-operator-runbook.md"
+        ]
+      }
+    ]
+  },
+  {
+    slug: "staged-exchanges",
+    title: "Staged exchanges and offline one-shots",
+    category: "marketplace",
+    summary:
+      "Structure digital resource deals in phases with credits at each accept; keep physical meets as one-shot experimental lanes.",
+    sections: [
+      {
+        heading: "Value at phase completion",
+        body: "Vectis does not accrue passive points while an API runs or code sits in production. Each milestone is escrow → evidence → accept. Closing a phase moves coordination fuel and updates delivery history. Leftover world access (API quota, running software) is not a Vectis balance."
+      },
+      {
+        heading: "Profile A — Staged digital / virtual",
+        body: "Use two or more milestones for divisible work: compute batches, API access grants, proprietary code drops, documentation packages.",
+        bullets: [
+          "Compute: sample receipt → full batch receipt (compute-job / job-receipt-v1).",
+          "Code: design hash → implementation hash → optional transfer ack.",
+          "API grants: smoke credential receipt → quota tranche receipts — keys stay outside the ledger.",
+          "Fund only the active milestone; finish it before treating the next as live work."
+        ]
+      },
+      {
+        heading: "Profile B — Offline one-shot",
+        body: "Physical handoff and local resource exchange prefer a single milestone with dual acknowledgment or local receipt. These lanes are experimental procedure evidence — not a quality court. Meet again later with a new order.",
+        bullets: [
+          "physical-handoff — dual-ack evidence.",
+          "local-resource-exchange — local receipt.",
+          "QR / NFC / LAN pin for meet-ups without a paid cloud host."
+        ]
+      },
+      {
+        heading: "Anti-patterns",
+        body: "Do not mint credits from usage counters, stretch one box handoff into fake phases, or treat off-platform activation fees as Vectis payment."
       }
     ]
   },
@@ -112,19 +156,30 @@ export const HELP_ARTICLES: HelpArticle[] = [
     slug: "node-connection",
     title: "Connecting to a node",
     category: "getting-started",
-    summary: "The official client reads live marketplace state from a Vectis node — usually yours or one your community operates.",
+    summary:
+      "The official client reads live marketplace state from a Vectis node you or your community run — a VPS is optional, not required.",
     sections: [
       {
         heading: "Default connection",
-        body: "The web client talks to the node URL configured for your build (often a local node during development). Desktop and mobile builds may pin a remote node instead."
+        body: "Production default is participant-hosted: the desktop app runs a local node on this device, or you pin a community/LAN operator URL. There is no Vectis company cloud. A rented server is optional reach, never a gate."
+      },
+      {
+        heading: "Zero-capital hosts",
+        body: "You can complete real escrow and delivery evidence on hardware you already own. Use the desktop sidecar (local node on this device), invite a counterparty over LAN or Tailscale, or keep a small replica set among volunteers.",
+        bullets: [
+          "Solo desktop: local node on this device — no paid host.",
+          "Second device: pin the host join URL after confirming hostname/IP.",
+          "Operator steps: docs/runbooks/zero-capital-operator-runbook.md"
+        ]
       },
       {
         heading: "Connection errors",
         body: "If Overview or Transactions show a connection issue, open Settings and confirm the node is running and reachable. Advanced settings include operator tools and mobile node override for pinned hosts.",
         bullets: [
-          "Local development: start the node, then refresh the dashboard.",
-          "Production: use HTTPS and follow your operator runbook.",
-          "Mobile: configure a pinned remote node when sidecar mode is not available."
+          "Desktop / local: start or relaunch the client so the sidecar is healthy, then refresh.",
+          "LAN or Tailscale pin: confirm the host is awake and the URL matches what you verified out-of-band.",
+          "Public HTTPS pins: follow your operator runbook when you choose that topology.",
+          "Mobile: configure a pinned node URL when on-device sidecar mode is not available."
         ]
       },
       {

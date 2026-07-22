@@ -5,6 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { OrderMilestoneDraft } from "@/lib/marketplace/milestone-draft";
+import { milestoneScheduleHint } from "@/lib/marketplace/staged-exchange-guidance";
 import { cn } from "@/lib/utils";
 
 const fieldStyle: CSSProperties = {
@@ -23,6 +24,8 @@ type MilestoneScheduleEditorProps = {
   onChange: (rows: OrderMilestoneDraft[]) => void;
   onHashTerms?: () => void;
   termsHashMessage?: string | null;
+  /** Offer lane — selects staged-digital vs offline-oneshot hint copy. */
+  serviceType?: string;
 };
 
 export function MilestoneScheduleEditor({
@@ -30,7 +33,8 @@ export function MilestoneScheduleEditor({
   guidedTerms,
   onChange,
   onHashTerms,
-  termsHashMessage
+  termsHashMessage,
+  serviceType
 }: MilestoneScheduleEditorProps) {
   function patchRow(index: number, patch: Partial<OrderMilestoneDraft>) {
     onChange(rows.map((row, rowIndex) => (rowIndex === index ? { ...row, ...patch } : row)));
@@ -63,7 +67,7 @@ export function MilestoneScheduleEditor({
         <div>
           <p className="text-sm font-medium text-foreground">Milestone schedule</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Add phased work as separate milestones. Each row maps to an entry in the order payload.
+            {milestoneScheduleHint(serviceType)}
           </p>
         </div>
         <Button type="button" variant="outline" size="sm" onClick={addRow}>

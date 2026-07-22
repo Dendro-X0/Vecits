@@ -11,6 +11,7 @@ This directory holds **local-only** `vectis-node` databases: event logs, SQLite 
 | `.data/default/` | Fresh operator init (`install.sh` / quickstart default) |
 | `.data/dev/` | Local web client development |
 | `.data/r2/` | R2 persistent deployment / exchange proof |
+| `.data/zc1/` | Zero-capital ZC-1 solo desktop persistent host |
 | `.data/r2-genesis/` | Trust bootstrap genesis drill |
 | `.data/r6/` | Compute-job lane drill |
 | `.data/r6-l2/` | Lane template smoke |

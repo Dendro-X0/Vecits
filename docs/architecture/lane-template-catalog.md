@@ -46,6 +46,17 @@ API coverage: `api_checked_in_non_software_lane_fixture_bundles_replay_cleanly` 
 
 Architecture: [phase2-compute-job-lane.md](phase2-compute-job-lane.md).
 
+## Staging profiles (value at phase completion)
+
+Doctrine: [../specs/value-layers-design.md](../specs/value-layers-design.md) · Practice: [../specs/staged-exchange-practice-design.md](../specs/staged-exchange-practice-design.md) · Runbook: [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md)
+
+| Profile | Default shape | Typical lanes |
+| --- | --- | --- |
+| **A — Staged digital / virtual** | Multi-milestone; escrow→evidence→accept per phase | `compute-job`, artifact lanes, code/API grants as evidenced phases |
+| **B — Offline one-shot** | Single milestone; experimental honesty | `physical-handoff`, `local-resource-exchange` |
+
+Credits are coordination fuel released at accept — not passive yield while an API or binary keeps running.
+
 ## Discovery bridge mapping
 
 Classifier output lanes must match registry defaults in `scripts/lib/discovery-bridge/lane-templates.mjs`.

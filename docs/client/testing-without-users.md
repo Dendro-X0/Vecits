@@ -27,6 +27,20 @@ cargo run --bin vectis-node -- db inspect --data-dir ./.data/dev
 
 Store keys only in dev data dirs — never commit secrets.
 
+### CodaCtrl dual-window (dev server)
+
+With `vectis-node` on `:7878` and `pnpm dev:web` up, open **two** Playwright sessions (separate `sessionId` + `alwaysNewSession: true`):
+
+| Window | Unlock (development only) | Then navigate |
+| --- | --- | --- |
+| Provider | `/sign-in?devKey=<provider-64-hex>` | `/dashboard/builder?step=offer` |
+| Buyer | `/sign-in?devKey=<buyer-64-hex>` | `/dashboard` or builder order/escrow steps |
+
+R2 drill keys (dev-only, never production): see `scripts/lib/r2-exchange-core.mjs` (`R2_KEYS`).  
+`devKey` is ignored unless `NODE_ENV=development`. Prefer this over split type→click on the password field.
+
+Evidence from a dual session lands under `.codectx/verify/client-sessions/`.
+
 ## 3. Guided builder end-to-end (Phase 1)
 
 Path: **Dashboard → Publish & transact**

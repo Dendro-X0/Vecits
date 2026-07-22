@@ -89,6 +89,7 @@ cargo run --bin cli -- log verify-chain --data-dir ./.data/default
 - Two-node federation drill (R5-F2 / GA4 release): `npm run r5:two-node:drill`
 - Ingest rate limit on public nodes: `--ingest-rate-limit-max 120` (see `docs/runbooks/operator-security-guide.md`)
 - Persistent deployment (R2-P1): `docs/runbooks/r2-persistent-deployment-runbook.md`
+- Zero-capital production (no VPS): `docs/runbooks/zero-capital-operator-runbook.md`
 - R2 deploy smoke: `npm run r2:deploy-smoke -- --with-backup`
 - Daily backup: `npm run r2:backup`
 - Client/kernel audit: `npm run r4:client-audit`
@@ -101,5 +102,6 @@ cargo run --bin cli -- log verify-chain --data-dir ./.data/default
 ## Related docs
 
 - `docs/specs/deployment-distribution-spec.md`
+- `docs/specs/zero-capital-operator-topology-design.md`
 - `docs/specs/kernel-boundary-spec.md`
 - `docs/roadmap/restart-roadmap.md`

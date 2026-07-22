@@ -78,6 +78,20 @@ export function SignInForm({ nextPath = "/marketplace" }: SignInFormProps) {
     });
   }, []);
 
+  // Local dual-window / CodaCtrl: /sign-in?devKey=<64-hex> unlocks without split type→click races.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") {
+      return;
+    }
+    const key = new URLSearchParams(window.location.search).get("devKey")?.trim() ?? "";
+    if (!/^[0-9a-fA-F]{64}$/.test(key)) {
+      return;
+    }
+    void unlockWithSecretKey(key, true);
+    // unlockWithSecretKey is stable enough for a one-shot query bootstrap
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Persist a valid key as soon as it is entered so split-step browser automation
   // (type in one capture, click in the next) can unlock via "Use saved key".
   useEffect(() => {
@@ -163,6 +177,24 @@ export function SignInForm({ nextPath = "/marketplace" }: SignInFormProps) {
   async function handleUseSavedKey() {
     if (desktopVault) {
       setError("Use your desktop vault password to unlock a remembered key.");
+      return;
+    }
+    // Prefer an in-progress typed value (CodaCtrl/Playwright split type→click can
+    // clear React controlled state between steps while localStorage or DOM still holds it).
+    const domTyped =
+      typeof document !== "undefined"
+        ? (document.getElementById("secretKeyHex") as HTMLInputElement | null)?.value?.trim()
+        : "";
+    if (domTyped && /^[0-9a-fA-F]{64}$/.test(domTyped)) {
+      await unlockWithSecretKey(domTyped, true);
+      return;
+    }
+    const storedSecret =
+      typeof window !== "undefined"
+        ? localStorage.getItem("vectis.auth.secret_key_hex")?.trim()
+        : null;
+    if (storedSecret && /^[0-9a-fA-F]{64}$/.test(storedSecret)) {
+      await unlockWithSecretKey(storedSecret, true);
       return;
     }
     let session = loadStoredSession();
@@ -309,6 +341,12 @@ export function SignInForm({ nextPath = "/marketplace" }: SignInFormProps) {
             value={secretKeyHex}
             onChange={(event) => {
               const next = event.target.value;
+              setSecretKeyHex(next);
+              persistTypedSecret(next, remember);
+            }}
+            onInput={(event) => {
+              // Playwright / CodaCtrl may set the value via input events without React onChange.
+              const next = event.currentTarget.value;
               setSecretKeyHex(next);
               persistTypedSecret(next, remember);
             }}

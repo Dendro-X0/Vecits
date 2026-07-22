@@ -5,6 +5,8 @@ Operator install, deployment, backup, security, and recurring cadence.
 | Document | Purpose |
 | --- | --- |
 | [operator-quickstart.md](operator-quickstart.md) | Zero-to-running node |
+| [zero-capital-operator-runbook.md](zero-capital-operator-runbook.md) | Production on own hardware (no VPS) — ZC-1..ZC-4 |
+| [staged-exchange-operator-runbook.md](staged-exchange-operator-runbook.md) | Staged digital vs offline one-shot deals |
 | [operator-security-guide.md](operator-security-guide.md) | Keys, TLS, SOC-01 |
 | [operator-backup-runbook.md](operator-backup-runbook.md) | Backup and restore |
 | [r2-persistent-deployment-runbook.md](r2-persistent-deployment-runbook.md) | Persistent host deploy |

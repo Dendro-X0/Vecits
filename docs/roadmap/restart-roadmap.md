@@ -28,7 +28,7 @@ The reference implementation proved protocol credibility in alpha conditions. It
 
 Transform Vectis from a maintainer-operated reference implementation into a **deployable coordination kernel** plus a **professional official client** (marketplace platform, Tauri v2 desktop/mobile) that independent operators can run, customize, and trust—without fiat rails, platform admins, or speculative token economics.
 
-**Active focus (July 2026):** **R7**, **R8**, **R9** (`R9-G0`..`G5`), and **R6-PD maintainer** complete and archived on this band. **Blocked / deferred:** R6-PD human field proof (no counterparty); R7-M1 iOS (no macOS host). Optional later: Android NFC device smoke when hardware is available.
+**Active focus (July 2026):** **R7**, **R8**, **R9** (`R9-G0`..`G5`), and **R6-PD maintainer** complete and archived on this band. **Zero-capital production topologies locked** ([zero-capital-operator-topology-design.md](../specs/zero-capital-operator-topology-design.md)) — participant-hosted default; VPS optional. **Blocked / deferred:** R6-PD human field proof (no counterparty); R7-M1 iOS (no macOS host). Optional later: Android NFC device smoke when hardware is available.
 
 ## Pre-implementation gate
 

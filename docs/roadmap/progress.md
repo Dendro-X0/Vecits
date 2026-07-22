@@ -4,6 +4,21 @@ This file tracks high-level progress over time.
 
 ## 2026-07
 
+- **Value layers + staged exchange practice (locked):**
+  - Doctrine: `docs/specs/value-layers-design.md` (VL-D1..D6)
+  - Practice: `docs/specs/staged-exchange-practice-design.md` (SX-D1..D5) — Profile A multi-milestone digital/virtual; Profile B offline one-shot
+  - Runbook: `docs/runbooks/staged-exchange-operator-runbook.md`
+  - Client: milestone schedule hints by lane; help `/help/staged-exchanges`
+  - Research closed: `docs/specs/value-layers-and-credits-investigation.md`
+  - No new kernel event kinds; API/compute/code map onto existing lanes + phases
+- **Zero-capital operator topology (locked):**
+  - Design: `docs/specs/zero-capital-operator-topology-design.md` (ZC-D1..D5, ZC-1..ZC-4)
+  - Runbook: `docs/runbooks/zero-capital-operator-runbook.md`
+  - Research closed: `docs/specs/serverless-p2p-feasibility-investigation.md` → status `locked`
+  - **ZC-S4:** `pnpm zc:s4` — persistent `.data/zc1` + join/halo smokes (maintainer)
+  - **ZC-S5:** help node-connection + marketplace trust notes — no paid-cloud gate; refuse off-platform fees
+  - Indexed: START-HERE, specs README, protocol-priority-backlog, runbooks README
+  - No kernel changes; VPS not a production gate
 - **R9 offline transport (R9-A locked):**
   - Spec locked: NFC as R8 Tier 1 carrier; LAN operator-node halo via pin URL + Track 4 pull sync; mesh gossip deferred
   - Gate `R9-G0` pass — implementation authorized for R9-N / R9-H

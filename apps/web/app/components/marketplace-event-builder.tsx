@@ -2644,6 +2644,7 @@ export function MarketplaceEventBuilder({
                   onChange={setMilestoneRows}
                   onHashTerms={() => void handleHashMilestoneTerms()}
                   termsHashMessage={milestoneTermsHashMessage}
+                  serviceType={serviceType}
                 />
               </div>
             ) : null}
@@ -2653,6 +2654,7 @@ export function MarketplaceEventBuilder({
                   rows={milestoneRows}
                   guidedTerms={false}
                   onChange={setMilestoneRows}
+                  serviceType={serviceType}
                 />
               </div>
             ) : null}

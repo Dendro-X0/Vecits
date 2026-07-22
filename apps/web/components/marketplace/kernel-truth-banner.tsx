@@ -13,7 +13,7 @@ const COPY = {
   discovery:
     "Discovery rankings are informational scores from kernel replay. They are not payment guarantees or off-platform trust endorsements.",
   offProtocol:
-    "Vectis credits are non-transferable protocol units, not fiat money. Off-platform payment is outside kernel enforcement — escrow and acceptance must stay in the event log."
+    "Vectis credits are non-transferable protocol units, not fiat money. Off-platform payment is outside kernel enforcement — escrow and acceptance must stay in the event log. A paid cloud host is not required; desktop and community nodes are valid production."
 };
 
 export function KernelTruthBanner({

@@ -20,6 +20,11 @@ Kickoff: July 2026
 12. `r9-h1-halo-join-ux-design.md` — join confirm + LAN honesty labels (R9-H1)
 13. `r9-n1-android-nfc-read-design.md` — Android NFC read → import (R9-N1)
 14. `r9-n2-android-nfc-write-design.md` — Android NFC write + QR fallback (R9-N2)
+15. `serverless-p2p-feasibility-investigation.md` — no-company-backend vs no-process-anywhere (research, locked)
+16. `zero-capital-operator-topology-design.md` — participant-hosted production topologies ZC-1..ZC-4
+17. `value-layers-and-credits-investigation.md` — ephemeral credits vs persistent world value (research, locked)
+18. `value-layers-design.md` — normative L1/L2/L3 anti-financial rules
+19. `staged-exchange-practice-design.md` — staged digital vs offline one-shot deal shapes
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 
@@ -58,3 +63,8 @@ These specs **do not replace** v0 protocol documentation. They define the restar
 | `r9-h1-halo-join-ux-design.md` | `implemented` |
 | `r9-n1-android-nfc-read-design.md` | `implemented` |
 | `r9-n2-android-nfc-write-design.md` | `implemented` |
+| `serverless-p2p-feasibility-investigation.md` | `locked` (research) |
+| `zero-capital-operator-topology-design.md` | `locked` |
+| `value-layers-and-credits-investigation.md` | `locked` (research) |
+| `value-layers-design.md` | `locked` |
+| `staged-exchange-practice-design.md` | `locked` |

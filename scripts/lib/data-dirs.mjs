@@ -22,6 +22,8 @@ export const DATA_DIRS = {
   dev: dataDir("dev"),
   /** R2 persistent deployment / exchange proof. */
   r2: dataDir("r2"),
+  /** Zero-capital ZC-1 solo desktop persistent host. */
+  zc1: dataDir("zc1"),
   /** R2 genesis / trust bootstrap drill. */
   r2Genesis: dataDir("r2-genesis"),
   /** R6 compute-job lane drill. */

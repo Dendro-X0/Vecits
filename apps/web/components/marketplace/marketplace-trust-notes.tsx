@@ -13,7 +13,8 @@ export function MarketplaceTrustNotes() {
             <span>
               <span className="font-medium text-foreground">Credits and off-protocol risk</span>
               <span className="ml-2 text-muted-foreground">
-                Credits are not fiat money; off-platform payment is outside kernel enforcement.
+                Credits are not fiat money; activation fees and off-platform payment are not protocol
+                truth.
               </span>
             </span>
           </span>
@@ -31,7 +32,8 @@ export function MarketplaceTrustNotes() {
             <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
             <span>
               Vectis credits are non-transferable protocol units, not fiat money. Off-platform
-              payment is outside kernel enforcement.
+              payment (PayPal, gift cards, “activation fees”) is outside kernel enforcement — not a
+              Vectis deal. Settlement stays on the event log with escrow and evidence.
             </span>
           </p>
         </div>
