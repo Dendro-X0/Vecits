@@ -11,7 +11,7 @@ Modular monorepo: Rust kernel, runnable apps, TypeScript SDK, protocol fixtures,
 | [`packages/`](packages/) | Shared TS | `sdk-ts` — typed HTTP client for the node API |
 | [`fixtures/`](fixtures/) | Protocol proof | Checked-in valid/invalid JSONL event logs |
 | [`scripts/`](scripts/) | Automation | Drills, readiness bundles, release helpers (`scripts/lib/` shared cores) |
-| [`docs/`](docs/) | Documentation | Start at [`docs/START-HERE.md`](docs/START-HERE.md) |
+| [`docs/`](docs/) | Documentation | Start at [`docs/index.md`](docs/index.md) |
 | [`deploy/`](deploy/) | Production ops | Compose overrides, systemd, Windows backup task |
 | [`docker/`](docker/) | Container build | Image context + entrypoint |
 | [`.data/`](.data/) | **Local only** | Node databases and drill output — **never commit** |

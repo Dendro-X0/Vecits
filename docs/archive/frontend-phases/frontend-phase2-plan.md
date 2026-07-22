@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Phase 2 — Workspace Depth
 
 Status: **complete** (July 2026) — see [frontend-phase2-completion.md](frontend-phase2-completion.md). Next: [frontend-phase3-plan.md](frontend-phase3-plan.md).
@@ -103,7 +105,7 @@ Turn the marketplace client from a **deal loop** into a **daily workspace**: rol
 - [x] Overview and Transactions show role-aware queues and matching “needs you” counts
 - [x] At least two milestones can be composed in guided order step
 - [x] Off-protocol notes (if shipped) are visually distinct from kernel state
-- [x] `pnpm typecheck` + manual smoke on order detail + dispute path → [client/testing-without-users.md](client/testing-without-users.md) §12
+- [x] `pnpm typecheck` + manual smoke on order detail + dispute path → [client/testing-without-users.md](../../client/testing-without-users.md) §12
 
 ## Verification commands
 
@@ -114,6 +116,6 @@ npm run r4:client-audit
 
 ## References
 
-- [foundation/market-operating-model.md](foundation/market-operating-model.md) — dispute semantics
-- [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) — cold-start (future dashboard trust UX)
-- [architecture/phase2-compute-job-lane.md](architecture/phase2-compute-job-lane.md) — protocol Phase 2 compute lane (separate from this frontend plan)
+- [foundation/market-operating-model.md](../../foundation/market-operating-model.md) — dispute semantics
+- [specs/trust-bootstrap-and-credits-path-spec.md](../../specs/trust-bootstrap-and-credits-path-spec.md) — cold-start (future dashboard trust UX)
+- [architecture/phase2-compute-job-lane.md](../../architecture/phase2-compute-job-lane.md) — protocol Phase 2 compute lane (separate from this frontend plan)

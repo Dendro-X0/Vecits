@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Phase 1 — Deal Loop Completion
 
 Status: **complete** (July 2026)

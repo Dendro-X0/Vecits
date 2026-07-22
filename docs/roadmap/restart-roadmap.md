@@ -299,4 +299,4 @@ npm run r4:client-audit
 
 Protocol reference-lane guards GAP-01..07 closed. See [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) for next slices.
 
-Orientation: [../START-HERE.md](../START-HERE.md). R7–R9 and R6-PD **maintainer** bands complete. **Deferred:** R6-PD field proof (no counterparty); R7-M1 iOS (no macOS) — [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md). Optional later: Android NFC device smoke — [../runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md).
+Orientation: [../index.md](../index.md). R7–R9 and R6-PD **maintainer** bands complete. **Deferred:** R6-PD field proof (no counterparty); R7-M1 iOS (no macOS) — [../runbooks/r7-m1-ios-mac-host-handoff-runbook.md](../runbooks/r7-m1-ios-mac-host-handoff-runbook.md). Optional later: Android NFC device smoke — [../runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md).

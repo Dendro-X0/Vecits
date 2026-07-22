@@ -139,7 +139,7 @@ No fiat on-ramp. No admin mint button beyond protocol-confirmed contribution att
 | --- | --- | --- |
 | `ZC-S1` | This design locked | **done** |
 | `ZC-S2` | Operator runbook `zero-capital-operator-runbook.md` | **done** (companion) |
-| `ZC-S3` | Index START-HERE + backlog + investigation pointer | **done** with this lock |
+| `ZC-S3` | Index `docs/index.md` + backlog + investigation pointer | **done** with this lock |
 | `ZC-S4` | Maintainer smoke: ZC-1 health + backup + join/halo helpers | **done** — `pnpm zc:s4` |
 | `ZC-S5` | Client copy audit for “cloud / paid host required” implications | **done** — help + trust notes + honesty constants |
 

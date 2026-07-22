@@ -75,7 +75,7 @@ See [../runbooks/desktop-release-build.md](../runbooks/desktop-release-build.md)
 
 When user-visible behavior changes:
 
-1. Update [../frontend-spec.md](../frontend-spec.md) or phase plan if acceptance criteria shift.
+1. Update [ui-contract.md](ui-contract.md) or [client-capabilities.md](client-capabilities.md) if acceptance criteria or shipped behavior shift.
 2. Update in-app help in `apps/web/lib/help/articles.ts`.
 3. Note the change in [in-app-help-sync.md](in-app-help-sync.md) if article scope moved.
 

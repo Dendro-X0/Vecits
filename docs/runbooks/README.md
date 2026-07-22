@@ -27,4 +27,4 @@ Operator install, deployment, backup, security, and recurring cadence.
 | [phase1-preflight-checklist.md](phase1-preflight-checklist.md) | GA1–GA6 preflight |
 | [phase1-operations-cadence.md](phase1-operations-cadence.md) | Recurring ops rhythm |
 
-← [Docs home](../README.md)
+← [Docs index](../index.md)

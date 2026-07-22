@@ -15,4 +15,4 @@ Phase 0/v0 delivery evidence, matrices, and audits. Historical record — do not
 | [v0-closed-alpha-readiness-report.md](v0-closed-alpha-readiness-report.md) | Phase 1 closeout |
 | [r4-client-kernel-audit.md](r4-client-kernel-audit.md) | Client/kernel audit |
 
-← [Docs home](../README.md) · [Start here](../START-HERE.md)
+← [Docs index](../index.md)

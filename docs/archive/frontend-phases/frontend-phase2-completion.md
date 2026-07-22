@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Phase 2 — Completion Summary
 
 Status: **complete** (July 2026)
@@ -44,7 +46,7 @@ Turn the marketplace client from a **deal loop** into a **daily workspace**: rol
 cd apps/web && pnpm typecheck
 ```
 
-Manual smoke: [client/testing-without-users.md](client/testing-without-users.md)
+Manual smoke: [client/testing-without-users.md](../../client/testing-without-users.md)
 
 ## Known follow-ups (post–Phase 3)
 

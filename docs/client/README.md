@@ -6,6 +6,8 @@ Documentation for the official Vectis web/desktop client (`apps/web`) and how it
 
 | Document | Audience | Purpose |
 | --- | --- | --- |
+| [ui-contract.md](ui-contract.md) | Maintainers | Normative UI rules and acceptance criteria |
+| [client-capabilities.md](client-capabilities.md) | Maintainers | Shipped deal loop, workspace, and network-surface behavior |
 | [development-guide.md](development-guide.md) | Maintainers | Run web/desktop client locally against a node |
 | [testing-without-users.md](testing-without-users.md) | Maintainers | Solo dev playbook when no real counterparties exist |
 | [in-app-help-sync.md](in-app-help-sync.md) | Maintainers | Map between `/help` articles and repo docs |
@@ -14,11 +16,8 @@ User-facing copy lives in the client at `/help`. Protocol and operator truth sta
 
 ## Related specs
 
-- [../frontend-spec.md](../frontend-spec.md) — UI rules and acceptance criteria
-- [../frontend-phase1-completion.md](../frontend-phase1-completion.md) — deal loop Phase 1
-- [../frontend-phase2-completion.md](../frontend-phase2-completion.md) — workspace Phase 2 (complete)
-- [../frontend-phase3-completion.md](../frontend-phase3-completion.md) — trust, lanes, production readiness (complete)
-- [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md) — QR, deep links, offline handoff (complete)
 - [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md) — transport tiers and security rules
+- [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md) — QR, deep links, offline handoff (complete)
+- [../archive/frontend-phases/](../archive/frontend-phases/README.md) — historical Phase 1–3 plans (non-normative)
 
-← [Docs home](../README.md)
+← [Docs index](../index.md)

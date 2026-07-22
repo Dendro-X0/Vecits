@@ -226,4 +226,4 @@ npm run r8:transport:smoke        # Tier 0–2 transport smoke
 - [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md)
 - [r6-post-deployment-proof-spec.md](r6-post-deployment-proof-spec.md)
 - [../architecture/lane-template-catalog.md](../architecture/lane-template-catalog.md)
-- [../frontend-phase3-completion.md](../frontend-phase3-completion.md)
+- [../client/client-capabilities.md](../client/client-capabilities.md)

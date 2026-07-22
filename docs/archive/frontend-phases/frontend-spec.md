@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Spec
 
 ## Current slice: Dashboard refinement
@@ -163,7 +165,7 @@ Goal: write Tier 1 JSON to NFC from share panels; QR always remains fallback (R9
 
 - Write MIME `application/vnd.vectis.transport.v1+json` only.
 - Never encode secrets.
-- Design: [specs/r9-n2-android-nfc-write-design.md](specs/r9-n2-android-nfc-write-design.md)
+- Design: [specs/r9-n2-android-nfc-write-design.md](../../specs/r9-n2-android-nfc-write-design.md)
 
 ## Current slice: R9-N1 Android NFC read
 
@@ -179,7 +181,7 @@ Goal: NDEF tag → same import review as paste/QR (R9-G1).
 
 - MIME `application/vnd.vectis.transport.v1+json` preferred; Text JSON accepted.
 - Mandatory copy: tapping does not publish / confirm node URL.
-- Design: [specs/r9-n1-android-nfc-read-design.md](specs/r9-n1-android-nfc-read-design.md)
+- Design: [specs/r9-n1-android-nfc-read-design.md](../../specs/r9-n1-android-nfc-read-design.md)
 
 ## Current slice: R9-H1 halo join UX
 
@@ -197,12 +199,12 @@ Goal: pin a LAN operator node with hostname confirm and honest local-node labels
 - Never save a pin without showing hostname/IP.
 - Private LAN pins show “Local operator node — not yet reconciled with upstream”.
 - No new transport bundle type; join QR remains absolute node URL.
-- Design: [specs/r9-h1-halo-join-ux-design.md](specs/r9-h1-halo-join-ux-design.md)
+- Design: [specs/r9-h1-halo-join-ux-design.md](../../specs/r9-h1-halo-join-ux-design.md)
 
 ### In-app user help
 
 - Routes: `/help`, `/help/deal-flow`, `/help/disputes`, `/help/identity`, `/help/node-connection`, `/help/trust-bootstrap`, `/help/credits-path`
 - Content source: `apps/web/lib/help/articles.ts`
 - Linked from site header, footer, dashboard sidebar
-- Maintainer sync: [client/in-app-help-sync.md](client/in-app-help-sync.md)
+- Maintainer sync: [client/in-app-help-sync.md](../../client/in-app-help-sync.md)
 

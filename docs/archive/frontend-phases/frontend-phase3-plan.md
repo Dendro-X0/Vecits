@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Phase 3 — Trust, Lanes, and Production Readiness
 
 Status: **complete** (July 2026)
@@ -34,7 +36,7 @@ Phase 3 answers: *"Can I participate in this network, and can I trust what I'm s
 | Off-protocol notes | P2-E workspace layer | Dashboard reminder flush + order hub chip |
 | In-app help | `/help/*` | Add trust bootstrap + credits articles |
 
-Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md) §9 (client labeling).
+Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](../../specs/trust-bootstrap-and-credits-path-spec.md) §9 (client labeling).
 
 ## Tracks
 
@@ -50,7 +52,7 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 | `P3-A2` | Sponsor request helper | Reuse onboarding wizard logic: copyable vouch request drafts, sponsor list progress |
 | `P3-A3` | Buyer credits path checklist | Plain-language SCN-02 path: claim → attest → mint → fund escrow; links to simplified flow (not raw operator JSON) |
 | `P3-A4` | Trust phase labeling | Dashboard/marketplace shows honest phase label (e.g. "Founding network") with disclaimer link |
-| `P3-A5` | Help articles | `/help/trust-bootstrap`, `/help/credits-path` synced per [client/in-app-help-sync.md](client/in-app-help-sync.md) |
+| `P3-A5` | Help articles | `/help/trust-bootstrap`, `/help/credits-path` synced per [client/in-app-help-sync.md](../../client/in-app-help-sync.md) |
 
 **Files (new / touch):** `components/dashboard/trust-bootstrap-panel.tsx`, refactor from `onboarding-wizard.tsx`, `overview-page.tsx`, `transaction-builder-panel.tsx` (offer step guard), `lib/help/articles.ts`
 
@@ -85,7 +87,7 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 | --- | --- | --- |
 | `P3-C1` | Provider eligibility on offer detail | Kernel-backed vouch weight vs `provider_eligibility_threshold` for listing author |
 | `P3-C2` | Lane reputation snippet | Offer detail + listing row shows lane score when `getReputation` returns data |
-| `P3-C3` | Discovery disclaimer | Marketplace discovery section reinforces scores are informational ([kernel-truth-banner.tsx](../apps/web/components/marketplace/kernel-truth-banner.tsx) pattern) |
+| `P3-C3` | Discovery disclaimer | Marketplace discovery section reinforces scores are informational ([kernel-truth-banner.tsx](../../../apps/web/components/marketplace/kernel-truth-banner.tsx) pattern) |
 | `P3-C4` | Delivery history hint | Completed accept count or "new provider" label from replay-visible events (no fabricated stats) |
 
 **Files:** `app/marketplace/offers/[id]/page.tsx`, `marketplace-listings-section.tsx`, `lib/marketplace/load.ts`, new `lib/marketplace/trust-signals.ts`
@@ -100,7 +102,7 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 
 | ID | Scope | Acceptance |
 | --- | --- | --- |
-| `P3-D1` | Lane catalog entry point | Marketplace links to lane picker aligned with [lane-template-catalog.md](architecture/lane-template-catalog.md) |
+| `P3-D1` | Lane catalog entry point | Marketplace links to lane picker aligned with [lane-template-catalog.md](../../architecture/lane-template-catalog.md) |
 | `P3-D2` | Publish flow lane fit | Offer step shows evidence/delivery requirements for selected lane template |
 | `P3-D3` | Discovery import CTA | Marketplace hero/toolbar promotes draft import (R7-X1) with "draft ≠ live offer" label |
 | `P3-D4` | Compute/offline lane warnings | Strict lanes show experimental badge before publish |
@@ -134,7 +136,7 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 | ID | Scope | Acceptance |
 | --- | --- | --- |
 | `P3-F1` | `r4:client-audit` pass | `npm run r4:client-audit` green on main |
-| `P3-F2` | Documented smoke checklist | [client/testing-without-users.md](client/testing-without-users.md) covers P2-A..E paths |
+| `P3-F2` | Documented smoke checklist | [client/testing-without-users.md](../../client/testing-without-users.md) covers P2-A..E paths |
 | `P3-F3` | Docs sync | `docs/README.md` marks Phase 2 complete; this plan linked from `frontend-spec.md` |
 | `P3-F4` | Typecheck + help sync CI habit | `pnpm typecheck` + help slugs verified in `r4-client-audit.mjs` |
 
@@ -165,7 +167,7 @@ Protocol obligations: [specs/trust-bootstrap-and-credits-path-spec.md](specs/tru
 - [x] Advanced settings exports identity-bound encrypted workspace notes backup (off-protocol)
 - [x] `npm run r4:client-audit` passes
 - [x] `cd apps/web && pnpm typecheck` passes
-- [x] Manual smoke checklist documented for Phase 3 paths ([client/testing-without-users.md](client/testing-without-users.md) §13)
+- [x] Manual smoke checklist documented for Phase 3 paths ([client/testing-without-users.md](../../client/testing-without-users.md) §13)
 
 ## Verification commands
 
@@ -191,8 +193,8 @@ Manual (two local keys): full deal loop + dispute branch + multi-milestone order
 
 - [frontend-phase2-plan.md](frontend-phase2-plan.md) — completed workspace depth
 - [frontend-phase1-completion.md](frontend-phase1-completion.md) — deal loop baseline
-- [specs/trust-bootstrap-and-credits-path-spec.md](specs/trust-bootstrap-and-credits-path-spec.md)
-- [runbooks/operator-genesis-runbook.md](runbooks/operator-genesis-runbook.md)
-- [architecture/lane-template-catalog.md](architecture/lane-template-catalog.md)
-- [client/testing-without-users.md](client/testing-without-users.md)
-- [foundation/limitations-and-disclaimers.md](foundation/limitations-and-disclaimers.md)
+- [specs/trust-bootstrap-and-credits-path-spec.md](../../specs/trust-bootstrap-and-credits-path-spec.md)
+- [runbooks/operator-genesis-runbook.md](../../runbooks/operator-genesis-runbook.md)
+- [architecture/lane-template-catalog.md](../../architecture/lane-template-catalog.md)
+- [client/testing-without-users.md](../../client/testing-without-users.md)
+- [foundation/limitations-and-disclaimers.md](../../foundation/limitations-and-disclaimers.md)

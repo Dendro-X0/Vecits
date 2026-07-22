@@ -11,7 +11,7 @@ Purpose: keep implementation and documentation synchronized at every merged beha
 - [ ] Update protocol contract docs (`docs/architecture/v0-spec-outline.md`, `docs/architecture/v0-architecture.md`) when API/envelope/validation contracts change.
 - [ ] Update economics docs (`docs/foundation/economic-controls-track.md`, `docs/foundation/economic-protocol-v1.md`) for economics-control behavior changes.
 - [ ] Update fixture mapping docs (`docs/v0/v0-scenario-fixture-matrix.md`, `docs/v0/v0-abuse-gaming-test-matrix.md`) when fixtures/tests are added or removed.
-- [ ] Update docs index (`docs/README.md`) if a new canonical document is introduced.
+- [ ] Update docs index (`docs/index.md`) if a new canonical document is introduced.
 - [ ] Update `docs/roadmap/working-context-log.md` with current status/files/verification/next actions.
 
 ## Required evidence links in PR or change log

@@ -15,7 +15,7 @@ BIN="$(npm run -s v1:resolve-release)"
 "$BIN" node serve --data-dir ./.data/default --bind 127.0.0.1:7878
 ```
 
-See [`docs/START-HERE.md`](docs/START-HERE.md) for orientation · [`docs/runbooks/operator-quickstart.md`](docs/runbooks/operator-quickstart.md) to run a node · [`docs/runbooks/release-packaging-ci.md`](docs/runbooks/release-packaging-ci.md) for CI release artifacts.
+See [`docs/index.md`](docs/index.md) for orientation · [`docs/runbooks/operator-quickstart.md`](docs/runbooks/operator-quickstart.md) to run a node · [`docs/runbooks/release-packaging-ci.md`](docs/runbooks/release-packaging-ci.md) for CI release artifacts.
 
 ## Workspace
 

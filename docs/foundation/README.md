@@ -17,4 +17,4 @@ Project thesis, design principles, product identity, economics, and open researc
 | [exploration-roadmap.md](exploration-roadmap.md) | Pre-implementation exploration |
 | [open-questions.md](open-questions.md) | Unresolved questions |
 
-← [Docs home](../README.md) · [Start here](../START-HERE.md)
+← [Docs index](../index.md)

@@ -16,4 +16,4 @@ The **protocol kernel** (signed events, deterministic replay) is separate from t
 | [stalled-project-support-flow.md](stalled-project-support-flow.md) | Project-maintenance lane |
 | [phase2-compute-job-lane.md](phase2-compute-job-lane.md) | Compute job lane |
 
-← [Docs home](../README.md) · [Start here](../START-HERE.md)
+← [Docs index](../index.md)

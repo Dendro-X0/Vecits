@@ -68,3 +68,5 @@ These specs **do not replace** v0 protocol documentation. They define the restar
 | `value-layers-and-credits-investigation.md` | `locked` (research) |
 | `value-layers-design.md` | `locked` |
 | `staged-exchange-practice-design.md` | `locked` |
+
+← [Docs index](../index.md)

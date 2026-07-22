@@ -1,3 +1,5 @@
+> **Archived — not normative.** Canonical: [ui-contract.md](../../client/ui-contract.md) · [client-capabilities.md](../../client/client-capabilities.md).
+
 # Frontend Phase 3 — Completion Summary
 
 Status: **complete** (July 2026)
@@ -42,7 +44,7 @@ npm run r2:genesis-drill
 npm run v1:readiness
 ```
 
-Manual smoke: [client/testing-without-users.md](client/testing-without-users.md) — sections 12–13.
+Manual smoke: [client/testing-without-users.md](../../client/testing-without-users.md) — sections 12–13.
 
 ## Known follow-ups (post–Phase 3)
 
@@ -52,4 +54,4 @@ Manual smoke: [client/testing-without-users.md](client/testing-without-users.md)
 
 ## Completed after Phase 3
 
-- **R8 convenience transport** — Tier 0 QR, Tier 1 signed bundles, Tier 2 experimental handoff wizard — [roadmap/r8-convenience-transport-execution-plan.md](roadmap/r8-convenience-transport-execution-plan.md)
+- **R8 convenience transport** — Tier 0 QR, Tier 1 signed bundles, Tier 2 experimental handoff wizard — [roadmap/r8-convenience-transport-execution-plan.md](../../roadmap/r8-convenience-transport-execution-plan.md)

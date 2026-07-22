@@ -17,14 +17,14 @@ This file tracks high-level progress over time.
   - Research closed: `docs/specs/serverless-p2p-feasibility-investigation.md` → status `locked`
   - **ZC-S4:** `pnpm zc:s4` — persistent `.data/zc1` + join/halo smokes (maintainer)
   - **ZC-S5:** help node-connection + marketplace trust notes — no paid-cloud gate; refuse off-platform fees
-  - Indexed: START-HERE, specs README, protocol-priority-backlog, runbooks README
+  - Indexed: `docs/index.md`, specs README, protocol-priority-backlog, runbooks README
   - No kernel changes; VPS not a production gate
 - **R9 offline transport (R9-A locked):**
   - Spec locked: NFC as R8 Tier 1 carrier; LAN operator-node halo via pin URL + Track 4 pull sync; mesh gossip deferred
   - Gate `R9-G0` pass — implementation authorized for R9-N / R9-H
   - Plan: `docs/roadmap/r9-offline-transport-execution-plan.md`
   - Spec: `docs/specs/r9-offline-transport-spec.md` (status `locked`)
-  - Indexed in START-HERE, specs README, protocol-priority-backlog, restart-roadmap
+  - Indexed in `docs/index.md`, specs README, protocol-priority-backlog, restart-roadmap
   - **R9-N1 / R9-G1:** Android NFC read → import (`pnpm r9:nfc:read-unit`)
   - **R9-N2 / R9-G2:** Android NFC write + QR fallback (`pnpm r9:nfc:write-unit`)
   - **R9-H1 / R9-G3:** join confirm + LAN honesty labels (`pnpm r9:halo:join-unit`)
@@ -37,10 +37,10 @@ This file tracks high-level progress over time.
   - `R6-PD-B2` seven-lane drill — prior pass; re-run via `pnpm r6:pd:full`
   - Maintainer closeout: `pnpm r6:pd`
   - **Deferred:** human counterparty field proof on persistent host
-- **Frontend Phase 1 deal loop (complete):**
-  - guided Publish & transact flow with compensation modes, milestone terms, terms lock, delivery evidence guards, submit lifecycle, dispute deep links, transactions queue + builder handoff
-  - dashboard shell refinement, settings general/advanced split, explorer + marketplace polish
-  - docs: `docs/frontend-spec.md`, `docs/frontend-phase1-completion.md`, `docs/frontend-phase2-plan.md`
+- **Official client deal loop / workspace / network surface (shipped):**
+  - guided Publish & transact flow with compensation modes, milestone terms, terms lock, delivery evidence guards, submit lifecycle, dispute branch, transactions queue + builder handoff
+  - role-aware workspace, multi-milestone, trust bootstrap UX, marketplace trust signals, lane catalog
+  - docs: `docs/client/ui-contract.md`, `docs/client/client-capabilities.md` (historical: `docs/archive/frontend-phases/`)
   - verified: `cd apps/web && pnpm typecheck`
 - Restart kickoff after post–Phase 1 dormancy:
   - created canonical restart roadmap `docs/roadmap/restart-roadmap.md` with phases R0–R6, tracks, and gates `RG-1`..`RG-6`

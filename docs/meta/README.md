@@ -6,4 +6,4 @@ Documentation maintenance.
 | --- | --- |
 | [docs-sync-checklist.md](docs-sync-checklist.md) | Required updates per behavior change |
 
-← [Docs home](../README.md)
+← [Docs index](../index.md)
