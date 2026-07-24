@@ -92,6 +92,15 @@ Use R8/R9 QR, NFC, or signed bundles to move pin URLs or event packages onto a Z
 | Synced with peer \<id\> | Final everywhere |
 | Off-platform fee is not protocol truth | Paid (when only PayPal moved) |
 
+## After reboot
+
+Post-reboot bring-up (do not wipe `.data/zc1`): [zero-capital-cold-start-checklist.md](zero-capital-cold-start-checklist.md)
+
+```bash
+pnpm zc:cold-start        # require existing data dir + health + backup + join/halo
+pnpm zc:cold-start:quick  # same with --no-build
+```
+
 ## Standing verification
 
 ```bash

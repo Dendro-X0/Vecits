@@ -29,6 +29,17 @@ Credits move only when a milestone accepts (or settles/times out). They are coor
    - Buyer accepts (or dispute path)
 5. Do not treat leftover external API quota or running code as Vectis credit balance. Next phase = next milestone.
 
+### Maintainer proof (SX-S5)
+
+Two-milestone `software-fixes` happy path (m1 spec hash → m2 implementation hash), each phase escrow → delivery → accept; order closes only after both accepts:
+
+```bash
+pnpm sx:s5          # build release if needed
+pnpm sx:s5:quick    # --no-build
+```
+
+Events land under `target/tmp/sx-s5-<runId>/`. Claim: maintainer protocol proof of SX-D1 — not a human field proof.
+
 ### Examples
 
 **Compute**
@@ -42,6 +53,7 @@ Credits move only when a milestone accepts (or settles/times out). They are coor
 - m1: spec/design artifact hash
 - m2: implementation artifact hash
 - m3: optional transfer acknowledgment notes hash
+- Maintainer drill (m1+m2): `pnpm sx:s5`
 
 **API access grant**
 

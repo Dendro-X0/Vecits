@@ -142,6 +142,7 @@ No fiat on-ramp. No admin mint button beyond protocol-confirmed contribution att
 | `ZC-S3` | Index `docs/index.md` + backlog + investigation pointer | **done** with this lock |
 | `ZC-S4` | Maintainer smoke: ZC-1 health + backup + join/halo helpers | **done** — `pnpm zc:s4` |
 | `ZC-S5` | Client copy audit for “cloud / paid host required” implications | **done** — help + trust notes + honesty constants |
+| `ZC-S6` | Post-reboot cold-start checklist + verify script | **done** — [../runbooks/zero-capital-cold-start-checklist.md](../runbooks/zero-capital-cold-start-checklist.md) · `pnpm zc:cold-start` |
 
 **No new protocol events or kernel crates in ZC-S\*.**
 
@@ -152,6 +153,10 @@ No fiat on-ramp. No admin mint button beyond protocol-confirmed contribution att
 pnpm zc:s4
 # or skip rebuild:
 pnpm zc:s4:quick
+
+# ZC-S6 post-reboot cold-start (requires existing .data/zc1; no silent init)
+pnpm zc:cold-start
+pnpm zc:cold-start:quick
 
 # Pieces
 pnpm v1:build-release

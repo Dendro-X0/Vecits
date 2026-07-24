@@ -81,6 +81,13 @@ pnpm r7:client:readiness               # desktop cargo check + R4 audit + web + 
 pnpm ci:readiness                      # PR CI gate (typecheck, audits, smokes)
 ```
 
+**Day-to-day operable (stability pack):** fixtures + ZC cold-start + SX-S5 + R4 audit — [runbooks/stability-regression-pack.md](runbooks/stability-regression-pack.md)
+
+```bash
+pnpm stability:pack          # full
+pnpm stability:pack:quick    # --no-build for node drills
+```
+
 ## Navigation by role
 
 | Role | Start with |
@@ -136,14 +143,16 @@ pnpm ci:readiness                      # PR CI gate (typecheck, audits, smokes)
 
 1. [specs/zero-capital-operator-topology-design.md](specs/zero-capital-operator-topology-design.md) — topologies ZC-1..ZC-4
 2. [runbooks/zero-capital-operator-runbook.md](runbooks/zero-capital-operator-runbook.md) — operator steps
-3. Verify: `pnpm zc:s4` (or `pnpm zc:s4:quick`)
-4. Background: [specs/serverless-p2p-feasibility-investigation.md](specs/serverless-p2p-feasibility-investigation.md)
+3. After reboot: [runbooks/zero-capital-cold-start-checklist.md](runbooks/zero-capital-cold-start-checklist.md) · `pnpm zc:cold-start`
+4. Standing closeout: `pnpm zc:s4` (or `pnpm zc:s4:quick`)
+5. Background: [specs/serverless-p2p-feasibility-investigation.md](specs/serverless-p2p-feasibility-investigation.md)
 
 **Staged value exchange (locked):** credits at each milestone accept — not passive yield.
 
 1. [specs/value-layers-design.md](specs/value-layers-design.md) · [specs/staged-exchange-practice-design.md](specs/staged-exchange-practice-design.md)
 2. [runbooks/staged-exchange-operator-runbook.md](runbooks/staged-exchange-operator-runbook.md)
-3. In-app: `/help/staged-exchanges`
+3. Maintainer proof: `pnpm sx:s5` (or `pnpm sx:s5:quick`)
+4. In-app: `/help/staged-exchanges`
 
 Optional later (hardware / counterparty gated):
 

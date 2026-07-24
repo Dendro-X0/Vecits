@@ -92,13 +92,17 @@ Do not stretch a single physical handoff across fake “phases” to farm reputa
 | `SX-S2` | Operator runbook | **done** |
 | `SX-S3` | Help article + milestone editor guidance | **done** with this band |
 | `SX-S4` | Catalog cross-links | **done** with this band |
-| `SX-S5` | Optional fixture/drill: multi-milestone compute or software-fixes happy path documentation | authorized next — reuse existing multi-milestone client; no new event kinds |
+| `SX-S5` | Optional fixture/drill: multi-milestone compute or software-fixes happy path documentation | **done** — `pnpm sx:s5` · [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md) |
 
 **Kernel:** no new event kinds in SX-S\*.
 
 ## 7) Proof (standing)
 
 ```bash
+# Profile A multi-milestone (software-fixes m1+m2 escrow→deliver→accept)
+pnpm sx:s5
+pnpm sx:s5:quick
+
 # Offline one-shot lanes still fixture-proven
 pnpm r6:offline-lanes:smoke
 

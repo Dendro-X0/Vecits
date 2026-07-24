@@ -147,4 +147,4 @@ These remain policy-tunable and do not change the layer model:
 
 **Locked:** [value-layers-design.md](value-layers-design.md) · [staged-exchange-practice-design.md](staged-exchange-practice-design.md) · [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md).
 
-Optional next: SX-S5 multi-milestone maintainer drill documentation (no new event kinds).
+SX-S5 done: `pnpm sx:s5` multi-milestone `software-fixes` maintainer drill (no new event kinds).

@@ -10,6 +10,7 @@ This file tracks high-level progress over time.
   - Runbook: `docs/runbooks/staged-exchange-operator-runbook.md`
   - Client: milestone schedule hints by lane; help `/help/staged-exchanges`
   - Research closed: `docs/specs/value-layers-and-credits-investigation.md`
+  - **SX-S5:** `pnpm sx:s5` — multi-milestone `software-fixes` happy path (m1+m2 escrow→deliver→accept)
   - No new kernel event kinds; API/compute/code map onto existing lanes + phases
 - **Zero-capital operator topology (locked):**
   - Design: `docs/specs/zero-capital-operator-topology-design.md` (ZC-D1..D5, ZC-1..ZC-4)
@@ -17,6 +18,8 @@ This file tracks high-level progress over time.
   - Research closed: `docs/specs/serverless-p2p-feasibility-investigation.md` → status `locked`
   - **ZC-S4:** `pnpm zc:s4` — persistent `.data/zc1` + join/halo smokes (maintainer)
   - **ZC-S5:** help node-connection + marketplace trust notes — no paid-cloud gate; refuse off-platform fees
+  - **ZC-S6:** post-reboot cold-start checklist — `docs/runbooks/zero-capital-cold-start-checklist.md` · `pnpm zc:cold-start` (fails closed without existing data dir)
+  - **Stability pack:** `pnpm stability:pack` — fixtures + cold-start + SX-S5 + R4 (`docs/runbooks/stability-regression-pack.md`)
   - Indexed: `docs/index.md`, specs README, protocol-priority-backlog, runbooks README
   - No kernel changes; VPS not a production gate
 - **R9 offline transport (R9-A locked):**
