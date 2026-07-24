@@ -84,9 +84,11 @@ pnpm ci:readiness                      # PR CI gate (typecheck, audits, smokes)
 **Day-to-day operable (stability pack):** fixtures + ZC cold-start + SX-S5 + R4 audit — [runbooks/stability-regression-pack.md](runbooks/stability-regression-pack.md)
 
 ```bash
-pnpm stability:pack          # full
-pnpm stability:pack:quick    # --no-build for node drills
+pnpm stability:pack:quick    # habit default (--no-build)
+pnpm stability:pack          # full (may rebuild release binaries)
 ```
+
+**Habit triggers:** after reboot · before claiming a band done · after landing on `main` · weekly · after restore — details in the runbook.
 
 ## Navigation by role
 
@@ -144,8 +146,9 @@ pnpm stability:pack:quick    # --no-build for node drills
 1. [specs/zero-capital-operator-topology-design.md](specs/zero-capital-operator-topology-design.md) — topologies ZC-1..ZC-4
 2. [runbooks/zero-capital-operator-runbook.md](runbooks/zero-capital-operator-runbook.md) — operator steps
 3. After reboot: [runbooks/zero-capital-cold-start-checklist.md](runbooks/zero-capital-cold-start-checklist.md) · `pnpm zc:cold-start`
-4. Standing closeout: `pnpm zc:s4` (or `pnpm zc:s4:quick`)
-5. Background: [specs/serverless-p2p-feasibility-investigation.md](specs/serverless-p2p-feasibility-investigation.md)
+4. Habit: [runbooks/stability-regression-pack.md](runbooks/stability-regression-pack.md#maintainer-habit) · `pnpm stability:pack:quick`
+5. Standing closeout: `pnpm zc:s4` (or `pnpm zc:s4:quick`)
+6. Background: [specs/serverless-p2p-feasibility-investigation.md](specs/serverless-p2p-feasibility-investigation.md)
 
 **Staged value exchange (locked):** credits at each milestone accept — not passive yield.
 

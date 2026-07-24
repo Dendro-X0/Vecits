@@ -27,3 +27,4 @@ Purpose: keep implementation and documentation synchronized at every merged beha
 - [ ] no open work item marked complete without evidence path
 - [ ] docs dates use explicit month/year for status statements
 - [ ] deterministic reason codes remain listed when new reject paths are introduced
+- [ ] for operable / “band done” claims on protocol or official client: `pnpm stability:pack:quick` green (or note an intentional skip) — [../runbooks/stability-regression-pack.md](../runbooks/stability-regression-pack.md#maintainer-habit)

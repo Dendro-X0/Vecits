@@ -20,6 +20,7 @@ This file tracks high-level progress over time.
   - **ZC-S5:** help node-connection + marketplace trust notes — no paid-cloud gate; refuse off-platform fees
   - **ZC-S6:** post-reboot cold-start checklist — `docs/runbooks/zero-capital-cold-start-checklist.md` · `pnpm zc:cold-start` (fails closed without existing data dir)
   - **Stability pack:** `pnpm stability:pack` — fixtures + cold-start + SX-S5 + R4 (`docs/runbooks/stability-regression-pack.md`)
+  - **Habit:** run `pnpm stability:pack:quick` after reboot, before band-done claims, after landing on `main`, weekly, and after restore
   - Indexed: `docs/index.md`, specs README, protocol-priority-backlog, runbooks README
   - No kernel changes; VPS not a production gate
 - **R9 offline transport (R9-A locked):**

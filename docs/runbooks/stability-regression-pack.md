@@ -8,6 +8,28 @@ Last updated: July 2026
 
 Claim: maintainer regression green. Not a human counterparty field proof.
 
+## Maintainer habit
+
+Run the quick pack on these triggers — do not wait for a “big release”:
+
+| When | Command |
+| --- | --- |
+| **After machine reboot** (or full OS sleep that killed the node) | Cold-start checklist first if unsure, then `pnpm stability:pack:quick` |
+| **Before claiming a band done** (docs/scripts/client/kernel slice) | `pnpm stability:pack:quick` |
+| **After merging or landing protocol/client changes on `main`** | `pnpm stability:pack:quick` |
+| **Weekly (solo ops)** | `pnpm stability:pack:quick` + note the summary path if anything failed |
+| **After restoring from backup** | `pnpm zc:cold-start:quick` then `pnpm stability:pack:quick` |
+
+Default command:
+
+```bash
+pnpm stability:pack:quick
+```
+
+Keep the latest passing summary under `target/tmp/stability-pack-*/stability-pack-summary.json`. Failures block “shipped / operable” claims until green again.
+
+Post-reboot bring-up without the full pack: [zero-capital-cold-start-checklist.md](zero-capital-cold-start-checklist.md).
+
 ## What it runs
 
 | Step | Proof | Skip flag |
@@ -57,5 +79,6 @@ pnpm zc:cold-start -- --allow-init
 - [staged-exchange-operator-runbook.md](staged-exchange-operator-runbook.md)
 - [../v0/r4-client-kernel-audit.md](../v0/r4-client-kernel-audit.md)
 - [../index.md](../index.md) — five-minute verify
+- [../meta/docs-sync-checklist.md](../meta/docs-sync-checklist.md)
 
 ← [Runbooks](README.md) · [Docs index](../index.md)

@@ -108,4 +108,7 @@ pnpm zc:s4          # ZC-S4 maintainer closeout (ZC-1 + join + halo)
 pnpm zc:s4:quick    # same with --no-build
 ```
 
+**Habit:** after reboot, before claiming a band done, or weekly — `pnpm stability:pack:quick`  
+([stability-regression-pack.md](stability-regression-pack.md) · [zero-capital-cold-start-checklist.md](zero-capital-cold-start-checklist.md))
+
 Claim: maintainer smoke. Not a human counterparty field proof.

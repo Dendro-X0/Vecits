@@ -109,11 +109,22 @@ Full closeout (includes deploy smoke that may init if missing): `pnpm zc:s4`.
 | Backup wrote `events.log` | Backup skipped because “node is local” |
 | Join/halo units green | Claiming field proof from this checklist |
 
+## Habit
+
+After a successful cold-start, run the day-to-day pack when you will claim operable again:
+
+```bash
+pnpm stability:pack:quick
+```
+
+Triggers and claim rules: [stability-regression-pack.md](stability-regression-pack.md#maintainer-habit).
+
 ## Related
 
 - [zero-capital-operator-runbook.md](zero-capital-operator-runbook.md)
 - [../specs/zero-capital-operator-topology-design.md](../specs/zero-capital-operator-topology-design.md)
 - [operator-backup-runbook.md](operator-backup-runbook.md)
 - [operator-quickstart.md](operator-quickstart.md)
+- [stability-regression-pack.md](stability-regression-pack.md)
 
 ← [Runbooks](README.md) · [Docs index](../index.md)
