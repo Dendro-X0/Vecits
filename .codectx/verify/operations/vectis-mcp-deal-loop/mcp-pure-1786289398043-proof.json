@@ -1,0 +1,83 @@
+{
+  "schema": "vectis.mcp-deal-loop.proof@0.1.0",
+  "mode": "pure-mcp",
+  "pureMcpFiveStepClose": true,
+  "reason": "Dual-session Aug 9 recheck: all five guided steps via consolidated studio_client MCP (offer\u2192order\u2192escrow\u2192delivery\u2192accept). Milestone stayed m1. Kernel closed; UI Order closed via MCP textVisible.",
+  "runId": "mcp-pure-1786289398043",
+  "offerId": "mcp-pure-1786289398043-offer",
+  "orderId": "mcp-pure-1786289398043-order",
+  "milestoneId": "m1",
+  "escrowNonce": "mcp-buyer-1786289399897",
+  "offerEventId": "8feeb237f5201ef7b759eb812b5c425cedd09ae0ad7fd2dec501778c2f3dfe1c",
+  "orderEventId": "aeceb3f032072c594d2e9cfedb1287d1576fe128f6c6a6fb146bb3967a9df1b2",
+  "escrowEventId": "ef8bcba8904926878a3e369b0c49442a482165f7e0b7086afe5da22a5d1378b2",
+  "deliveryEventId": "020f43b6ac91235e51894e80e011c43cb6560d8e9da54c22505b35378c02898e",
+  "acceptEventId": "ff71f8f95cb813ad7619d4db0efb9870914117e27e3703fd7150c63f1274ddb8",
+  "steps": {
+    "offer": {
+      "via": "mcp",
+      "ok": true
+    },
+    "order": {
+      "via": "mcp",
+      "ok": true,
+      "referencesOffer": true,
+      "milestoneId": "m1",
+      "status": "open\u2192closed"
+    },
+    "escrow": {
+      "via": "mcp",
+      "ok": true,
+      "funded_amount": 100,
+      "milestoneId": "m1"
+    },
+    "delivery": {
+      "via": "mcp",
+      "ok": true,
+      "milestoneId": "m1"
+    },
+    "accept": {
+      "via": "mcp",
+      "ok": true,
+      "milestoneId": "m1"
+    },
+    "kernelAssert": {
+      "via": "mcp",
+      "assertKind": "jsonEquals",
+      "jsonPath": "data.status",
+      "expected": "closed",
+      "pass": true,
+      "captureId": "cap-decfc4d9e291"
+    },
+    "uiAssert": {
+      "via": "mcp",
+      "assertKind": "textVisible",
+      "text": "Order closed",
+      "pass": true,
+      "sessionId": "csess-8f5f0424e337",
+      "captureId": "cap-dfb6da43cc8d"
+    }
+  },
+  "kernel": {
+    "orderStatus": "closed",
+    "milestoneStatus": "Accepted",
+    "milestoneId": "m1",
+    "funded_amount": 100,
+    "provider_reward_credits": 100
+  },
+  "sessions": {
+    "provider": "csess-aec873d60d8d",
+    "buyer": "csess-8f5f0424e337"
+  },
+  "codactrl": {
+    "mcpServer": "user-codactrl-studio",
+    "surfaceTools": 7,
+    "actionRouting": "studio_client action=client_*",
+    "playwrightMcpDisabled": true
+  },
+  "followUps": [
+    "Soft-close/prune leftover client sessions",
+    "No Field/NFC/counterparty claims from this run"
+  ],
+  "createdAt": "2026-08-09T15:38:25.602Z"
+}

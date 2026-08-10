@@ -1,0 +1,28 @@
+{
+  "schema": "codactrl.operation-proof@1.0.0",
+  "proofId": "oprun-72a060b5",
+  "operationId": "vectis-deal-loop-smoke",
+  "operationTitle": "Desktop deal-loop smoke (guided builder)",
+  "proofTier": "t0",
+  "pass": true,
+  "status": "pass",
+  "symptomIds": [],
+  "proves": [
+    "solo-client-deal-loop"
+  ],
+  "doesNotProve": [
+    "production-keys",
+    "field-counterparty",
+    "T0 fileExists wiring is not live UI/runtime proof — subject truth: pnpm desktop:deal-loop:smoke"
+  ],
+  "startedAt": "2026-08-09T15:15:17.371784+00:00",
+  "finishedAt": "2026-08-09T15:15:17.371867200+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "catalogPath": "verify.operations.yaml",
+  "evidenceSchema": "codactrl.operation-proof@1.0.0",
+  "claimTags": [
+    "wiring"
+  ],
+  "clientRequired": false,
+  "clientSatisfied": true
+}

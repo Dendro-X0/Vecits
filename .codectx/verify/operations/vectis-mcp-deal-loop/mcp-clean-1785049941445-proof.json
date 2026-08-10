@@ -1,0 +1,61 @@
+{
+  "schema": "vectis.mcp-deal-loop.proof@0.1.0",
+  "mode": "hybrid-mcp-plus-sdk",
+  "pureMcpFiveStepClose": false,
+  "reason": "MCP submitted offer+order with offer reference; escrow MCP submits kept signing milestoneId m1 because MilestoneIdField lacked name/live DOM read (React state default). Escrow/delivery/accept completed via SDK HTTP. Kernel closed + MCP UI assert Order closed. Fix applied: name + live-read on milestone fields.",
+  "runId": "mcp-clean-1785049941445",
+  "offerId": "mcp-clean-1785049941445-offer",
+  "orderId": "mcp-clean-1785049941445-order",
+  "milestoneId": "m",
+  "offerEventId": "8e7a0dd7c5fd03cacf6c77f58f9ea9035ae8029cd70ed5ef8e0192b2fc1844ff",
+  "orderEventId": "173df65275e471dd8bdea95b35556ef32212daf3a3ae7ac1b71ca74322213dd7",
+  "escrowEventId": "699e6dce731dddc684dd3ac9fcf3a9584f0dd57bee58951fb0f340bb9b762fde",
+  "deliveryEventId": "843a166ba36c194485ac56370af3978e14912134473818e477e9e756079c4f00",
+  "acceptEventId": "4ea4344d717632e8a532eea6979deb9a1a56f871e4c2aac12c4e8d9fbd8fcefc",
+  "steps": {
+    "offer": {
+      "via": "mcp",
+      "ok": true
+    },
+    "order": {
+      "via": "mcp",
+      "ok": true,
+      "referencesOffer": true,
+      "status": "open→closed"
+    },
+    "escrow": {
+      "via": "sdk-http",
+      "ok": true,
+      "funded_amount": 100,
+      "note": "MCP attempts signed m1; SDK funded m"
+    },
+    "delivery": {
+      "via": "sdk-http",
+      "ok": true
+    },
+    "accept": {
+      "via": "sdk-http",
+      "ok": true
+    },
+    "uiAssert": {
+      "via": "mcp",
+      "text": "Order closed",
+      "pass": true,
+      "sessionId": "csess-eb55cd0616b7"
+    }
+  },
+  "kernel": {
+    "orderStatus": "closed",
+    "milestoneStatus": "Accepted"
+  },
+  "sessions": {
+    "provider": "csess-6ef86595ddc5",
+    "buyer": "csess-eb55cd0616b7"
+  },
+  "followUps": [
+    "Retry pure MCP 5-step after MilestoneIdField name+live-read fix",
+    "Keep milestone id m1 via sequentially fill on order form",
+    "client.session.prune|close still soft-close via registry if RPC unknown"
+  ],
+  "createdAt": "2026-07-26T07:28:46.989Z"
+}

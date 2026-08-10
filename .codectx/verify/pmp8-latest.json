@@ -1,0 +1,15 @@
+{
+  "schema": "vectis.pmp8.latest@0.1.0",
+  "band": "PMP8",
+  "path": "settle-split",
+  "runId": "mcp-pmp8-1786290213297",
+  "orderId": "mcp-pmp8-1786290213297-order",
+  "milestoneStatus": "Settled",
+  "orderStatus": "closed",
+  "disputeEventId": "ba4c83d612395af5523b370ae5411068d4e5b83677a39eaaa134e97846789fc9",
+  "buyerSettleEventId": "382d706758c23ff85e3769661090f9b50af06e5d0e206e6a73c40b6d0ca7ede6",
+  "providerSettleEventId": "2df3a5ab071360a696710ed65cfd6ca49b13c810b36ba6159b90d7669d0d0136",
+  "split": { "buyerRefundCredits": 40, "providerRewardCredits": 60 },
+  "proofPath": ".codectx/verify/operations/vectis-mcp-deal-loop/mcp-pmp8-1786290213297-proof.json",
+  "updatedAt": "2026-08-10T04:42:00Z"
+}

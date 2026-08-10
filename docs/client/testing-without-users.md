@@ -41,6 +41,20 @@ R2 drill keys (dev-only, never production): see `scripts/lib/r2-exchange-core.mj
 
 Evidence from a dual session lands under `.codectx/verify/client-sessions/`.
 
+### CodaCtrl Studio (use cases + security overlay)
+
+Open **this Vectis repo** as a CodaCtrl Studio workspace (not the CodaCtrl monorepo). Subject packs live under `.codactrl/` + root `verify.scenarios.yaml`.
+
+| Need | Start |
+|------|--------|
+| Full map | [../.codactrl/USE-CASE-MAP.md](../.codactrl/USE-CASE-MAP.md) |
+| Operator runbook | [../runbooks/codactrl-studio-runbook.md](../runbooks/codactrl-studio-runbook.md) |
+| Stress / hygiene | Verify Monitor → Sandbox |
+| Client drift / SOC-05 | Logic alignment → Evaluate static |
+| Protocol AB-* truth | Still `fixtures/` + cargo — Studio does not replace them |
+
+Studio is an **optional overlay** for capture and orientation. It does not block the protocol band.
+
 ## 3. Guided builder end-to-end (Phase 1)
 
 Path: **Dashboard → Publish & transact**

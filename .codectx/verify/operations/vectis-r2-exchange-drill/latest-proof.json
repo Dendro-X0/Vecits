@@ -1,0 +1,21 @@
+{
+  "schema": "codactrl.operation-proof@1.0.0",
+  "proofId": "oprun-456a0eac",
+  "operationId": "vectis-r2-exchange-drill",
+  "operationTitle": "R2 HTTP exchange drill",
+  "proofTier": "t0",
+  "pass": true,
+  "status": "pass",
+  "symptomIds": [],
+  "proves": [
+    "http-exchange-path"
+  ],
+  "doesNotProve": [
+    "fixture-ingest-only"
+  ],
+  "startedAt": "2026-07-24T18:18:39.815884500+00:00",
+  "finishedAt": "2026-07-24T18:18:39.815924500+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "catalogPath": "verify.operations.yaml",
+  "evidenceSchema": "codactrl.operation-proof@1.0.0"
+}

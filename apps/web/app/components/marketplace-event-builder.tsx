@@ -16,6 +16,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { KernelTruthNotice } from "./kernel-truth-notice";
 import { DiscoveryDraftImportPanel } from "@/components/marketplace/discovery-draft-import-panel";
 import { MilestoneScheduleEditor } from "@/components/marketplace/milestone-schedule-editor";
+import { loadActiveSession } from "@/lib/auth/session";
 import {
   Select,
   SelectContent,
@@ -174,12 +175,38 @@ type PersistedBuilderState = {
   mode: BuilderMode;
   baseUrl: string;
   createdAt: string;
+  offerId: string;
+  orderId: string;
+  orderOfferId: string;
+  providerPubKey: string;
+  buyerPubKey: string;
+  milestoneRows: OrderMilestoneDraft[];
+  escrowSpenderPubKey: string;
+  escrowOrderId: string;
+  escrowNonce: string;
+  escrowOrderReferenceEventId: string;
+  offerReferenceEventId: string;
+  deliveryOrderId: string;
+  deliveryOrderReferenceEventId: string;
+  deliveryArtifactHashes: string;
+  deliveredAt: string;
+  acceptOrderId: string;
+  acceptDeliveryReferenceEventId: string;
+  acceptedAt: string;
+  disputeOrderId: string;
+  disputedAt: string;
+  disputeDeliveryReferenceEventId: string;
+  settleOrderId: string;
+  settledAt: string;
+  settleDisputeReferenceEventId: string;
+  buyerRefundCredits: string;
+  providerRewardCredits: string;
   sessionAcceptedEvents: SessionAcceptedEvent[];
 };
 
 const DEFAULT_NODE_API_BASE_URL = defaultNodeClientBaseUrlForForms();
 const BUILDER_STORAGE_KEY = "new-start.marketplace-builder";
-const BUILDER_STORAGE_VERSION = 2;
+const BUILDER_STORAGE_VERSION = 8;
 const RFC3339_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 
 const FIXTURE_IDENTITY_KEYS = {
@@ -353,6 +380,68 @@ const BUILDER_EVENT_KINDS: SignedEnvelope["kind"][] = [
   "ServiceDispute",
   "ServiceSettle"
 ];
+
+function readFormControlValue(form: HTMLFormElement, name: string, fallback: string): string {
+  const named = form.elements.namedItem(name);
+  const candidates: Array<Element | null> = [];
+  if (named instanceof HTMLElement) {
+    candidates.push(named);
+  } else if (named && typeof (named as RadioNodeList).item === "function") {
+    const list = named as RadioNodeList;
+    for (let i = 0; i < list.length; i += 1) {
+      const item = list.item(i);
+      if (item instanceof Element) {
+        candidates.push(item);
+      }
+    }
+  }
+  // Prefer live DOM (incl. Playwright fills) over stale React controlled state.
+  candidates.push(form.querySelector(`[name="${CSS.escape(name)}"]`));
+  candidates.push(form.querySelector(`#${CSS.escape(name)}`));
+  for (const el of candidates) {
+    if (
+      el instanceof HTMLInputElement ||
+      el instanceof HTMLTextAreaElement ||
+      el instanceof HTMLSelectElement
+    ) {
+      const liveValue = el.value;
+      if (liveValue.trim().length > 0) {
+        return liveValue;
+      }
+    }
+  }
+  try {
+    const fromData = new FormData(form).get(name);
+    if (typeof fromData === "string" && fromData.trim().length > 0) {
+      return fromData;
+    }
+  } catch {
+    // ignore FormData failures in non-browser test shims
+  }
+  return fallback;
+}
+
+function readMilestoneRowsFromForm(
+  form: HTMLFormElement,
+  fallbackRows: OrderMilestoneDraft[]
+): OrderMilestoneDraft[] {
+  const count = Math.max(fallbackRows.length, 1);
+  const rows: OrderMilestoneDraft[] = [];
+  for (let index = 0; index < count; index += 1) {
+    const fallback = fallbackRows[index] ?? createDefaultMilestoneDraft(index);
+    const field = (key: keyof OrderMilestoneDraft) =>
+      readFormControlValue(form, `milestone.${index}.${key}`, fallback[key]);
+    rows.push({
+      milestoneId: field("milestoneId"),
+      amountCredits: field("amountCredits"),
+      evidenceFormat: field("evidenceFormat"),
+      deliverable: field("deliverable"),
+      dueWindow: field("dueWindow"),
+      acceptanceCriteria: field("acceptanceCriteria")
+    });
+  }
+  return rows;
+}
 
 export function MarketplaceEventBuilder({
   variant = "full",
@@ -545,6 +634,70 @@ export function MarketplaceEventBuilder({
     };
   }, [prefillOrderId, isTransaction, baseUrl]);
 
+  useEffect(() => {
+    if (!isTransaction || (mode !== "dispute" && mode !== "accept")) {
+      return;
+    }
+    const orderIdForRef =
+      (mode === "dispute" ? disputeOrderId : acceptOrderId).trim() ||
+      prefillOrderId?.trim() ||
+      "";
+    const milestoneIdForRef =
+      (mode === "dispute" ? disputeMilestoneId : acceptMilestoneId).trim() ||
+      prefillMilestoneId?.trim() ||
+      "m1";
+    if (!orderIdForRef) {
+      return;
+    }
+
+    let cancelled = false;
+    async function hydrateDeliveryReference() {
+      try {
+        const targetBaseUrl = (baseUrl.trim() || DEFAULT_NODE_API_BASE_URL).trim();
+        const client = new NodeClient({ baseUrl: targetBaseUrl });
+        const view = await client.getMilestone(orderIdForRef, milestoneIdForRef);
+        if (cancelled) {
+          return;
+        }
+        const data = (view.data as Record<string, unknown> | null) ?? null;
+        if (!data) {
+          return;
+        }
+        const deliveryEventId =
+          typeof data.delivery_event_id === "string"
+            ? data.delivery_event_id.trim()
+            : typeof data.deliveryEventId === "string"
+              ? data.deliveryEventId.trim()
+              : "";
+        if (!deliveryEventId) {
+          return;
+        }
+        if (mode === "dispute") {
+          setDisputeDeliveryReferenceEventId(previous => previous.trim() || deliveryEventId);
+        } else {
+          setAcceptDeliveryReferenceEventId(previous => previous.trim() || deliveryEventId);
+        }
+      } catch {
+        // Best effort — operator can paste the delivery event id.
+      }
+    }
+
+    void hydrateDeliveryReference();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    acceptMilestoneId,
+    acceptOrderId,
+    baseUrl,
+    disputeMilestoneId,
+    disputeOrderId,
+    isTransaction,
+    mode,
+    prefillMilestoneId,
+    prefillOrderId
+  ]);
+
   const primaryMilestoneRow = milestoneRows[0] ?? createDefaultMilestoneDraft(0);
   const milestoneId = primaryMilestoneRow.milestoneId;
   const milestoneAmountCredits = primaryMilestoneRow.amountCredits;
@@ -693,6 +846,84 @@ export function MarketplaceEventBuilder({
       }
       setBaseUrl(parsed.baseUrl || DEFAULT_NODE_API_BASE_URL);
       setCreatedAt(parsed.createdAt);
+      if (parsed.offerId.trim()) {
+        setOfferId(parsed.offerId);
+      }
+      if (parsed.orderId.trim()) {
+        setOrderId(parsed.orderId);
+      }
+      if (parsed.orderOfferId.trim()) {
+        setOrderOfferId(parsed.orderOfferId);
+      }
+      if (parsed.providerPubKey.trim()) {
+        setProviderPubKey(parsed.providerPubKey);
+      }
+      if (parsed.buyerPubKey.trim()) {
+        setBuyerPubKey(parsed.buyerPubKey);
+      }
+      if (parsed.milestoneRows.length > 0) {
+        setMilestoneRows(parsed.milestoneRows);
+      }
+      if (parsed.escrowSpenderPubKey.trim()) {
+        setEscrowSpenderPubKey(parsed.escrowSpenderPubKey);
+      }
+      if (parsed.escrowOrderId.trim()) {
+        setEscrowOrderId(parsed.escrowOrderId);
+      }
+      if (parsed.escrowNonce.trim()) {
+        setEscrowNonce(parsed.escrowNonce);
+      }
+      if (parsed.escrowOrderReferenceEventId.trim()) {
+        setEscrowOrderReferenceEventId(parsed.escrowOrderReferenceEventId);
+      }
+      if (parsed.offerReferenceEventId.trim()) {
+        setOfferReferenceEventId(parsed.offerReferenceEventId);
+      }
+      if (parsed.deliveryOrderId.trim()) {
+        setDeliveryOrderId(parsed.deliveryOrderId);
+      }
+      if (parsed.deliveryOrderReferenceEventId.trim()) {
+        setDeliveryOrderReferenceEventId(parsed.deliveryOrderReferenceEventId);
+      }
+      if (parsed.deliveryArtifactHashes.trim()) {
+        setDeliveryArtifactHashes(parsed.deliveryArtifactHashes);
+      }
+      if (parsed.deliveredAt.trim()) {
+        setDeliveredAt(parsed.deliveredAt);
+      }
+      if (parsed.acceptOrderId.trim()) {
+        setAcceptOrderId(parsed.acceptOrderId);
+      }
+      if (parsed.acceptDeliveryReferenceEventId.trim()) {
+        setAcceptDeliveryReferenceEventId(parsed.acceptDeliveryReferenceEventId);
+      }
+      if (parsed.acceptedAt.trim()) {
+        setAcceptedAt(parsed.acceptedAt);
+      }
+      if (parsed.disputeOrderId.trim()) {
+        setDisputeOrderId(parsed.disputeOrderId);
+      }
+      if (parsed.disputedAt.trim()) {
+        setDisputedAt(parsed.disputedAt);
+      }
+      if (parsed.disputeDeliveryReferenceEventId.trim()) {
+        setDisputeDeliveryReferenceEventId(parsed.disputeDeliveryReferenceEventId);
+      }
+      if (parsed.settleOrderId.trim()) {
+        setSettleOrderId(parsed.settleOrderId);
+      }
+      if (parsed.settledAt.trim()) {
+        setSettledAt(parsed.settledAt);
+      }
+      if (parsed.settleDisputeReferenceEventId.trim()) {
+        setSettleDisputeReferenceEventId(parsed.settleDisputeReferenceEventId);
+      }
+      if (parsed.buyerRefundCredits.trim()) {
+        setBuyerRefundCredits(parsed.buyerRefundCredits);
+      }
+      if (parsed.providerRewardCredits.trim()) {
+        setProviderRewardCredits(parsed.providerRewardCredits);
+      }
       setSessionAcceptedEvents(parsed.sessionAcceptedEvents);
     } catch {
       window.localStorage.removeItem(BUILDER_STORAGE_KEY);
@@ -705,6 +936,20 @@ export function MarketplaceEventBuilder({
     if (!isHydrated) {
       return;
     }
+    const session = loadActiveSession();
+    if (!session) {
+      return;
+    }
+    // Prefer the unlocked identity for guided/MCP flows so Advanced details
+    // keys are not required when the workspace is already signed in.
+    setAuthorPubKey(previous => previous.trim() || session.publicKeyHex);
+    setAuthorSecretKey(previous => previous.trim() || session.secretKeyHex);
+  }, [isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
     const persisted: PersistedBuilderState = {
       version: BUILDER_STORAGE_VERSION,
       flowRoute,
@@ -712,6 +957,32 @@ export function MarketplaceEventBuilder({
       mode,
       baseUrl,
       createdAt,
+      offerId,
+      orderId,
+      orderOfferId,
+      providerPubKey,
+      buyerPubKey,
+      milestoneRows,
+      escrowSpenderPubKey,
+      escrowOrderId,
+      escrowNonce,
+      escrowOrderReferenceEventId,
+      offerReferenceEventId,
+      deliveryOrderId,
+      deliveryOrderReferenceEventId,
+      deliveryArtifactHashes,
+      deliveredAt,
+      acceptOrderId,
+      acceptDeliveryReferenceEventId,
+      acceptedAt,
+      disputeOrderId,
+      disputedAt,
+      disputeDeliveryReferenceEventId,
+      settleOrderId,
+      settledAt,
+      settleDisputeReferenceEventId,
+      buyerRefundCredits,
+      providerRewardCredits,
       sessionAcceptedEvents
     };
     try {
@@ -719,7 +990,41 @@ export function MarketplaceEventBuilder({
     } catch {
       // ignore persistence failures
     }
-  }, [activePreset, baseUrl, createdAt, flowRoute, isHydrated, mode, sessionAcceptedEvents]);
+  }, [
+    acceptDeliveryReferenceEventId,
+    acceptOrderId,
+    acceptedAt,
+    activePreset,
+    baseUrl,
+    buyerPubKey,
+    buyerRefundCredits,
+    createdAt,
+    deliveredAt,
+    deliveryArtifactHashes,
+    deliveryOrderId,
+    deliveryOrderReferenceEventId,
+    disputeDeliveryReferenceEventId,
+    disputeOrderId,
+    disputedAt,
+    escrowOrderId,
+    escrowNonce,
+    escrowOrderReferenceEventId,
+    escrowSpenderPubKey,
+    flowRoute,
+    isHydrated,
+    milestoneRows,
+    mode,
+    offerId,
+    offerReferenceEventId,
+    orderId,
+    orderOfferId,
+    providerPubKey,
+    providerRewardCredits,
+    sessionAcceptedEvents,
+    settleDisputeReferenceEventId,
+    settleOrderId,
+    settledAt
+  ]);
 
   useEffect(() => {
     if (serviceLaneTemplateId === "custom") {
@@ -1390,12 +1695,81 @@ export function MarketplaceEventBuilder({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const form = event.currentTarget;
+    const live = (name: string, fallback: string) => readFormControlValue(form, name, fallback);
+
+    // Read live DOM before any setState so a render cannot clear controlled values
+    // before FormData/DOM recovery runs (MCP fill + HMR remount races).
+    const baseUrlLive = live("baseUrl", baseUrl);
+    const authorPubKeyLive = live("authorPubKey", authorPubKey);
+    const authorSecretKeyLive = live("authorSecretKey", authorSecretKey);
+    const policyVersionLive = live("policyVersion", policyVersion);
+    const createdAtLive = live("createdAt", createdAt);
+    const offerIdLive = live("offerId", offerId);
+    const serviceTypeLive = live("serviceType", serviceType);
+    const unitDefinitionLive = live("unitDefinition", unitDefinition);
+    const pricePerUnitCreditsLive = live("pricePerUnitCredits", pricePerUnitCredits);
+    const barterTermsLive = live("barterTerms", barterTerms);
+    const barterTagsLive = live("barterTags", barterTags);
+    const deliveryModeLive = live("deliveryMode", deliveryMode);
+    const offerExpiresAtLive = live("offerExpiresAt", offerExpiresAt);
+    const allowedEvidenceFormatsLive = live("allowedEvidenceFormats", allowedEvidenceFormats);
+    const termsHashLive = live("termsHash", termsHash);
+    const orderIdLive = live("orderId", orderId);
+    const orderOfferIdLive = live("orderOfferId", orderOfferId);
+    const providerPubKeyLive = live("providerPubKey", providerPubKey);
+    const buyerPubKeyLive = live("buyerPubKey", buyerPubKey);
+    const orderExpiresAtLive = live("orderExpiresAt", orderExpiresAt);
+    const offerReferenceEventIdLive = live("offerReferenceEventId", offerReferenceEventId);
+    const escrowSpenderPubKeyLive = live("escrowSpenderPubKey", escrowSpenderPubKey);
+    const escrowOrderIdLive = live("escrowOrderId", escrowOrderId);
+    const escrowMilestoneIdLive = live("escrowMilestoneId", escrowMilestoneId);
+    const escrowAmountLive = live("escrowAmount", escrowAmount);
+    const escrowNonceLive = live("escrowNonce", escrowNonce);
+    const escrowOrderReferenceEventIdLive = live("escrowOrderReferenceEventId", escrowOrderReferenceEventId);
+    const deliveryOrderIdLive = live("deliveryOrderId", deliveryOrderId);
+    const deliveryMilestoneIdLive = live("deliveryMilestoneId", deliveryMilestoneId);
+    const deliveryEvidenceFormatLive = live("deliveryEvidenceFormat", deliveryEvidenceFormat);
+    const deliveryArtifactHashesLive = live("deliveryArtifactHashes", deliveryArtifactHashes);
+    const deliveryUrlsLive = live("deliveryUrls", deliveryUrls);
+    const deliveryNotesHashLive = live("deliveryNotesHash", deliveryNotesHash);
+    const deliveredAtLive = live("deliveredAt", deliveredAt);
+    const deliveryOrderReferenceEventIdLive = live(
+      "deliveryOrderReferenceEventId",
+      deliveryOrderReferenceEventId
+    );
+    const acceptOrderIdLive = live("acceptOrderId", acceptOrderId);
+    const acceptMilestoneIdLive = live("acceptMilestoneId", acceptMilestoneId);
+    const acceptedAtLive = live("acceptedAt", acceptedAt);
+    const acceptDeliveryReferenceEventIdLive = live(
+      "acceptDeliveryReferenceEventId",
+      acceptDeliveryReferenceEventId
+    );
+    const disputeOrderIdLive = live("disputeOrderId", disputeOrderId);
+    const disputeReasonCodeLive = live("disputeReasonCode", disputeReasonCode);
+    const disputeNotesHashLive = live("disputeNotesHash", disputeNotesHash);
+    const disputedAtLive = live("disputedAt", disputedAt);
+    const disputeDeliveryReferenceEventIdLive = live(
+      "disputeDeliveryReferenceEventId",
+      disputeDeliveryReferenceEventId
+    );
+    const settleOrderIdLive = live("settleOrderId", settleOrderId);
+    const buyerRefundCreditsLive = live("buyerRefundCredits", buyerRefundCredits);
+    const providerRewardCreditsLive = live("providerRewardCredits", providerRewardCredits);
+    const settledAtLive = live("settledAt", settledAt);
+    const settleDisputeReferenceEventIdLive = live(
+      "settleDisputeReferenceEventId",
+      settleDisputeReferenceEventId
+    );
+    const milestoneRowsLive = readMilestoneRowsFromForm(form, milestoneRows);
+
     setErrorMessage(null);
     setIngestResult(null);
     setSubmitError(null);
     setShowSubmitErrorPayload(false);
 
-    const targetBaseUrl = (baseUrl.trim() || DEFAULT_NODE_API_BASE_URL).trim();
+    const targetBaseUrl = (baseUrlLive.trim() || DEFAULT_NODE_API_BASE_URL).trim();
     const baseUrlError = validateNodeClientBaseUrl(targetBaseUrl);
     if (baseUrlError) {
       setSubmitError({
@@ -1407,7 +1781,7 @@ export function MarketplaceEventBuilder({
       return;
     }
 
-    const createdAtError = validateOptionalRfc3339(createdAt.trim() || undefined);
+    const createdAtError = validateOptionalRfc3339(createdAtLive.trim() || undefined);
     if (createdAtError) {
       setSubmitError({
         status: null,
@@ -1418,8 +1792,17 @@ export function MarketplaceEventBuilder({
       return;
     }
 
-    const authorPubKeyTrimmed = authorPubKey.trim();
-    const authorSecretKeyTrimmed = authorSecretKey.trim();
+    const activeSession = loadActiveSession();
+    const authorPubKeyTrimmed = (
+      authorPubKeyLive.trim() ||
+      activeSession?.publicKeyHex ||
+      ""
+    ).trim();
+    const authorSecretKeyTrimmed = (
+      authorSecretKeyLive.trim() ||
+      activeSession?.secretKeyHex ||
+      ""
+    ).trim();
     if (!authorPubKeyTrimmed || !authorSecretKeyTrimmed) {
       setSubmitError({
         status: null,
@@ -1446,44 +1829,44 @@ export function MarketplaceEventBuilder({
     }
 
     const currentRequirements = modeRequirements(mode, {
-      offerId,
-      serviceType,
-      unitDefinition,
-      pricePerUnitCredits,
+      offerId: offerIdLive,
+      serviceType: serviceTypeLive,
+      unitDefinition: unitDefinitionLive,
+      pricePerUnitCredits: pricePerUnitCreditsLive,
       compensationMode,
-      barterTerms,
-      barterTags,
-      deliveryMode,
-      offerExpiresAt,
-      allowedEvidenceFormats,
-      orderId,
-      orderOfferId,
-      providerPubKey,
-      buyerPubKey,
-      orderExpiresAt,
-      milestoneRows,
+      barterTerms: barterTermsLive,
+      barterTags: barterTagsLive,
+      deliveryMode: deliveryModeLive,
+      offerExpiresAt: offerExpiresAtLive,
+      allowedEvidenceFormats: allowedEvidenceFormatsLive,
+      orderId: orderIdLive,
+      orderOfferId: orderOfferIdLive,
+      providerPubKey: providerPubKeyLive,
+      buyerPubKey: buyerPubKeyLive,
+      orderExpiresAt: orderExpiresAtLive,
+      milestoneRows: milestoneRowsLive,
       guidedOrderTerms: isTransaction,
-      escrowSpenderPubKey,
-      escrowOrderId,
+      escrowSpenderPubKey: escrowSpenderPubKeyLive,
+      escrowOrderId: escrowOrderIdLive,
       escrowMilestoneId,
-      escrowAmount,
-      escrowNonce,
-      deliveryOrderId,
+      escrowAmount: escrowAmountLive,
+      escrowNonce: escrowNonceLive,
+      deliveryOrderId: deliveryOrderIdLive,
       deliveryMilestoneId,
-      deliveryEvidenceFormat,
-      deliveredAt,
-      acceptOrderId,
+      deliveryEvidenceFormat: deliveryEvidenceFormatLive,
+      deliveredAt: deliveredAtLive,
+      acceptOrderId: acceptOrderIdLive,
       acceptMilestoneId,
-      acceptedAt,
-      disputeOrderId,
+      acceptedAt: acceptedAtLive,
+      disputeOrderId: disputeOrderIdLive,
       disputeMilestoneId,
-      disputeReasonCode,
-      disputedAt,
-      settleOrderId,
+      disputeReasonCode: disputeReasonCodeLive,
+      disputedAt: disputedAtLive,
+      settleOrderId: settleOrderIdLive,
       settleMilestoneId,
-      buyerRefundCredits,
-      providerRewardCredits,
-      settledAt
+      buyerRefundCredits: buyerRefundCreditsLive,
+      providerRewardCredits: providerRewardCreditsLive,
+      settledAt: settledAtLive
     });
     const missingRequirements = currentRequirements.filter(requirement => !requirement.ok);
     if (missingRequirements.length > 0) {
@@ -1498,7 +1881,48 @@ export function MarketplaceEventBuilder({
       return;
     }
 
-    if (mode === "delivery" && !hasDeliveryEvidenceInput(deliveryArtifactHashes, deliveryUrls, deliveryNotesHash)) {
+    if (isTransaction) {
+      const missingReference =
+        mode === "order"
+          ? !offerReferenceEventIdLive.trim()
+            ? "Offer reference event ID"
+            : null
+          : mode === "escrowSpend"
+            ? !escrowOrderReferenceEventIdLive.trim()
+              ? "Order reference event ID"
+              : null
+            : mode === "delivery"
+              ? !deliveryOrderReferenceEventIdLive.trim()
+                ? "Order reference event ID"
+                : null
+              : mode === "accept"
+                ? !acceptDeliveryReferenceEventIdLive.trim()
+                  ? "Delivery reference event ID"
+                  : null
+                : mode === "dispute"
+                  ? !disputeDeliveryReferenceEventIdLive.trim()
+                    ? "Delivery reference event ID"
+                    : null
+                  : mode === "settle"
+                    ? !settleDisputeReferenceEventIdLive.trim()
+                      ? "Dispute reference event ID"
+                      : null
+                    : null;
+      if (missingReference) {
+        setSubmitError({
+          status: null,
+          code: "client_preflight",
+          message: `Missing ${missingReference} for ${modeLabel(mode)}.`,
+          payload: { field: "referenceEventId", missing: [missingReference] }
+        });
+        return;
+      }
+    }
+
+    if (
+      mode === "delivery" &&
+      !hasDeliveryEvidenceInput(deliveryArtifactHashesLive, deliveryUrlsLive, deliveryNotesHashLive)
+    ) {
       setSubmitError({
         status: null,
         code: "client_preflight",
@@ -1510,11 +1934,11 @@ export function MarketplaceEventBuilder({
 
     const laneConstraintError = validateLaneTemplateConstraints({
       mode,
-      serviceType,
-      deliveryMode,
-      allowedEvidenceFormats,
+      serviceType: serviceTypeLive,
+      deliveryMode: deliveryModeLive,
+      allowedEvidenceFormats: allowedEvidenceFormatsLive,
       milestoneEvidenceFormat,
-      deliveryEvidenceFormat
+      deliveryEvidenceFormat: deliveryEvidenceFormatLive
     });
     if (laneConstraintError) {
       setSubmitError({
@@ -1543,86 +1967,86 @@ export function MarketplaceEventBuilder({
 
       const common = {
         authorPubKey: authorPubKeyTrimmed,
-        policyVersion: policyVersion.trim() || undefined,
-        createdAt: createdAt.trim() || undefined
+        policyVersion: policyVersionLive.trim() || undefined,
+        createdAt: createdAtLive.trim() || undefined
       };
 
       const unsigned =
         mode === "offer"
           ? buildOfferUnsigned({
               ...common,
-              offerId,
-              serviceType,
-              unitDefinition,
-              pricePerUnitCredits,
+              offerId: offerIdLive,
+              serviceType: serviceTypeLive,
+              unitDefinition: unitDefinitionLive,
+              pricePerUnitCredits: pricePerUnitCreditsLive,
               compensationMode,
-              barterTerms,
-              barterTags,
-              deliveryMode,
-              offerExpiresAt,
-              allowedEvidenceFormats,
-              termsHash
+              barterTerms: barterTermsLive,
+              barterTags: barterTagsLive,
+              deliveryMode: deliveryModeLive,
+              offerExpiresAt: offerExpiresAtLive,
+              allowedEvidenceFormats: allowedEvidenceFormatsLive,
+              termsHash: termsHashLive
             })
           : mode === "order"
             ? buildOrderUnsigned({
                 ...common,
-                orderId,
-                offerId: orderOfferId,
-                providerPubKey,
-                buyerPubKey,
-                orderExpiresAt,
-                milestoneRows,
-                offerReferenceEventId
+                orderId: orderIdLive,
+                offerId: orderOfferIdLive,
+                providerPubKey: providerPubKeyLive,
+                buyerPubKey: buyerPubKeyLive,
+                orderExpiresAt: orderExpiresAtLive,
+                milestoneRows: milestoneRowsLive,
+                offerReferenceEventId: offerReferenceEventIdLive
               })
             : mode === "delivery"
               ? buildDeliveryUnsigned({
                   ...common,
-                  orderId: deliveryOrderId,
-                  milestoneId: deliveryMilestoneId,
-                  evidenceFormat: deliveryEvidenceFormat,
-                  artifactHashes: deliveryArtifactHashes,
-                  urls: deliveryUrls,
-                  notesHash: deliveryNotesHash,
-                  deliveredAt,
-                  orderReferenceEventId: deliveryOrderReferenceEventId
+                  orderId: deliveryOrderIdLive,
+                  milestoneId: deliveryMilestoneIdLive,
+                  evidenceFormat: deliveryEvidenceFormatLive,
+                  artifactHashes: deliveryArtifactHashesLive,
+                  urls: deliveryUrlsLive,
+                  notesHash: deliveryNotesHashLive,
+                  deliveredAt: deliveredAtLive,
+                  orderReferenceEventId: deliveryOrderReferenceEventIdLive
                 })
               : mode === "accept"
                 ? buildAcceptUnsigned({
                     ...common,
-                    orderId: acceptOrderId,
-                    milestoneId: acceptMilestoneId,
-                    acceptedAt,
-                    deliveryReferenceEventId: acceptDeliveryReferenceEventId
+                    orderId: acceptOrderIdLive,
+                    milestoneId: acceptMilestoneIdLive,
+                    acceptedAt: acceptedAtLive,
+                    deliveryReferenceEventId: acceptDeliveryReferenceEventIdLive
                   })
                 : mode === "dispute"
                   ? buildDisputeUnsigned({
                       ...common,
-                      orderId: disputeOrderId,
-                      milestoneId: disputeMilestoneId,
-                      reasonCode: disputeReasonCode,
-                      notesHash: disputeNotesHash,
-                      disputedAt,
-                      deliveryReferenceEventId: disputeDeliveryReferenceEventId
+                      orderId: disputeOrderIdLive,
+                      milestoneId: live("disputeMilestoneId", disputeMilestoneId),
+                      reasonCode: disputeReasonCodeLive,
+                      notesHash: disputeNotesHashLive,
+                      disputedAt: disputedAtLive,
+                      deliveryReferenceEventId: disputeDeliveryReferenceEventIdLive
                     })
                   : mode === "settle"
                     ? buildSettleUnsigned({
                         ...common,
-                        orderId: settleOrderId,
-                        milestoneId: settleMilestoneId,
+                        orderId: settleOrderIdLive,
+                        milestoneId: live("settleMilestoneId", settleMilestoneId),
                         outcome: settleOutcome,
-                        buyerRefundCredits,
-                        providerRewardCredits,
-                        settledAt,
-                        disputeReferenceEventId: settleDisputeReferenceEventId
+                        buyerRefundCredits: buyerRefundCreditsLive,
+                        providerRewardCredits: providerRewardCreditsLive,
+                        settledAt: settledAtLive,
+                        disputeReferenceEventId: settleDisputeReferenceEventIdLive
                       })
                     : buildEscrowSpendUnsigned({
                         ...common,
-                        spenderPubKey: escrowSpenderPubKey,
-                        orderId: escrowOrderId,
-                        milestoneId: escrowMilestoneId,
-                        amount: escrowAmount,
-                        nonce: escrowNonce,
-                        orderReferenceEventId: escrowOrderReferenceEventId
+                        spenderPubKey: escrowSpenderPubKeyLive,
+                        orderId: escrowOrderIdLive,
+                        milestoneId: escrowMilestoneIdLive,
+                        amount: escrowAmountLive,
+                        nonce: escrowNonceLive,
+                        orderReferenceEventId: escrowOrderReferenceEventIdLive
                       });
 
       const signed = await signUnsignedEnvelope(unsigned, authorSecretKeyTrimmed);
@@ -2184,6 +2608,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: "0.5rem" }}>
                 Node URL
                 <input
+                  name="baseUrl"
                   value={baseUrl}
                   onChange={event => setBaseUrl(event.target.value)}
                   style={fieldStyle}
@@ -2193,6 +2618,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: "0.5rem" }}>
                 Public signing key
                 <input
+                  name="authorPubKey"
                   value={authorPubKey}
                   onChange={event => setAuthorPubKey(event.target.value)}
                   style={fieldStyle}
@@ -2202,6 +2628,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: "0.5rem" }}>
                 Secret signing key
                 <input
+                  name="authorSecretKey"
                   value={authorSecretKey}
                   onChange={event => setAuthorSecretKey(event.target.value)}
                   style={fieldStyle}
@@ -2211,6 +2638,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: "0.5rem" }}>
                 Policy version (optional)
                 <input
+                  name="policyVersion"
                   value={policyVersion}
                   onChange={event => setPolicyVersion(event.target.value)}
                   style={fieldStyle}
@@ -2220,6 +2648,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: "0.5rem" }}>
                 Created at (optional RFC3339)
                 <input
+                  name="createdAt"
                   value={createdAt}
                   onChange={event => setCreatedAt(event.target.value)}
                   style={fieldStyle}
@@ -2233,6 +2662,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               Node API Base URL
               <input
+                name="baseUrl"
                 value={baseUrl}
                 onChange={event => setBaseUrl(event.target.value)}
                 style={fieldStyle}
@@ -2262,6 +2692,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               Author Public Key
               <input
+                name="authorPubKey"
                 value={authorPubKey}
                 onChange={event => setAuthorPubKey(event.target.value)}
                 style={fieldStyle}
@@ -2271,6 +2702,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               Author Secret Key
               <input
+                name="authorSecretKey"
                 value={authorSecretKey}
                 onChange={event => setAuthorSecretKey(event.target.value)}
                 style={fieldStyle}
@@ -2316,6 +2748,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               Policy Version (optional)
               <input
+                name="policyVersion"
                 value={policyVersion}
                 onChange={event => setPolicyVersion(event.target.value)}
                 style={fieldStyle}
@@ -2325,6 +2758,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               createdAt (optional RFC3339)
               <input
+                name="createdAt"
                 value={createdAt}
                 onChange={event => setCreatedAt(event.target.value)}
                 style={fieldStyle}
@@ -2365,6 +2799,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Offer ID" : "offerId"}
               <input
+                name="offerId"
                 value={offerId}
                 onChange={event => setOfferId(event.target.value)}
                 style={fieldStyle}
@@ -2417,6 +2852,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Service category" : "serviceType"}
               <input
+                name="serviceType"
                 value={serviceType}
                 onChange={event => setServiceType(event.target.value)}
                 style={fieldStyle}
@@ -2426,6 +2862,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "What is being sold" : "unitDefinition"}
               <input
+                name="unitDefinition"
                 value={unitDefinition}
                 onChange={event => setUnitDefinition(event.target.value)}
                 style={fieldStyle}
@@ -2435,6 +2872,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Price per unit" : "pricePerUnitCredits"}
               <input
+                name="pricePerUnitCredits"
                 value={pricePerUnitCredits}
                 onChange={event => setPricePerUnitCredits(event.target.value)}
                 style={fieldStyle}
@@ -2465,6 +2903,7 @@ export function MarketplaceEventBuilder({
                 <label style={{ display: "block", marginBottom: "0.5rem" }}>
                   {isTransaction ? "Barter terms" : "barterTerms"}
                   <input
+                    name="barterTerms"
                     value={barterTerms}
                     onChange={event => setBarterTerms(event.target.value)}
                     style={fieldStyle}
@@ -2474,6 +2913,7 @@ export function MarketplaceEventBuilder({
                 <label style={{ display: "block", marginBottom: "0.5rem" }}>
                   {isTransaction ? "Barter tags (optional, comma-separated)" : "barterTags (optional, comma-separated)"}
                   <input
+                    name="barterTags"
                     value={barterTags}
                     onChange={event => setBarterTags(event.target.value)}
                     style={fieldStyle}
@@ -2485,6 +2925,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Delivery style" : "deliveryMode"}
               <input
+                name="deliveryMode"
                 value={deliveryMode}
                 onChange={event => setDeliveryMode(event.target.value)}
                 style={fieldStyle}
@@ -2494,6 +2935,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Offer expires at" : "offerExpiresAt"}
               <input
+                name="offerExpiresAt"
                 value={offerExpiresAt}
                 onChange={event => setOfferExpiresAt(event.target.value)}
                 style={fieldStyle}
@@ -2503,6 +2945,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Accepted proof formats (comma-separated)" : "allowedEvidenceFormats (comma-separated)"}
               <input
+                name="allowedEvidenceFormats"
                 value={allowedEvidenceFormats}
                 onChange={event => setAllowedEvidenceFormats(event.target.value)}
                 style={fieldStyle}
@@ -2512,6 +2955,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Terms hash (optional)" : "termsHash (optional)"}
               <input
+                name="termsHash"
                 value={termsHash}
                 onChange={event => setTermsHash(event.target.value)}
                 style={fieldStyle}
@@ -2593,6 +3037,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="orderId"
                 value={orderId}
                 onChange={event => setOrderId(event.target.value)}
                 style={fieldStyle}
@@ -2602,6 +3047,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Offer ID" : "offerId"}
               <input
+                name="orderOfferId"
                 value={orderOfferId}
                 onChange={event => setOrderOfferId(event.target.value)}
                 style={fieldStyle}
@@ -2611,6 +3057,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Provider public key" : "providerPubKey"}
               <input
+                name="providerPubKey"
                 value={providerPubKey}
                 onChange={event => setProviderPubKey(event.target.value)}
                 style={fieldStyle}
@@ -2620,6 +3067,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Buyer public key" : "buyerPubKey"}
               <input
+                name="buyerPubKey"
                 value={buyerPubKey}
                 onChange={event => setBuyerPubKey(event.target.value)}
                 style={fieldStyle}
@@ -2629,6 +3077,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order expires at" : "orderExpiresAt"}
               <input
+                name="orderExpiresAt"
                 value={orderExpiresAt}
                 onChange={event => setOrderExpiresAt(event.target.value)}
                 style={fieldStyle}
@@ -2665,6 +3114,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
                 {isTransaction ? "Offer reference event ID" : "references.offer eventId (optional but recommended)"}
                 <input
+                  name="offerReferenceEventId"
                   value={offerReferenceEventId}
                   onChange={event => setOfferReferenceEventId(event.target.value)}
                   style={fieldStyle}
@@ -2686,6 +3136,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Payer public key" : "spenderPubKey"}
               <input
+                name="escrowSpenderPubKey"
                 value={escrowSpenderPubKey}
                 onChange={event => setEscrowSpenderPubKey(event.target.value)}
                 style={fieldStyle}
@@ -2695,6 +3146,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="escrowOrderId"
                 value={escrowOrderId}
                 onChange={event => setEscrowOrderId(event.target.value)}
                 style={fieldStyle}
@@ -2703,6 +3155,7 @@ export function MarketplaceEventBuilder({
             </label>
             <MilestoneIdField
               label={isTransaction ? "Milestone" : "milestoneId"}
+              name="escrowMilestoneId"
               value={escrowMilestoneId}
               onChange={setEscrowMilestoneId}
               rows={milestoneRows}
@@ -2711,6 +3164,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Amount to fund" : "amount"}
               <input
+                name="escrowAmount"
                 value={escrowAmount}
                 onChange={event => setEscrowAmount(event.target.value)}
                 style={fieldStyle}
@@ -2720,6 +3174,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Payment nonce" : "nonce"}
               <input
+                name="escrowNonce"
                 value={escrowNonce}
                 onChange={event => setEscrowNonce(event.target.value)}
                 style={fieldStyle}
@@ -2734,6 +3189,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
                 {isTransaction ? "Order reference event ID" : "references.order eventId (optional but recommended)"}
                 <input
+                  name="escrowOrderReferenceEventId"
                   value={escrowOrderReferenceEventId}
                   onChange={event => setEscrowOrderReferenceEventId(event.target.value)}
                   style={fieldStyle}
@@ -2777,6 +3233,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="deliveryOrderId"
                 value={deliveryOrderId}
                 onChange={event => setDeliveryOrderId(event.target.value)}
                 style={fieldStyle}
@@ -2785,6 +3242,7 @@ export function MarketplaceEventBuilder({
             </label>
             <MilestoneIdField
               label={isTransaction ? "Milestone" : "milestoneId"}
+              name="deliveryMilestoneId"
               value={deliveryMilestoneId}
               onChange={setDeliveryMilestoneId}
               rows={milestoneRows}
@@ -2793,6 +3251,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Proof format" : "evidenceFormat"}
               <input
+                name="deliveryEvidenceFormat"
                 value={deliveryEvidenceFormat}
                 onChange={event => setDeliveryEvidenceFormat(event.target.value)}
                 style={fieldStyle}
@@ -2802,6 +3261,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Delivered at" : "deliveredAt"}
               <input
+                name="deliveredAt"
                 value={deliveredAt}
                 onChange={event => setDeliveredAt(event.target.value)}
                 style={fieldStyle}
@@ -2811,6 +3271,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Proof hashes (optional)" : "artifactHashes (optional, comma-separated)"}
               <input
+                name="deliveryArtifactHashes"
                 value={deliveryArtifactHashes}
                 onChange={event => setDeliveryArtifactHashes(event.target.value)}
                 style={fieldStyle}
@@ -2820,6 +3281,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Proof URLs (optional)" : "urls (optional, comma-separated)"}
               <input
+                name="deliveryUrls"
                 value={deliveryUrls}
                 onChange={event => setDeliveryUrls(event.target.value)}
                 style={fieldStyle}
@@ -2829,6 +3291,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Notes hash (optional)" : "notesHash (optional)"}
               <input
+                name="deliveryNotesHash"
                 value={deliveryNotesHash}
                 onChange={event => setDeliveryNotesHash(event.target.value)}
                 style={fieldStyle}
@@ -2843,6 +3306,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
                 {isTransaction ? "Order reference event ID" : "references.order eventId (optional but recommended)"}
                 <input
+                  name="deliveryOrderReferenceEventId"
                   value={deliveryOrderReferenceEventId}
                   onChange={event => setDeliveryOrderReferenceEventId(event.target.value)}
                   style={fieldStyle}
@@ -2913,6 +3377,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="acceptOrderId"
                 value={acceptOrderId}
                 onChange={event => setAcceptOrderId(event.target.value)}
                 style={fieldStyle}
@@ -2921,6 +3386,7 @@ export function MarketplaceEventBuilder({
             </label>
             <MilestoneIdField
               label={isTransaction ? "Milestone" : "milestoneId"}
+              name="acceptMilestoneId"
               value={acceptMilestoneId}
               onChange={setAcceptMilestoneId}
               rows={milestoneRows}
@@ -2929,6 +3395,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Accepted at" : "acceptedAt"}
               <input
+                name="acceptedAt"
                 value={acceptedAt}
                 onChange={event => setAcceptedAt(event.target.value)}
                 style={fieldStyle}
@@ -2943,6 +3410,7 @@ export function MarketplaceEventBuilder({
               <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
                 {isTransaction ? "Delivery reference event ID" : "references.delivery eventId (optional but recommended)"}
                 <input
+                  name="acceptDeliveryReferenceEventId"
                   value={acceptDeliveryReferenceEventId}
                   onChange={event => setAcceptDeliveryReferenceEventId(event.target.value)}
                   style={fieldStyle}
@@ -2965,6 +3433,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="disputeOrderId"
                 value={disputeOrderId}
                 onChange={event => setDisputeOrderId(event.target.value)}
                 style={fieldStyle}
@@ -2973,6 +3442,7 @@ export function MarketplaceEventBuilder({
             </label>
             <MilestoneIdField
               label={isTransaction ? "Milestone" : "milestoneId"}
+              name="disputeMilestoneId"
               value={disputeMilestoneId}
               onChange={setDisputeMilestoneId}
               rows={milestoneRows}
@@ -2999,6 +3469,7 @@ export function MarketplaceEventBuilder({
                 </Select>
               ) : (
                 <input
+                  name="disputeReasonCode"
                   value={disputeReasonCode}
                   onChange={event => setDisputeReasonCode(event.target.value)}
                   style={fieldStyle}
@@ -3009,49 +3480,36 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Notes hash (optional)" : "notesHash (optional)"}
               <input
+                name="disputeNotesHash"
                 value={disputeNotesHash}
                 onChange={event => setDisputeNotesHash(event.target.value)}
                 style={fieldStyle}
                 placeholder="optional dispute notes hash"
               />
             </label>
-            {!isTransaction ? (
-              <label style={{ display: "block", marginBottom: "0.5rem" }}>
-                disputedAt
-                <input
-                  value={disputedAt}
-                  onChange={event => setDisputedAt(event.target.value)}
-                  style={fieldStyle}
-                  placeholder="2026-03-01T00:09:30Z"
-                />
-              </label>
-            ) : null}
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              {isTransaction ? "Disputed at" : "disputedAt"}
+              <input
+                id="disputedAt"
+                name="disputedAt"
+                value={disputedAt}
+                onChange={event => setDisputedAt(event.target.value)}
+                style={fieldStyle}
+                placeholder="2026-03-01T00:09:30Z"
+              />
+            </label>
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              {isTransaction ? "Delivery reference event ID" : "references.delivery eventId"}
+              <input
+                id="disputeDeliveryReferenceEventId"
+                name="disputeDeliveryReferenceEventId"
+                value={disputeDeliveryReferenceEventId}
+                onChange={event => setDisputeDeliveryReferenceEventId(event.target.value)}
+                style={fieldStyle}
+                placeholder="service delivery eventId"
+              />
+            </label>
             </div>
-            <details className={isTransaction ? "mb-2 rounded-xl border border-border/70 bg-muted/25 px-4 py-3" : undefined}>
-              <summary className={isTransaction ? "cursor-pointer text-sm font-medium text-foreground" : undefined}>
-                {isTransaction ? "Reference details" : "references.delivery eventId (optional but recommended)"}
-              </summary>
-              {isTransaction ? (
-                <label style={{ display: "block", marginBottom: "0.5rem", marginTop: "0.75rem" }}>
-                  Disputed at (optional RFC3339)
-                  <input
-                    value={disputedAt}
-                    onChange={event => setDisputedAt(event.target.value)}
-                    style={fieldStyle}
-                    placeholder="2026-03-01T00:09:30Z"
-                  />
-                </label>
-              ) : null}
-              <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
-                {isTransaction ? "Delivery reference event ID" : "references.delivery eventId (optional but recommended)"}
-                <input
-                  value={disputeDeliveryReferenceEventId}
-                  onChange={event => setDisputeDeliveryReferenceEventId(event.target.value)}
-                  style={fieldStyle}
-                  placeholder="service delivery eventId"
-                />
-              </label>
-            </details>
           </>
         ) : null}
 
@@ -3087,6 +3545,7 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Order ID" : "orderId"}
               <input
+                name="settleOrderId"
                 value={settleOrderId}
                 onChange={event => setSettleOrderId(event.target.value)}
                 style={fieldStyle}
@@ -3095,6 +3554,7 @@ export function MarketplaceEventBuilder({
             </label>
             <MilestoneIdField
               label={isTransaction ? "Milestone" : "milestoneId"}
+              name="settleMilestoneId"
               value={settleMilestoneId}
               onChange={setSettleMilestoneId}
               rows={milestoneRows}
@@ -3121,6 +3581,8 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Buyer refund credits" : "buyerRefundCredits"}
               <input
+                id="buyerRefundCredits"
+                name="buyerRefundCredits"
                 value={buyerRefundCredits}
                 onChange={event => setBuyerRefundCredits(event.target.value)}
                 style={fieldStyle}
@@ -3130,49 +3592,37 @@ export function MarketplaceEventBuilder({
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Provider reward credits" : "providerRewardCredits"}
               <input
+                id="providerRewardCredits"
+                name="providerRewardCredits"
                 value={providerRewardCredits}
                 onChange={event => setProviderRewardCredits(event.target.value)}
                 style={fieldStyle}
                 placeholder="0"
               />
             </label>
-            {!isTransaction ? (
-              <label style={{ display: "block", marginBottom: "0.5rem" }}>
-                settledAt
-                <input
-                  value={settledAt}
-                  onChange={event => setSettledAt(event.target.value)}
-                  style={fieldStyle}
-                  placeholder="2026-03-01T00:10:00Z"
-                />
-              </label>
-            ) : null}
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              {isTransaction ? "Settled at" : "settledAt"}
+              <input
+                id="settledAt"
+                name="settledAt"
+                value={settledAt}
+                onChange={event => setSettledAt(event.target.value)}
+                style={fieldStyle}
+                placeholder="2026-03-01T00:10:00Z"
+              />
+            </label>
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              {isTransaction ? "Dispute reference event ID" : "references.dispute eventId"}
+              <input
+                id="settleDisputeReferenceEventId"
+                name="settleDisputeReferenceEventId"
+                value={settleDisputeReferenceEventId}
+                onChange={event => setSettleDisputeReferenceEventId(event.target.value)}
+                style={fieldStyle}
+                placeholder="service dispute eventId"
+              />
+            </label>
             </div>
-            <details className={isTransaction ? "mb-2 rounded-xl border border-border/70 bg-muted/25 px-4 py-3" : undefined}>
-              <summary className={isTransaction ? "cursor-pointer text-sm font-medium text-foreground" : undefined}>
-                {isTransaction ? "Reference details" : "references.dispute eventId (optional but recommended)"}
-              </summary>
-              {isTransaction ? (
-                <label style={{ display: "block", marginBottom: "0.5rem", marginTop: "0.75rem" }}>
-                  Settled at (optional RFC3339)
-                  <input
-                    value={settledAt}
-                    onChange={event => setSettledAt(event.target.value)}
-                    style={fieldStyle}
-                    placeholder="2026-03-01T00:10:00Z"
-                  />
-                </label>
-              ) : null}
-              <label style={{ display: "block", marginBottom: isTransaction ? 0 : "0.5rem", marginTop: isTransaction ? "0.75rem" : undefined }}>
-                {isTransaction ? "Dispute reference event ID" : "references.dispute eventId (optional but recommended)"}
-                <input
-                  value={settleDisputeReferenceEventId}
-                  onChange={event => setSettleDisputeReferenceEventId(event.target.value)}
-                  style={fieldStyle}
-                  placeholder="service dispute eventId"
-                />
-              </label>
-            </details>
           </>
         ) : null}
 
@@ -4074,6 +4524,52 @@ function parsePersistedBuilderState(raw: string): PersistedBuilderState | null {
         ? value.baseUrl
         : DEFAULT_NODE_API_BASE_URL;
     const createdAt = typeof value.createdAt === "string" ? value.createdAt : "";
+    const offerId = typeof value.offerId === "string" ? value.offerId : "";
+    const orderId = typeof value.orderId === "string" ? value.orderId : "";
+    const orderOfferId = typeof value.orderOfferId === "string" ? value.orderOfferId : "";
+    const providerPubKey = typeof value.providerPubKey === "string" ? value.providerPubKey : "";
+    const buyerPubKey = typeof value.buyerPubKey === "string" ? value.buyerPubKey : "";
+    const milestoneRows = Array.isArray(value.milestoneRows)
+      ? value.milestoneRows.map(parsePersistedMilestoneRow).filter(isOrderMilestoneDraft)
+      : [];
+    const escrowSpenderPubKey =
+      typeof value.escrowSpenderPubKey === "string" ? value.escrowSpenderPubKey : "";
+    const escrowOrderId = typeof value.escrowOrderId === "string" ? value.escrowOrderId : "";
+    const escrowNonce = typeof value.escrowNonce === "string" ? value.escrowNonce : "";
+    const escrowOrderReferenceEventId =
+      typeof value.escrowOrderReferenceEventId === "string" ? value.escrowOrderReferenceEventId : "";
+    const offerReferenceEventId =
+      typeof value.offerReferenceEventId === "string" ? value.offerReferenceEventId : "";
+    const deliveryOrderId = typeof value.deliveryOrderId === "string" ? value.deliveryOrderId : "";
+    const deliveryOrderReferenceEventId =
+      typeof value.deliveryOrderReferenceEventId === "string"
+        ? value.deliveryOrderReferenceEventId
+        : "";
+    const deliveryArtifactHashes =
+      typeof value.deliveryArtifactHashes === "string" ? value.deliveryArtifactHashes : "";
+    const deliveredAt = typeof value.deliveredAt === "string" ? value.deliveredAt : "";
+    const acceptOrderId = typeof value.acceptOrderId === "string" ? value.acceptOrderId : "";
+    const acceptDeliveryReferenceEventId =
+      typeof value.acceptDeliveryReferenceEventId === "string"
+        ? value.acceptDeliveryReferenceEventId
+        : "";
+    const acceptedAt = typeof value.acceptedAt === "string" ? value.acceptedAt : "";
+    const disputeOrderId = typeof value.disputeOrderId === "string" ? value.disputeOrderId : "";
+    const disputedAt = typeof value.disputedAt === "string" ? value.disputedAt : "";
+    const disputeDeliveryReferenceEventId =
+      typeof value.disputeDeliveryReferenceEventId === "string"
+        ? value.disputeDeliveryReferenceEventId
+        : "";
+    const settleOrderId = typeof value.settleOrderId === "string" ? value.settleOrderId : "";
+    const settledAt = typeof value.settledAt === "string" ? value.settledAt : "";
+    const settleDisputeReferenceEventId =
+      typeof value.settleDisputeReferenceEventId === "string"
+        ? value.settleDisputeReferenceEventId
+        : "";
+    const buyerRefundCredits =
+      typeof value.buyerRefundCredits === "string" ? value.buyerRefundCredits : "";
+    const providerRewardCredits =
+      typeof value.providerRewardCredits === "string" ? value.providerRewardCredits : "";
     const sessionAcceptedEvents = Array.isArray(value.sessionAcceptedEvents)
       ? value.sessionAcceptedEvents.map(parseSessionAcceptedEvent).filter(isSessionAcceptedEvent)
       : [];
@@ -4085,11 +4581,72 @@ function parsePersistedBuilderState(raw: string): PersistedBuilderState | null {
       mode: value.mode,
       baseUrl,
       createdAt,
+      offerId,
+      orderId,
+      orderOfferId,
+      providerPubKey,
+      buyerPubKey,
+      milestoneRows,
+      escrowSpenderPubKey,
+      escrowOrderId,
+      escrowNonce,
+      escrowOrderReferenceEventId,
+      offerReferenceEventId,
+      deliveryOrderId,
+      deliveryOrderReferenceEventId,
+      deliveryArtifactHashes,
+      deliveredAt,
+      acceptOrderId,
+      acceptDeliveryReferenceEventId,
+      acceptedAt,
+      disputeOrderId,
+      disputedAt,
+      disputeDeliveryReferenceEventId,
+      settleOrderId,
+      settledAt,
+      settleDisputeReferenceEventId,
+      buyerRefundCredits,
+      providerRewardCredits,
       sessionAcceptedEvents
     };
   } catch {
     return null;
   }
+}
+
+function parsePersistedMilestoneRow(value: unknown): OrderMilestoneDraft | null {
+  if (!isObjectRecord(value)) {
+    return null;
+  }
+  const milestoneId = typeof value.milestoneId === "string" ? value.milestoneId : "";
+  const amountCredits = typeof value.amountCredits === "string" ? value.amountCredits : "";
+  const evidenceFormat = typeof value.evidenceFormat === "string" ? value.evidenceFormat : "";
+  const deliverable = typeof value.deliverable === "string" ? value.deliverable : "";
+  const dueWindow = typeof value.dueWindow === "string" ? value.dueWindow : "";
+  const acceptanceCriteria =
+    typeof value.acceptanceCriteria === "string" ? value.acceptanceCriteria : "";
+  if (
+    !milestoneId &&
+    !amountCredits &&
+    !evidenceFormat &&
+    !deliverable &&
+    !dueWindow &&
+    !acceptanceCriteria
+  ) {
+    return null;
+  }
+  return {
+    milestoneId,
+    amountCredits,
+    evidenceFormat,
+    deliverable,
+    dueWindow,
+    acceptanceCriteria
+  };
+}
+
+function isOrderMilestoneDraft(value: OrderMilestoneDraft | null): value is OrderMilestoneDraft {
+  return value !== null;
 }
 
 function parseSessionAcceptedEvent(value: unknown): SessionAcceptedEvent | null {
@@ -4547,6 +5104,7 @@ async function sha256Hex(value: string): Promise<string> {
 
 function MilestoneIdField({
   label,
+  name,
   value,
   onChange,
   rows,
@@ -4554,6 +5112,7 @@ function MilestoneIdField({
   placeholder = "m1"
 }: {
   label: string;
+  name: string;
   value: string;
   onChange: (nextValue: string) => void;
   rows: OrderMilestoneDraft[];
@@ -4567,6 +5126,7 @@ function MilestoneIdField({
       {label}
       {useSelect ? (
         <select
+          name={name}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           style={fieldStyle}
@@ -4579,6 +5139,7 @@ function MilestoneIdField({
         </select>
       ) : (
         <input
+          name={name}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           style={fieldStyle}

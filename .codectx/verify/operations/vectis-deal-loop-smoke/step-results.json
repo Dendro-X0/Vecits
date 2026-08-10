@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "kind": "fileExists",
+    "target": "docs/client/testing-without-users.md",
+    "ok": true
+  },
+  {
+    "index": 1,
+    "kind": "fileExists",
+    "target": "apps/desktop/package.json",
+    "ok": true
+  }
+]

@@ -45,6 +45,8 @@ Follow trust bootstrap + contribution mint, then a `software-fixes` (or other ar
 
 ## ZC-2 — Invite a second device (no VPS)
 
+Field checklist (pin + honesty + optional deal): [zero-capital-zc2-field-checklist.md](zero-capital-zc2-field-checklist.md)
+
 1. On the host, serve on a reachable address:
    - **Preferred:** install Tailscale (or similar); bind/serve so the Tailscale IP:7878 is reachable by the peer.
    - **LAN meetup:** bind `0.0.0.0:7878` only on trusted Wi-Fi; firewall if possible.
@@ -61,6 +63,8 @@ Maintainer sync shape (no travel router):
 pnpm r9:halo:smoke
 pnpm r9:halo:join-unit
 ```
+
+**NFC physical tags** remain optional / hardware-gated — [r9-nfc-operator-runbook.md](r9-nfc-operator-runbook.md).
 
 ## ZC-3 — Replica set
 

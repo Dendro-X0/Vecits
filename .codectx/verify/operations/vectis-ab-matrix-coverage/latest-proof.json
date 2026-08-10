@@ -1,0 +1,21 @@
+{
+  "schema": "codactrl.operation-proof@1.0.0",
+  "proofId": "oprun-6990214c",
+  "operationId": "vectis-ab-matrix-coverage",
+  "operationTitle": "Abuse matrix + invalid fixtures present",
+  "proofTier": "t0",
+  "pass": true,
+  "status": "pass",
+  "symptomIds": [],
+  "proves": [
+    "ab-matrix-documented"
+  ],
+  "doesNotProve": [
+    "all-ab-ids-live-in-studio"
+  ],
+  "startedAt": "2026-07-24T18:00:28.730175500+00:00",
+  "finishedAt": "2026-07-24T18:00:28.730245300+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "catalogPath": "verify.operations.yaml",
+  "evidenceSchema": "codactrl.operation-proof@1.0.0"
+}

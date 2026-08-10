@@ -65,7 +65,7 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 - Offline `physical-handoff` lane **production** deployment (fixture proven — SCN-18; R8-D adds experimental UX only)
 - `OrderAmend` event kind (use new order or paired settle for now)
 
-**Client work (no live users required):** use [client/testing-without-users.md](client/testing-without-users.md) — fixtures + two local keys + `/help` guides.
+**Client work (no live users required):** use [client/testing-without-users.md](client/testing-without-users.md) — fixtures + two local keys + `/help` guides. Optional Studio overlay: [runbooks/codactrl-studio-runbook.md](runbooks/codactrl-studio-runbook.md).
 
 Stack-ranked backlog: [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md)
 
@@ -159,9 +159,10 @@ pnpm stability:pack          # full (may rebuild release binaries)
 
 Optional later (hardware / counterparty gated):
 
-1. Android NFC device smoke — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md)
-2. R6-PD field proof — **deferred** — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
-3. R7-M1 iOS — **deferred** — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
+1. Android NFC device smoke — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md) (parked until phone + writable tag; units alone are not device smoke)
+2. ZC-2 second-device pin — [runbooks/zero-capital-zc2-field-checklist.md](runbooks/zero-capital-zc2-field-checklist.md)
+3. R6-PD field proof — **deferred** — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+4. R7-M1 iOS — **deferred** — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
 
 R8 + R9 signed off; R6-PD maintainer closeout via `pnpm r6:pd`.
 

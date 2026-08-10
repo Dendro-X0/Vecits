@@ -1,0 +1,24 @@
+{
+  "schema": "codactrl.operation-proof@1.0.0",
+  "proofId": "oprun-f53424e8",
+  "operationId": "vectis-stability-quick",
+  "operationTitle": "Stability regression pack (quick)",
+  "proofTier": "t0",
+  "pass": true,
+  "status": "pass",
+  "symptomIds": [],
+  "proves": [
+    "fixtures",
+    "zc-cold-start",
+    "staged-exchange"
+  ],
+  "doesNotProve": [
+    "field-counterparty",
+    "live-nfc"
+  ],
+  "startedAt": "2026-07-24T18:18:39.136930300+00:00",
+  "finishedAt": "2026-07-24T18:18:39.137511700+00:00",
+  "repoRoot": "E:\\Experimental projects\\vectis",
+  "catalogPath": "verify.operations.yaml",
+  "evidenceSchema": "codactrl.operation-proof@1.0.0"
+}

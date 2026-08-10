@@ -1,0 +1,96 @@
+schema: codactrl.sandbox.catalog@0.1.0
+packId: hygiene.vectis-adapter@1
+title: Vectis security-hygiene pack (app-engineer scope)
+description: >
+  Maps CodaCtrl security-hygiene scenarios onto Vectis surfaces and AB/SOC IDs.
+  Protocol AB-01..AB-17 remain proven by Vectis fixtures/cargo tests — this pack
+  orients Studio operators and stress/hygiene dry-runs (T0). Not an exploit farm.
+architectureClass: node-plus-web-client
+scenarios:
+  - id: hygiene.vectis.session_boundary.restart@1
+    title: Dev session / node restart keeps auth boundary
+    label: security-hygiene
+    tags: [auth, restart]
+    symptomClasses: [session-leak, auth-kick]
+    mapsTo: [RES-01, AB-14]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 120000
+      maxProcessRestarts: 1
+    steps:
+      - kind: fault
+        fault: process_kill
+        target: subject
+      - kind: hydrate
+        after: cold_restart
+        assert: session_boundary_holds
+    artifacts: [digest, log_excerpt]
+
+  - id: hygiene.vectis.crash_recovery.state@1
+    title: Crash recovery does not corrupt events.log / snapshot
+    label: security-hygiene
+    tags: [restart, persistence]
+    symptomClasses: [corrupt-state, crash-recovery]
+    mapsTo: [AB-14, AB-17, RES-07]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 90000
+      maxProcessRestarts: 2
+    steps:
+      - kind: persist
+      - kind: fault
+        fault: process_kill
+        target: subject_or_daemon
+      - kind: hydrate
+        after: cold_restart
+        assert: durable_state_consistent
+    artifacts: [digest, log_excerpt]
+
+  - id: hygiene.vectis.secrets_not_in_logs@1
+    title: Health / client logs do not echo peers secrets (AB-13)
+    label: security-hygiene
+    tags: [auth]
+    symptomClasses: [secret-leak, log-hygiene]
+    mapsTo: [AB-13]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 60000
+    steps:
+      - kind: fault
+        fault: rapid_interact
+      - kind: assert
+        assert: no_secrets_in_digest_or_logs
+    artifacts: [digest, log_excerpt]
+
+  - id: hygiene.vectis.false_green_visible@1
+    title: Operator can see CI-green / runtime-red mismatch (SOC-05 adjacent)
+    label: security-hygiene
+    tags: [ui]
+    symptomClasses: [false-green-runtime]
+    mapsTo: [SOC-05]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 60000
+    steps:
+      - kind: fault
+        fault: process_kill
+        target: daemon
+      - kind: assert
+        assert: sandbox_fail_visible_when_ci_green
+    artifacts: [digest]
+
+  - id: hygiene.vectis.ingest_flood_visible@1
+    title: Ingest flood / rate-limit path is observable (AB-16)
+    label: security-hygiene
+    tags: [network]
+    symptomClasses: [ingest-flood, rate-limit]
+    mapsTo: [AB-16, RES-06]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 60000
+    steps:
+      - kind: fault
+        fault: rapid_interact
+      - kind: assert
+        assert: rate_limit_or_reject_observable
+    artifacts: [digest, log_excerpt]

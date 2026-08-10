@@ -1,26 +1,24 @@
 {
   "schema": "client.session.registry@1.0.0",
-  "updatedAt": "2026-07-03T08:15:23.142906700+00:00",
+  "updatedAt": "2026-08-10T04:43:44.233527600+00:00",
   "sessions": [
     {
-      "sessionId": "csess-b1143894e972",
-      "windowLabel": "main",
-      "targetId": "91F3540C0AC2BEE19E7D82461884B42B",
-      "cdpPort": 9222,
-      "url": "http://127.0.0.1:5173/verify/monitor",
-      "provider": "webview2-cdp",
-      "proofTier": "t3",
-      "updatedAt": "2026-07-03T08:15:23.142006100+00:00"
+      "sessionId": "csess-9459607f2ff3",
+      "windowLabel": "provider-settle",
+      "targetId": "playwright-provider-settle",
+      "url": "http://127.0.0.1:4251/dashboard/builder?branch=dispute&step=settle&order=mcp-pmp8-1786290213297-order&milestone=m1",
+      "provider": "playwright-chromium",
+      "proofTier": "t2",
+      "updatedAt": "2026-08-10T04:42:01.574565200+00:00"
     },
     {
-      "sessionId": "csess-3f9df05a3ef8",
-      "windowLabel": "main",
-      "targetId": "91F3540C0AC2BEE19E7D82461884B42B",
-      "cdpPort": 9222,
-      "url": "http://127.0.0.1:5173/verify/monitor",
-      "provider": "webview2-cdp",
-      "proofTier": "t3",
-      "updatedAt": "2026-07-03T08:15:00.910529700+00:00"
+      "sessionId": "csess-114dc4aa4e59",
+      "windowLabel": "buyer-settle",
+      "targetId": "playwright-buyer-settle",
+      "url": "http://127.0.0.1:4251/dashboard/builder?branch=dispute&step=settle&order=mcp-pmp8-1786290213297-order&milestone=m1",
+      "provider": "playwright-chromium",
+      "proofTier": "t2",
+      "updatedAt": "2026-08-10T04:40:50.256823200+00:00"
     }
   ]
 }

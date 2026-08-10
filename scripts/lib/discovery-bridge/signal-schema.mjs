@@ -90,6 +90,13 @@ export function normalizeSignal(raw) {
   }
 
   signal.signalId = signalIdFor(signal);
-  signal.suggestedLane = classifySignalLane(signal);
+  // Prefer Aperio engine lane hint when present; otherwise classify locally.
+  signal.suggestedLane =
+    typeof raw.suggestedLane === "string" && raw.suggestedLane.trim()
+      ? String(raw.suggestedLane).trim()
+      : classifySignalLane(signal);
+  if (raw.signalClass != null) {
+    signal.signalClass = String(raw.signalClass);
+  }
   return signal;
 }

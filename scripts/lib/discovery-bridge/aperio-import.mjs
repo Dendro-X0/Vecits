@@ -68,6 +68,16 @@ function deterministicDiscoveredAt({ source, externalId, dedupeKey }) {
 export function aperioExportToVectisSignal(exportSignal) {
 	const title = String(exportSignal.title ?? "");
 	const description = String(exportSignal.description ?? "");
+	const inferred = inferTagsFromText(title, description);
+	const exportedTags = Array.isArray(exportSignal.tags)
+		? exportSignal.tags.map(tag => String(tag))
+		: [];
+	const tags = [...new Set([...exportedTags, ...inferred])];
+	const suggestedLane =
+		typeof exportSignal.suggestedLane === "string" &&
+		exportSignal.suggestedLane.trim()
+			? String(exportSignal.suggestedLane).trim()
+			: undefined;
 	return {
 		schemaVersion: "discovery-signal-v1",
 		source: mapAperioSource(String(exportSignal.source ?? "")),
@@ -86,8 +96,12 @@ export function aperioExportToVectisSignal(exportSignal) {
 						dedupeKey: String(exportSignal.dedupeKey ?? ""),
 					}),
 		expansionRationale: String(exportSignal.expansionRationale ?? ""),
-		tags: inferTagsFromText(title, description),
+		tags,
 		negativeSignals: [],
+		...(exportSignal.signalClass != null
+			? { signalClass: String(exportSignal.signalClass) }
+			: {}),
+		...(suggestedLane ? { suggestedLane } : {}),
 	};
 }
 

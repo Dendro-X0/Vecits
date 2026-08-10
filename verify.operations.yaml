@@ -1,0 +1,56 @@
+# verify.operations.yaml — Vectis subject (CodaCtrl Verify VE3)
+# Wiring-only at T0. Live prove uses Vectis scripts (see .codactrl/USE-CASE-MAP.md).
+# Schema note (CodaCtrl upgrade): operations require `defaultProofTier` (not only defaultTier).
+# fileExists steps must target files — directories fail as "missing file".
+
+schemaVersion: "1.0.0"
+operations:
+  - id: vectis-stability-quick
+    title: Stability regression pack (quick)
+    defaultProofTier: t0
+    proves: [fixtures, zc-cold-start, staged-exchange]
+    doesNotProve:
+      - field-counterparty
+      - live-nfc
+      - "T0 fileExists wiring is not live UI/runtime proof — subject truth: pnpm stability:pack:quick"
+    steps:
+      - kind: fileExists
+        path: docs/runbooks/stability-regression-pack.md
+      - kind: fileExists
+        path: package.json
+
+  - id: vectis-deal-loop-smoke
+    title: Desktop deal-loop smoke (guided builder)
+    defaultProofTier: t0
+    proves: [solo-client-deal-loop]
+    doesNotProve:
+      - production-keys
+      - field-counterparty
+      - "T0 fileExists wiring is not live UI/runtime proof — subject truth: pnpm desktop:deal-loop:smoke"
+    steps:
+      - kind: fileExists
+        path: docs/client/testing-without-users.md
+      - kind: fileExists
+        path: apps/desktop/package.json
+
+  - id: vectis-r2-exchange-drill
+    title: R2 HTTP exchange drill
+    defaultProofTier: t0
+    proves: [http-exchange-path]
+    doesNotProve:
+      - fixture-ingest-only
+      - "T0 fileExists wiring is not live UI/runtime proof — subject truth: pnpm r2:exchange-drill"
+    steps:
+      - kind: fileExists
+        path: docs/runbooks/r2-exchange-runbook.md
+
+  - id: vectis-ab-matrix-coverage
+    title: Abuse matrix + invalid fixtures present
+    defaultProofTier: t0
+    proves: [ab-matrix-documented]
+    doesNotProve: [all-ab-ids-live-in-studio]
+    steps:
+      - kind: fileExists
+        path: docs/v0/v0-abuse-gaming-test-matrix.md
+      - kind: fileExists
+        path: fixtures/invalid/bad-signature.jsonl

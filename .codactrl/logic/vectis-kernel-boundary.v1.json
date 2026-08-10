@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "codactrl.functional.logic@1.0.0",
+  "specId": "vectis-kernel-boundary",
+  "title": "Vectis — kernel boundary + security hygiene invariants",
+  "version": "1.0.0",
+  "maintainerNotes": "CodaCtrl FLS overlay. Protocol AB-* remain in Vectis fixtures; these invariants catch client/docs drift and SOC-05 semantic gaps.",
+  "truthLayers": [
+    {
+      "id": "kernel",
+      "label": "Rust kernel / vectis-node",
+      "authority": "network",
+      "mayGateSend": true,
+      "mayGateNavigation": false
+    },
+    {
+      "id": "client_ui",
+      "label": "Web/desktop client",
+      "authority": "local_intent",
+      "mayGateNavigation": true
+    }
+  ],
+  "gatePolicy": {
+    "productNavigation": {
+      "forbidPredicates": [],
+      "description": "Client may guide UX but must not invent settlement outcomes"
+    },
+    "productSend": {
+      "allowPredicates": ["kernel_accepted"],
+      "description": "Signed events accepted only via node API"
+    }
+  },
+  "owners": [
+    {
+      "concern": "settlement_authority",
+      "canonical": "crates/",
+      "forbiddenParallelWriters": ["apps/web/"]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-VTX-001",
+      "title": "Client must not reimplement settlement / escrow state machine",
+      "kind": "static",
+      "severity": "p0",
+      "rule": "RG-VTX-NO-CLIENT-SETTLEMENT",
+      "scope": ["apps/web/**", "apps/desktop/**"],
+      "forbid": ["settleEscrowLocally", "forgeSettlement", "localEscrowBalance"],
+      "exceptions": []
+    },
+    {
+      "id": "INV-VTX-002",
+      "title": "artifactHash presence must not be treated as CI correctness (SOC-05)",
+      "kind": "static",
+      "severity": "p1",
+      "rule": "RG-VTX-HASH-NOT-CI",
+      "scope": ["apps/web/**", "docs/**"],
+      "forbid": ["ciPassed.*artifactHash", "artifactHashImpliesGreen"],
+      "exceptions": []
+    },
+    {
+      "id": "INV-VTX-003",
+      "title": "Health responses must not expose peers secrets (AB-13)",
+      "kind": "static",
+      "severity": "p0",
+      "rule": "RG-VTX-HEALTH-NO-SECRETS",
+      "scope": ["crates/**", "apps/**"],
+      "forbid": ["peers.json.*health", "readToken.*health"],
+      "exceptions": ["api_health_endpoint_does_not_leak"]
+    }
+  ]
+}

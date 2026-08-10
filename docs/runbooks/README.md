@@ -7,9 +7,11 @@ Operator install, deployment, backup, security, and recurring cadence.
 | [operator-quickstart.md](operator-quickstart.md) | Zero-to-running node |
 | [zero-capital-operator-runbook.md](zero-capital-operator-runbook.md) | Production on own hardware (no VPS) — ZC-1..ZC-4 |
 | [zero-capital-cold-start-checklist.md](zero-capital-cold-start-checklist.md) | Post-reboot bring-up: health → backup → join/halo |
+| [zero-capital-zc2-field-checklist.md](zero-capital-zc2-field-checklist.md) | Second-device pin (LAN/Tailscale) — people/device gated |
 | [stability-regression-pack.md](stability-regression-pack.md) | Day-to-day operable closeout + maintainer habit triggers |
 | [staged-exchange-operator-runbook.md](staged-exchange-operator-runbook.md) | Staged digital vs offline one-shot deals |
 | [operator-security-guide.md](operator-security-guide.md) | Keys, TLS, SOC-01 |
+| [codactrl-studio-runbook.md](codactrl-studio-runbook.md) | Optional CodaCtrl Studio overlay (use cases + security hygiene) |
 | [operator-backup-runbook.md](operator-backup-runbook.md) | Backup and restore |
 | [r2-persistent-deployment-runbook.md](r2-persistent-deployment-runbook.md) | Persistent host deploy |
 | [r2-exchange-runbook.md](r2-exchange-runbook.md) | Exchange drill |

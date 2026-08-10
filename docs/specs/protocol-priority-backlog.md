@@ -40,18 +40,21 @@ R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-c
 1. **Zero-capital operator topologies (locked)** — [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) · [../runbooks/zero-capital-operator-runbook.md](../runbooks/zero-capital-operator-runbook.md) · post-reboot: [../runbooks/zero-capital-cold-start-checklist.md](../runbooks/zero-capital-cold-start-checklist.md) (`pnpm zc:cold-start`)
 2. **Staged exchange practice (locked)** — [value-layers-design.md](value-layers-design.md) · [staged-exchange-practice-design.md](staged-exchange-practice-design.md) · [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md) (`pnpm sx:s5`)
 3. **Stability regression pack (habit)** — [../runbooks/stability-regression-pack.md](../runbooks/stability-regression-pack.md) (`pnpm stability:pack:quick` after reboot / band-done / weekly)
-4. Android NFC device smoke (optional) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
-5. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
-6. R7-M1 iOS scaffold — **deferred** until macOS host
-7. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
+4. Android NFC device smoke (optional, **hardware-gated / parked until phone+tag**) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md) · units: `pnpm r9:nfc:read-unit` / `pnpm r9:nfc:write-unit`
+5. **ZC-2 field pin** (second device) — [../runbooks/zero-capital-zc2-field-checklist.md](../runbooks/zero-capital-zc2-field-checklist.md)
+6. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
+7. R7-M1 iOS scaffold — **deferred** until macOS host
+8. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
 
 **Solo stage note (July 2026):** R9 + R6-PD maintainer bands are complete without field testers or macOS. Production default is participant-hosted (ZC); resume deferred items when hardware/people appear.
 
 ## Explicit non-goals (current band)
 
-- CodaCtrl / heavy UI validation loops
 - Fiat on-ramps or transferable credits
 - Human arbitration in kernel
+- **Blocking** protocol work on CodaCtrl / heavy UI validation loops
+
+**Optional overlay:** CodaCtrl Studio may be used for use-case orientation, dual-window client capture, FLS, and security-hygiene sandbox T0 — see [../runbooks/codactrl-studio-runbook.md](../runbooks/codactrl-studio-runbook.md). Protocol AB/SCN fixtures remain authoritative; Studio does not gate R* completion.
 
 ## Related docs
 

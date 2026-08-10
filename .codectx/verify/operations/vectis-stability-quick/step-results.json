@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "kind": "fileExists",
+    "target": "docs/runbooks/stability-regression-pack.md",
+    "ok": true
+  },
+  {
+    "index": 1,
+    "kind": "fileExists",
+    "target": "package.json",
+    "ok": true
+  }
+]

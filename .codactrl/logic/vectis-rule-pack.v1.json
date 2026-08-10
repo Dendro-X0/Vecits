@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "codactrl.functional.logic.rulepack@1.0.0",
+  "rulePackId": "vectis-static-v1",
+  "title": "Vectis static RG rules",
+  "staticRules": [
+    {
+      "id": "RG-VTX-NO-CLIENT-SETTLEMENT",
+      "patternType": "CONTRACT_DRIFT",
+      "description": "Client must not invent local settlement helpers",
+      "detector": "regex",
+      "expressions": [
+        "settleEscrowLocally",
+        "forgeSettlement",
+        "localEscrowBalance\\s*="
+      ],
+      "scopeGlobs": ["apps/web/**", "apps/desktop/**", "packages/**"],
+      "excludeGlobs": ["**/*.test.ts", "**/*.test.tsx", "**/node_modules/**"],
+      "exceptions": [],
+      "mapsToInvariants": ["INV-VTX-001"]
+    },
+    {
+      "id": "RG-VTX-HASH-NOT-CI",
+      "patternType": "CONTRACT_DRIFT",
+      "description": "Do not equate artifactHash with CI green (SOC-05)",
+      "detector": "regex",
+      "expressions": [
+        "artifactHashImpliesGreen",
+        "ciPassed.*artifactHash",
+        "hashMeansCiPassed"
+      ],
+      "scopeGlobs": ["apps/web/**", "apps/desktop/**", "docs/**"],
+      "excludeGlobs": ["**/node_modules/**", "docs/v0/**"],
+      "exceptions": ["SOC-05"],
+      "mapsToInvariants": ["INV-VTX-002"]
+    },
+    {
+      "id": "RG-VTX-HEALTH-NO-SECRETS",
+      "patternType": "GATE",
+      "description": "Health handlers must not serialize peers read tokens",
+      "detector": "regex",
+      "expressions": [
+        "health.*read_token",
+        "peers\\.json.*into_health",
+        "HealthResponse\\s*\\{[^}]*readToken"
+      ],
+      "scopeGlobs": ["crates/**", "apps/**"],
+      "excludeGlobs": ["**/tests/**", "**/*leak*"],
+      "exceptions": ["api_health_endpoint_does_not_leak"],
+      "mapsToInvariants": ["INV-VTX-003"]
+    }
+  ],
+  "runtimeRules": []
+}

@@ -34,7 +34,10 @@ This file tracks high-level progress over time.
   - **R9-H1 / R9-G3:** join confirm + LAN honesty labels (`pnpm r9:halo:join-unit`)
   - **R9-H2 / R9-G4:** halo → upstream pull smoke (`pnpm r9:halo:smoke`)
   - **R9-G / R9-G5:** regression closeout (`pnpm r9:g5`) — **R9 sign-off** (maintainer smoke)
-  - **Stage archived (solo):** no counterparty / no macOS. Optional later: Android NFC device smoke. Deferred: field proof, iOS.
+  - **Stage archived (solo):** no counterparty / no macOS.
+  - **NFC device smoke:** checklist ready in `docs/runbooks/r9-nfc-operator-runbook.md`; **parked** until Android + writable tag (`adb` absent on maintainer host). Units green: `pnpm r9:nfc:read-unit` / `pnpm r9:nfc:write-unit`.
+  - **ZC-2 field:** checklist `docs/runbooks/zero-capital-zc2-field-checklist.md` — ready when a second device exists.
+  - Deferred: R6-PD field proof, iOS.
 - **R6-PD post-deployment community lane proof (July 2026):**
   - Spec locked (`docs/specs/r6-post-deployment-proof-spec.md`) — maintainer band; field proof deferred
   - `R6-PD-A` readiness · `R6-PD-B` documentation drill · `R6-PD-C` tooling smoke — **pass** (re-verified)

@@ -1,0 +1,100 @@
+# verify.scenarios.yaml — Vectis subject (CodaCtrl Verify)
+# Schema: verify.scenarios@1.0.0
+# Guide: CodaCtrl docs/studio/VECTIS-SUBJECT.md · BRING-YOUR-APP.md
+#
+# T0 = wiring/presence (Studio can run without live node).
+# Behavioral use cases + AB matrix stay on Vectis scripts/fixtures;
+# map IDs in .codactrl/USE-CASE-MAP.md and sandbox catalogs.
+
+schemaVersion: "1.0.0"
+scenarios:
+  - id: vectis-kernel-crate-present
+    title: Rust kernel / node crates present
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [use-case, foundation]
+    steps:
+      - kind: fileExists
+        path: Cargo.toml
+      # fileExists is file-only after CodaCtrl upgrade (dirs fail as "missing file")
+      - kind: fileExists
+        path: crates/node/Cargo.toml
+
+  - id: vectis-web-client-present
+    title: Next.js web client present
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [use-case, client]
+    steps:
+      - kind: fileExists
+        path: apps/web/package.json
+
+  - id: vectis-desktop-present
+    title: Desktop shell present
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [use-case, client]
+    steps:
+      - kind: fileExists
+        path: apps/desktop/package.json
+
+  - id: vectis-protocol-fixtures-present
+    title: Protocol fixtures tree present (SCN/AB source of truth)
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [security, fixtures]
+    steps:
+      # fileExists is file-only (dirs fail); pin one valid + one invalid fixture
+      - kind: fileExists
+        path: fixtures/valid/marketplace-accept.jsonl
+      - kind: fileExists
+        path: fixtures/invalid/bad-signature.jsonl
+
+  - id: vectis-abuse-matrix-doc-present
+    title: Abuse/gaming matrix documented
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [security]
+    steps:
+      - kind: fileExists
+        path: docs/v0/v0-abuse-gaming-test-matrix.md
+
+  - id: vectis-security-resilience-spec-present
+    title: Security & resilience spec present
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [security]
+    steps:
+      - kind: fileExists
+        path: docs/specs/security-resilience-spec.md
+
+  - id: vectis-solo-testing-playbook-present
+    title: Solo testing-without-users playbook present
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [use-case, client]
+    steps:
+      - kind: fileExists
+        path: docs/client/testing-without-users.md
+
+  - id: vectis-codactrl-sandbox-present
+    title: CodaCtrl hostile sandbox catalogs installed
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [security, stress]
+    steps:
+      - kind: fileExists
+        path: .codactrl/sandbox/sandbox.catalog.yaml
+      - kind: fileExists
+        path: .codactrl/sandbox/hygiene.catalog.yaml
+
+  - id: vectis-fls-logic-present
+    title: Functional logic specs installed under .codactrl/logic
+    defaultTier: t0
+    adapter: verify.scenarios.yaml
+    tags: [fls]
+    steps:
+      - kind: fileExists
+        path: .codactrl/logic/vectis-kernel-boundary.v1.json
+      - kind: fileExists
+        path: .codactrl/logic/vectis-rule-pack.v1.json

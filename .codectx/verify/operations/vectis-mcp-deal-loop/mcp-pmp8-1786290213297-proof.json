@@ -1,0 +1,98 @@
+{
+  "schema": "vectis.mcp-pmp8-settle-split.proof@0.1.0",
+  "mode": "pure-mcp",
+  "band": "PMP8",
+  "path": "settle-split",
+  "pureMcpDisputeSettle": true,
+  "reason": "Dual-session Aug 9/10 PMP8 guided dispute: offer→order→escrow→delivery via MCP, then buyer ServiceDispute with references.delivery, then dual ServiceSettle split 40/60. Kernel milestone Settled; order closed. UI Accepted alone is insufficient — invalid replay attempts lacked delivery ref until hydrate + persist fix.",
+  "runId": "mcp-pmp8-1786290213297",
+  "offerId": "mcp-pmp8-1786290213297-offer",
+  "orderId": "mcp-pmp8-1786290213297-order",
+  "milestoneId": "m1",
+  "escrowNonce": "mcp-buyer-1786290213297",
+  "settleOutcome": "split",
+  "buyerRefundCredits": 40,
+  "providerRewardCredits": 60,
+  "offerEventId": "df474b8374577261a1c469c094ffb1e97c1e53bd129435f025734aa85fc6885a",
+  "orderEventId": "83e0a1e65ef9df8658bf5abd6bd3b557815db3660b87540526561b45cb771ab1",
+  "escrowEventId": "927014be5a4cdd65c69a8879fafc32c3dff5eb2f592ce268a40f3d851f81dc91",
+  "deliveryEventId": "21c86c9ded441949ff69daf71a5020246f91ea107d91b42e1b9472769bde7e87",
+  "disputeEventId": "ba4c83d612395af5523b370ae5411068d4e5b83677a39eaaa134e97846789fc9",
+  "buyerSettleEventId": "382d706758c23ff85e3769661090f9b50af06e5d0e206e6a73c40b6d0ca7ede6",
+  "providerSettleEventId": "2df3a5ab071360a696710ed65cfd6ca49b13c810b36ba6159b90d7669d0d0136",
+  "invalidDisputeAttempts": [
+    "d13dfdc3b79b9b949612182b7f8233b177d0c00dfffe725d84e1dcc7ec2ab4e3",
+    "7a97c9d8f47170df8998a3cb36bee5644e642481db699fadb27db5c55ed64849",
+    "28d6ce350b916b3bf4674e1e1a8f99eb06e3bafd4cd9780e07efc8e4c3b5a6e0",
+    "4b64593ca5be7059ee674f1917c1bd45357e0c09a67a9700d43efc44e5417267",
+    "2ba072aaaffa4ef56bda230dcd3dafaf17497d0e14ac2f15d50ac9d1bd805853"
+  ],
+  "invalidReason": "MISSING_REFERENCE missing required reference `delivery`",
+  "steps": {
+    "offer": { "via": "mcp", "ok": true },
+    "order": { "via": "mcp", "ok": true, "milestoneId": "m1" },
+    "escrow": { "via": "mcp", "ok": true, "funded_amount": 100 },
+    "delivery": { "via": "mcp", "ok": true },
+    "dispute": {
+      "via": "mcp",
+      "ok": true,
+      "referencesDelivery": true,
+      "kernelStatus": "Disputed"
+    },
+    "settleBuyer": {
+      "via": "mcp",
+      "ok": true,
+      "outcome": "split",
+      "refund": 40,
+      "reward": 60,
+      "referencesDispute": true,
+      "kernelStatus": "SettlementPending"
+    },
+    "settleProvider": {
+      "via": "mcp",
+      "ok": true,
+      "outcome": "split",
+      "refund": 40,
+      "reward": 60,
+      "referencesDispute": true,
+      "kernelStatus": "Settled"
+    },
+    "kernelAssert": {
+      "via": "curl",
+      "orderStatus": "closed",
+      "milestoneStatus": "Settled",
+      "pass": true
+    }
+  },
+  "kernel": {
+    "orderStatus": "closed",
+    "milestoneStatus": "Settled",
+    "milestoneId": "m1",
+    "funded_amount": 100,
+    "buyer_refund_credits": 40,
+    "provider_reward_credits": 60
+  },
+  "sessions": {
+    "providerPre": "csess-d7814be3c96e",
+    "buyerPre": "csess-e90d00629c58",
+    "buyerSettle": "csess-114dc4aa4e59",
+    "providerSettle": "csess-9459607f2ff3"
+  },
+  "hardening": [
+    "Persist dispute/settle ref fields in builder storage v8",
+    "Autofill dispute/accept delivery ref from milestone.delivery_event_id",
+    "Transaction preflight requires delivery ref for dispute and dispute ref for settle",
+    "Do not trust UI Accepted by node — verify state/milestone + replay invalid_events"
+  ],
+  "codactrl": {
+    "mcpServer": "user-codactrl-studio",
+    "actionRouting": "studio_client action=client_*",
+    "playwrightMcpDisabled": true
+  },
+  "doesNotProve": [
+    "Field/NFC physical handoff",
+    "SCN/AB cargo proof",
+    "Packaged desktop"
+  ],
+  "completedAt": "2026-08-10T04:42:00Z"
+}

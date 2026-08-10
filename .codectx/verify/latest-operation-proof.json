@@ -1,0 +1,9 @@
+{
+  "operationId": "vectis-deal-loop-smoke",
+  "proofId": "oprun-72a060b5",
+  "proofPath": ".codectx/verify/operations/vectis-deal-loop-smoke/latest-proof.json",
+  "proofTier": "t0",
+  "status": "pass",
+  "stepResultsPath": ".codectx/verify/operations/vectis-deal-loop-smoke/step-results.json",
+  "symptomIds": []
+}

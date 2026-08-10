@@ -1,0 +1,29 @@
+{
+  "schema": "vectis.mcp-deal-loop.proof@1",
+  "runId": "mcp-clean-1785048651231",
+  "claim": "pure-mcp-5-step-close",
+  "doesNotProve": [
+    "Field/NFC",
+    "counterparty hosts",
+    "Studio T0 = AB fixed"
+  ],
+  "transport": "codactrl-mcp-client_*",
+  "sessions": {
+    "provider": "csess-c54ad7df790b",
+    "buyer": "csess-a035061559f4"
+  },
+  "events": {
+    "offer": "4f0d1653845949970f5b7efd326134918d94f160c1d9d385a4fa457fc69cbabb",
+    "order": "7a167247fe0808529b652dc53c8c07668eca5f0f0a12ee3869a5c9a1c1379858",
+    "escrowSpend": "410d30ef51f842c2f8d40fdff9e2cecf31e551b4d3509a9664daa7a6f71de943",
+    "delivery": "939c264954c6b4dcda8c775001fffbc53231720a21385e00154c207c8bb6c996",
+    "accept": "9bae1b24412d420c1cf6007a6baade09594aaad91acabb0bce233db90ac150c7"
+  },
+  "hardening": [
+    "milestone schedule name= attributes",
+    "readMilestoneRowsFromForm on submit",
+    "builder persist v5 includes order/escrow/delivery/accept draft fields",
+    "handleSubmit reads DOM before setState"
+  ],
+  "pruneNote": "client.session.prune still unknown method on daemon; registry soft-close used"
+}

@@ -1,21 +1,19 @@
 {
   "schema": "studio.output.hub.config@1.0.0",
-  "updatedAt": "2026-07-03T06:23:47.904973200+00:00",
+  "updatedAt": "2026-07-24T00:00:00.000Z",
   "modules": {
-    "design": {
-      "enabled": true
-    },
-    "perf": {
-      "enabled": true
-    },
-    "specs": {
-      "enabled": false
-    },
-    "technical": {
-      "enabled": true
-    },
-    "verify": {
-      "enabled": true
-    }
+    "design": { "enabled": true },
+    "perf": { "enabled": true },
+    "specs": { "enabled": false },
+    "technical": { "enabled": true },
+    "verify": { "enabled": true }
+  },
+  "functionalLogic": {
+    "enabled": true,
+    "specPaths": [".codactrl/logic/**/*.json"],
+    "rulePacks": ["vectis-static-v1"],
+    "enforceOn": [],
+    "ignoreInvariantIds": [],
+    "runtimeRequiresCdp": false
   }
 }

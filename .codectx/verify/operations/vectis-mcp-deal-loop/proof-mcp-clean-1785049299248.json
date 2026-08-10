@@ -1,0 +1,36 @@
+{
+  "schema": "vectis.mcp-deal-loop.proof@1",
+  "runId": "mcp-clean-1785049299248",
+  "claim": "pure-mcp-5-step-close",
+  "closed": true,
+  "transport": "codactrl-mcp-client_*",
+  "doesNotProve": [
+    "Field/NFC",
+    "counterparty hosts",
+    "Studio T0 = AB fixed",
+    "client.session.prune RPC"
+  ],
+  "sessions": {
+    "provider": "csess-23005f63c39b",
+    "buyer": "csess-e3bc4d8cf0a9"
+  },
+  "events": {
+    "offer": "4564b21e8e9c9e0d0146be6f62cf2b3f4eaad80061ba922a15632f9c30f688ca",
+    "order": "71d5e5fee5ee25123ac95392bc30f7aa5cd6f9ffa845bb08de2ebd0df47c7615",
+    "escrowSpend": "b3cca98247695680f0327c03a3d64df4b0b012e9ef814f26b3581542faedda1e",
+    "delivery": "0c07ac019d7f7dd8008ace2e01b15dc700ec91c4c8a5f324cb7a8daed88b7754",
+    "accept": "51f5eadc3ca6776a7dc0fb376397e81de3f84449819b80057e472c1147d79e56"
+  },
+  "kernel": {
+    "orderStatus": "closed",
+    "asOf": "2026-07-26T07:05:39Z",
+    "orderHadOfferReference": true
+  },
+  "hardening": [
+    "milestone name= + DOM sync",
+    "persist v6 refs/timestamps",
+    "transaction preflight requires reference event ids",
+    "submit reads DOM before setState; fill then ~2s settle before click"
+  ],
+  "priorFailedRun": "mcp-clean-1785048651231 order missing references.offer"
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "vectis.pmp5.latest@0.1.0",
+  "band": "PMP5",
+  "pureMcpFiveStepClose": true,
+  "runId": "mcp-pure-1786289398043",
+  "orderId": "mcp-pure-1786289398043-order",
+  "proofPath": ".codectx/verify/operations/vectis-mcp-deal-loop/mcp-pure-1786289398043-proof.json",
+  "kernelOrderStatus": "closed",
+  "uiOrderClosed": true,
+  "updatedAt": "2026-08-09T15:38:25.602Z"
+}

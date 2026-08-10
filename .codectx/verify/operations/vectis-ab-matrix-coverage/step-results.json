@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "kind": "fileExists",
+    "target": "docs/v0/v0-abuse-gaming-test-matrix.md",
+    "ok": true
+  },
+  {
+    "index": 1,
+    "kind": "fileExists",
+    "target": "fixtures/invalid/bad-signature.jsonl",
+    "ok": true
+  }
+]

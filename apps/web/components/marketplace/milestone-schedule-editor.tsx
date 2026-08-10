@@ -103,6 +103,7 @@ export function MilestoneScheduleEditor({
             <label style={{ display: "block" }}>
               Milestone ID
               <input
+                name={`milestone.${index}.milestoneId`}
                 value={row.milestoneId}
                 onChange={(event) => patchRow(index, { milestoneId: event.target.value })}
                 style={fieldStyle}
@@ -112,6 +113,7 @@ export function MilestoneScheduleEditor({
             <label style={{ display: "block" }}>
               Amount (credits)
               <input
+                name={`milestone.${index}.amountCredits`}
                 value={row.amountCredits}
                 onChange={(event) => patchRow(index, { amountCredits: event.target.value })}
                 style={fieldStyle}
@@ -121,6 +123,7 @@ export function MilestoneScheduleEditor({
             <label style={{ display: "block" }}>
               Proof format
               <input
+                name={`milestone.${index}.evidenceFormat`}
                 value={row.evidenceFormat}
                 onChange={(event) => patchRow(index, { evidenceFormat: event.target.value })}
                 style={fieldStyle}
@@ -134,6 +137,7 @@ export function MilestoneScheduleEditor({
               <label style={{ display: "block" }}>
                 Deliverable
                 <textarea
+                  name={`milestone.${index}.deliverable`}
                   value={row.deliverable}
                   onChange={(event) => patchRow(index, { deliverable: event.target.value })}
                   style={{ ...fieldStyle, minHeight: "4.5rem", resize: "vertical" }}
@@ -144,6 +148,7 @@ export function MilestoneScheduleEditor({
                 <label style={{ display: "block" }}>
                   Due window
                   <input
+                    name={`milestone.${index}.dueWindow`}
                     value={row.dueWindow}
                     onChange={(event) => patchRow(index, { dueWindow: event.target.value })}
                     style={fieldStyle}
@@ -153,6 +158,7 @@ export function MilestoneScheduleEditor({
                 <label style={{ display: "block" }}>
                   Acceptance criteria
                   <textarea
+                    name={`milestone.${index}.acceptanceCriteria`}
                     value={row.acceptanceCriteria}
                     onChange={(event) => patchRow(index, { acceptanceCriteria: event.target.value })}
                     style={{ ...fieldStyle, minHeight: "4.5rem", resize: "vertical" }}

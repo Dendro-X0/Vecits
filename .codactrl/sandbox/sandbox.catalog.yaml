@@ -1,0 +1,91 @@
+schema: codactrl.sandbox.catalog@0.1.0
+packId: stress.vectis-adapter@1
+title: Vectis proving-ground stress pack (SB2+)
+description: >
+  Maps hostile stress scenarios to Vectis-class surfaces (Rust node + Next
+  client + settlement/transport). Must not mirror Obscur adapter scenario ids.
+  Security-oriented rows point at AB/SOC IDs; kernel proof remains Vectis fixtures.
+architectureClass: node-plus-web-client
+scenarios:
+  - id: stress.vectis.node_kill.recover@1
+    title: vectis-node kill recovers operator health endpoint
+    label: stress
+    tags: [restart]
+    symptomClasses: [node-death, operator-false-green]
+    mapsTo: [RES-01]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 90000
+      maxProcessRestarts: 1
+    steps:
+      - kind: fault
+        fault: process_kill
+        target: daemon
+      - kind: assert
+        assert: health_online
+    artifacts: [digest, log_excerpt]
+
+  - id: stress.vectis.transport_handoff.burst@1
+    title: Transport import/handoff survives rapid client actions
+    label: stress
+    tags: [concurrency, ui, network]
+    symptomClasses: [transport-race, r8-handoff]
+    mapsTo: [R8]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 60000
+      maxActions: 30
+    steps:
+      - kind: fault
+        fault: rapid_interact
+      - kind: assert
+        assert: handoff_consistent
+    artifacts: [digest, screenshot]
+
+  - id: stress.vectis.web_idle_wake@1
+    title: Web client idle/wake keeps marketplace session usable
+    label: stress
+    tags: [ui]
+    symptomClasses: [session-stale, background-throttle]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 180000
+    steps:
+      - kind: fault
+        fault: idle_wake
+      - kind: assert
+        assert: session_usable
+    artifacts: [digest]
+
+  - id: stress.vectis.deal_loop.dual_window@1
+    title: Dual-window deal-loop remains usable under interaction burst
+    label: stress
+    tags: [ui, use-case]
+    symptomClasses: [deal-loop-stall, multiwindow]
+    mapsTo: [SCN-software-fixes, deal-loop]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 120000
+      maxActions: 40
+    steps:
+      - kind: fault
+        fault: rapid_interact
+      - kind: assert
+        assert: builder_steps_progress
+    artifacts: [digest, screenshot]
+
+  - id: stress.vectis.marketplace.accept.burst@1
+    title: Marketplace accept/delivery path survives concurrent UI actions
+    label: stress
+    tags: [ui, use-case]
+    symptomClasses: [settlement-race]
+    mapsTo: [SCN-04, SCN-05, SCN-06]
+    defaultProofTier: [t0]
+    stopCriteria:
+      maxDurationMs: 90000
+    steps:
+      - kind: fault
+        fault: rapid_interact
+      - kind: assert
+        assert: order_state_consistent
+    artifacts: [digest]
