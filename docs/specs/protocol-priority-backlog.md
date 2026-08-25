@@ -29,10 +29,11 @@ Last updated: August 2026
 
 ### Post-R10 — pick non-people-gated work (August 2026)
 
-1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. `OrderAmend`, R3-B5 builder import) as needed
+1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. `OrderAmend`) as needed
 2. **Human counterparty** (`PRG-5` / R6-PD) — **deferred** until a real other person is available (not a project hold)
 3. R10 maintainer invite bar — **done** (`PRG-1`..`PRG-4`); evidence under `target/r10-evidence/`
 4. Tooling — **done** — `pnpm r10:remote:*` + [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md)
+5. R3-B5 web draft import — **done** (absorbed by R7-X1; `pnpm r7:discovery-draft:smoke`)
 
 ### Already complete (do not restart)
 

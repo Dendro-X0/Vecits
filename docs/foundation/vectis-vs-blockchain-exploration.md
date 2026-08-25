@@ -150,7 +150,7 @@ Exploration pauses secondary-market protocol design. **Active product surface** 
 
 | ID | Feature | Notes |
 | --- | --- | --- |
-| `R3-B5` | Discovery bridge → web draft import | deferred; CLI bridge done |
+| `R3-B5` | Discovery bridge → web draft import | completed via R7-X1; `pnpm r7:discovery-draft:smoke` |
 | `R4-C5` | Marketplace UI simplification | deferred post-R2/R3 |
 | `R5+` | Policy pack UX, federation operator views | planned |
 

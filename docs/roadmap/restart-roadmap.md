@@ -131,7 +131,7 @@ Goal: Aperio signals become lane-aware offer drafts ingestible to Vectis.
 | `R3-B2` | `completed` | Signal schema + deterministic IDs | `scripts/fixtures/discovery-signals-golden.json` |
 | `R3-B3` | `completed` | Lane classifier | `DB-2`; `npm run v3:discovery-bridge:smoke` |
 | `R3-B4` | `completed` | Offer draft emitter | `DB-3` smoke; `DB-4` via `npm run v3:discovery-bridge:e2e` |
-| `R3-B5` | `deferred` | Web builder draft import (optional) | operator UX; not R2/R3 gate |
+| `R3-B5` | `completed` | Web builder draft import (optional) | Absorbed by `R7-X1`; `pnpm r7:discovery-draft:smoke` |
 
 Spec reference: `specs/discovery-bridge-spec.md`
 

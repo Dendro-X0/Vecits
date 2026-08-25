@@ -19,6 +19,9 @@ async function main() {
   const importPanel = await readUtf8("apps/web/components/marketplace/discovery-draft-import-panel.tsx");
   const builder = await readUtf8("apps/web/app/components/marketplace-event-builder.tsx");
   const builderPage = await readUtf8("apps/web/app/dashboard/builder/page.tsx");
+  const transactionPanel = await readUtf8(
+    "apps/web/components/dashboard/transaction-builder-panel.tsx"
+  );
 
   if (!/parseDiscoveryDraftJsonl/.test(importLib)) {
     failures.push("discovery-draft-import.ts missing JSONL parser");
@@ -35,8 +38,16 @@ async function main() {
   if (!/non-authoritative|Draft ≠ ingested/i.test(builder)) {
     failures.push("marketplace-event-builder missing non-authoritative draft label");
   }
-  if (!/MarketplaceEventBuilder/.test(builderPage)) {
-    failures.push("dashboard/builder page missing MarketplaceEventBuilder");
+  if (
+    !/MarketplaceEventBuilder/.test(builderPage) &&
+    !(/TransactionBuilderPanel/.test(builderPage) && /MarketplaceEventBuilder/.test(transactionPanel))
+  ) {
+    failures.push(
+      "dashboard/builder page missing MarketplaceEventBuilder (direct or via TransactionBuilderPanel)"
+    );
+  }
+  if (!/showDiscoveryImport/.test(transactionPanel)) {
+    failures.push("transaction-builder-panel missing showDiscoveryImport wiring");
   }
 
   const goldenPath = path.join(

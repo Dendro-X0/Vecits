@@ -107,7 +107,7 @@ Official client integration path:
 | --- | --- | --- |
 | CLI bridge | `npm run v3:discovery-bridge:e2e` | done (DB-4) |
 | Standalone Aperio CLI | R3-B1 | pending (repo access) |
-| Web draft import | R3-B5 | deferred |
+| Web draft import | R3-B5 | completed (via R7-X1) |
 | Marketplace browse UX | R4-C5+ | planned |
 
 Client should label discovery rankings **informational** (SR-7); kernel reputation remains authoritative.
@@ -153,7 +153,7 @@ Embed path: WASM/FFI replay library noted in kernel boundary spec for mobile edg
 | Who runs the node for casual users? | Self-host desktop bundle vs community operator | Desktop bundle ships `vectis-node` supervisor |
 | Default marketplace scope | Maintainer network vs open operator stores | Federated operator stores (Shopify model) |
 | Consultation lanes | New templates vs extend `research`/`documentation` | Template per deliverable type with mandatory artifact hash |
-| Discovery in client | Import JSONL drafts vs live Aperio API | Draft import first (R3-B5), live feed later |
+| Discovery in client | Import JSONL drafts vs live Aperio API | Draft import shipped (R3-B5 / R7-X1); live feed later |
 | Client release channel | Same repo vs `vectis-desktop` / `vectis-mobile` | Monorepo packages sharing `@vectis/sdk-ts` |
 
 ## Phased product sequence (suggested)

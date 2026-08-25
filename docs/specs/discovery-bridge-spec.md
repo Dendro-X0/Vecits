@@ -158,7 +158,7 @@ Minimal shared schema between Aperio and Vectis:
 | `R3-B2` | Signal schema + canonical `signalId` hashing | R3 |
 | `R3-B3` | Lane classifier with golden tests | R3 |
 | `R3-B4` | `signals-to-offers` draft emitter | R3 |
-| `R3-B5` | Web builder import for offer draft JSON | R3 optional |
+| `R3-B5` | Web builder import for offer draft JSON | R3 **done** (via R7-X1) |
 | `R4-B1` | Signed signal envelopes (optional provenance events) | R4 |
 
 ## Verification

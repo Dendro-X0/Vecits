@@ -2251,7 +2251,7 @@ export function MarketplaceEventBuilder({
       {importedDraftMeta ? (
         <div style={{ ...legacyWarningPanelStyle, marginBottom: "0.9rem" }}>
           <p style={{ marginTop: 0, marginBottom: "0.35rem", color: "var(--warning)", fontWeight: 600 }}>
-            Imported draft
+            Imported discovery draft · Draft ≠ ingested offer
           </p>
           <p style={{ marginTop: 0, marginBottom: "0.35rem", opacity: 0.9 }}>
             Classifier lane: <code>{importedDraftMeta.suggestedLane}</code> · serviceType{" "}
@@ -2266,7 +2266,8 @@ export function MarketplaceEventBuilder({
             </p>
           ) : null}
           <p style={{ marginTop: 0, marginBottom: 0, opacity: 0.8, fontSize: "0.92rem" }}>
-            Review the details before you publish. The offer is not live until your node accepts it.
+            Non-authoritative until you sign and the kernel accepts the event. Review fields before
+            publish — the offer is not live until your node accepts it.
           </p>
         </div>
       ) : null}
