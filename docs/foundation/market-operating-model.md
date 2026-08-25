@@ -123,14 +123,15 @@ Subjective satisfaction (“was the work good enough?”) remains **off-protocol
 
 The log is append-only. Parties do not edit prior events; they add new authorized events:
 
-| Intent | v0 mechanism | Notes |
+| Intent | v0 / current mechanism | Notes |
 | --- | --- | --- |
-| New price / scope / deadline | New `ServiceOffer` + new `ServiceOrder` | SOC-02: scope creep → new contract, not chat |
+| New price / scope / deadline (new contract) | New `ServiceOffer` + new `ServiceOrder` | SOC-02: scope creep → new contract, not chat |
+| In-place amount + order expiry | Paired `OrderAmend` before delivery | See [order-amend-design.md](../specs/order-amend-design.md). Escrow delta on match. |
 | Compromise during dispute | Paired matching `ServiceSettle` | Both buyer and provider sign same amounts/outcome |
 | Community rule changes | Forward `PolicyUpdate` | Operator/policy authority; not per-case override |
 | Cancel open milestone | Paired `ServiceCancel` (buyer + provider) before delivery | Full escrow refund; status `Cancelled`. See [order-mutual-cancel-design.md](../specs/order-mutual-cancel-design.md). No silent single-party cancel. |
 
-A dedicated **`OrderAmend`** event kind for mid-deal price/scope rewrite remains **optional future work**. **Mutual cancel** before delivery ships as `ServiceCancel` ([order-mutual-cancel-design.md](../specs/order-mutual-cancel-design.md)).
+Broader in-place rewrite (`evidenceFormat`, add/remove milestones) remains **deferred**. Mutual cancel and amount/expiry amend are separate event kinds.
 
 ### Autonomy without a platform middleman
 

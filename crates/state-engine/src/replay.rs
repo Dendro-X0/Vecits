@@ -8,8 +8,9 @@ use protocol_core::{
     EVIDENCE_FORMAT_PHYSICAL_HANDOFF_DUAL_ACK_V1, Event, EventKind, EventPayload,
     InvalidReasonCode, MintCreditsPayload, P2HRiskBand,
     PolicyUpdatePayload, ServiceAcceptPayload, ServiceCancelPayload, ServiceDeliveryPayload,
-    ServiceDisputePayload, ServiceOfferPayload, ServiceOrderPayload, ServiceSettleOutcome,
-    ServiceSettlePayload, SinkKind, SpendCreditsPayload, VouchPayload, VouchRevokePayload,
+    ServiceDisputePayload, ServiceOfferPayload, ServiceOrderPayload, OrderAmendPayload,
+    ServiceSettleOutcome, ServiceSettlePayload, SinkKind, SpendCreditsPayload, VouchPayload,
+    VouchRevokePayload,
     expected_delivery_mode_for_templated_service, parse_raw_event_str, parse_timestamp,
     reason_code_for_protocol_error, required_evidence_format_for_templated_service, verify_event,
 };
@@ -824,6 +825,13 @@ impl<'a> ReplayContext<'a> {
                     self.require_valid_reference(cancel_id, EventKind::ServiceCancel)?;
                 }
             }
+            EventKind::OrderAmend => {
+                let event_id = expect_reference("order")?;
+                self.require_valid_reference(&event_id, EventKind::ServiceOrder)?;
+                if let Some(amend_id) = references.and_then(|map| map.get("amend")) {
+                    self.require_valid_reference(amend_id, EventKind::OrderAmend)?;
+                }
+            }
         }
 
         Ok(())
@@ -894,6 +902,9 @@ impl<'a> ReplayContext<'a> {
             }
             EventPayload::ServiceCancel(payload) => {
                 self.apply_service_cancel(event, payload, event_time)
+            }
+            EventPayload::OrderAmend(payload) => {
+                self.apply_order_amend(event, payload, event_time)
             }
             EventPayload::PolicyUpdate(payload) => {
                 self.apply_policy_update(event, payload, event_time)
@@ -1826,6 +1837,11 @@ impl<'a> ReplayContext<'a> {
                     cancel_pending_event_id: None,
                     pending_cancel_author: None,
                     cancel_event_id: None,
+                    amend_pending_event_id: None,
+                    pending_amend_author: None,
+                    pending_amend_amount_credits: None,
+                    pending_amend_order_expires_at: None,
+                    amend_event_id: None,
                     disputed_at: None,
                     dispute_timeout_at: None,
                     buyer_refund_credits: None,
@@ -2627,6 +2643,14 @@ impl<'a> ReplayContext<'a> {
                     "first cancel must not reference a prior cancel".into(),
                 ));
             }
+            if milestone_snapshot.amend_pending_event_id.is_some()
+                || milestone_snapshot.status == "AmendPending"
+            {
+                return Err((
+                    InvalidReasonCode::InvalidStateTransition,
+                    "cannot cancel while amend is pending".into(),
+                ));
+            }
             let milestone = self.milestones.get_mut(&key).ok_or_else(|| {
                 (
                     InvalidReasonCode::InvalidStateTransition,
@@ -2697,6 +2721,225 @@ impl<'a> ReplayContext<'a> {
                 .push(ReplayLotRecord {
                     amount: refund_amount,
                     remaining_amount: refund_amount,
+                    minted_at: event_time,
+                    expires_at: event_time + Duration::days(credit_default_expiry_days),
+                    source_event_id: event.event_id.clone(),
+                    last_decay_at: event_time,
+                    demurrage_rate_weekly_bps,
+                });
+        }
+        Ok(())
+    }
+
+    fn apply_order_amend(
+        &mut self,
+        event: &Event,
+        payload: &OrderAmendPayload,
+        event_time: DateTime<Utc>,
+    ) -> Result<(), (InvalidReasonCode, String)> {
+        let (credit_default_expiry_days, demurrage_rate_weekly_bps, max_milestone_credits) = {
+            let policy = self.effective_policy_for_time(event_time).0;
+            (
+                policy.credit_default_expiry_days,
+                policy.demurrage_rate_weekly_bps,
+                policy.max_milestone_credits,
+            )
+        };
+        let actor = self.require_active_identity(&event.author_pub_key)?;
+        let _amended_at = parse_timestamp(&payload.amended_at)
+            .map_err(|_| (InvalidReasonCode::BadTimestamp, "invalid amendedAt".into()))?;
+        let order_expires_at = parse_timestamp(&payload.order_expires_at).map_err(|_| {
+            (
+                InvalidReasonCode::BadTimestamp,
+                "invalid orderExpiresAt".into(),
+            )
+        })?;
+        if order_expires_at <= event_time {
+            return Err((
+                InvalidReasonCode::BadTimestamp,
+                "orderExpiresAt must be later than createdAt".into(),
+            ));
+        }
+        if payload.amount_credits == 0 {
+            return Err((
+                InvalidReasonCode::InvalidPayload,
+                "amountCredits must be greater than zero".into(),
+            ));
+        }
+        if payload.amount_credits > max_milestone_credits {
+            return Err((
+                InvalidReasonCode::PolicyViolation,
+                format!("amountCredits exceeds max_milestone_credits ({max_milestone_credits})"),
+            ));
+        }
+        let order_reference = event
+            .references
+            .as_ref()
+            .and_then(|refs| refs.get("order"))
+            .ok_or_else(|| {
+                (
+                    InvalidReasonCode::MissingReference,
+                    "missing order reference".into(),
+                )
+            })?;
+        let order = self.orders.get(&payload.order_id).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "order does not exist".into(),
+            )
+        })?;
+        if order.created_event_id != *order_reference {
+            return Err((
+                InvalidReasonCode::MissingReference,
+                "order reference does not match order".into(),
+            ));
+        }
+        let buyer_pub_key = order.buyer_pub_key.clone();
+        if actor != order.buyer_pub_key && actor != order.provider_pub_key {
+            return Err((
+                InvalidReasonCode::UnauthorizedActor,
+                "amend actor must be buyer or provider".into(),
+            ));
+        }
+        if !order.milestones.contains_key(&payload.milestone_id) {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone is not part of order".into(),
+            ));
+        }
+        let key = milestone_key(&payload.order_id, &payload.milestone_id);
+        let milestone_snapshot = self.milestones.get(&key).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone state is missing".into(),
+            )
+        })?;
+        let amend_reference = event
+            .references
+            .as_ref()
+            .and_then(|refs| refs.get("amend").cloned());
+
+        if matches!(
+            milestone_snapshot.status.as_str(),
+            "Open" | "PartiallyFunded" | "Funded"
+        ) {
+            if amend_reference.is_some() {
+                return Err((
+                    InvalidReasonCode::InvalidStateTransition,
+                    "first amend must not reference a prior amend".into(),
+                ));
+            }
+            if milestone_snapshot.cancel_pending_event_id.is_some() {
+                return Err((
+                    InvalidReasonCode::InvalidStateTransition,
+                    "cannot amend while cancel is pending".into(),
+                ));
+            }
+            let milestone = self.milestones.get_mut(&key).ok_or_else(|| {
+                (
+                    InvalidReasonCode::InvalidStateTransition,
+                    "milestone state is missing".into(),
+                )
+            })?;
+            milestone.status = "AmendPending".into();
+            milestone.amend_pending_event_id = Some(event.event_id.clone());
+            milestone.pending_amend_author = Some(actor);
+            milestone.pending_amend_amount_credits = Some(payload.amount_credits);
+            milestone.pending_amend_order_expires_at = Some(order_expires_at);
+            return Ok(());
+        }
+
+        if milestone_snapshot.status != "AmendPending" {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone is not amendable".into(),
+            ));
+        }
+
+        let amend_reference = amend_reference.ok_or_else(|| {
+            (
+                InvalidReasonCode::MissingReference,
+                "missing amend reference".into(),
+            )
+        })?;
+        if milestone_snapshot.amend_pending_event_id.as_deref() != Some(amend_reference.as_str()) {
+            return Err((
+                InvalidReasonCode::MissingReference,
+                "amend reference does not match pending amend".into(),
+            ));
+        }
+        let pending_author = milestone_snapshot
+            .pending_amend_author
+            .clone()
+            .ok_or_else(|| {
+                (
+                    InvalidReasonCode::InvalidStateTransition,
+                    "pending amend author missing".into(),
+                )
+            })?;
+        if pending_author == actor {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "second amend must come from counterparty".into(),
+            ));
+        }
+        if milestone_snapshot.pending_amend_amount_credits != Some(payload.amount_credits)
+            || milestone_snapshot.pending_amend_order_expires_at != Some(order_expires_at)
+        {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "amend handshake does not match pending proposal".into(),
+            ));
+        }
+
+        let funded_amount = milestone_snapshot.funded_amount;
+        let new_amount = payload.amount_credits;
+        let refund_excess = funded_amount.saturating_sub(new_amount);
+        let next_funded = funded_amount.min(new_amount);
+        let next_status = if next_funded == 0 {
+            "Open"
+        } else if next_funded < new_amount {
+            "PartiallyFunded"
+        } else {
+            "Funded"
+        };
+
+        {
+            let order = self.orders.get_mut(&payload.order_id).ok_or_else(|| {
+                (
+                    InvalidReasonCode::InvalidStateTransition,
+                    "order does not exist".into(),
+                )
+            })?;
+            order.order_expires_at = order_expires_at;
+            if let Some(spec) = order.milestones.get_mut(&payload.milestone_id) {
+                spec.amount_credits = new_amount;
+            }
+        }
+
+        let milestone = self.milestones.get_mut(&key).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone state is missing".into(),
+            )
+        })?;
+        milestone.amount_credits = new_amount;
+        milestone.funded_amount = next_funded;
+        milestone.status = next_status.into();
+        milestone.amend_event_id = Some(event.event_id.clone());
+        milestone.amend_pending_event_id = None;
+        milestone.pending_amend_author = None;
+        milestone.pending_amend_amount_credits = None;
+        milestone.pending_amend_order_expires_at = None;
+
+        if refund_excess > 0 {
+            self.normalize_lots(&buyer_pub_key, event_time);
+            self.lots
+                .entry(buyer_pub_key.clone())
+                .or_default()
+                .push(ReplayLotRecord {
+                    amount: refund_excess,
+                    remaining_amount: refund_excess,
                     minted_at: event_time,
                     expires_at: event_time + Duration::days(credit_default_expiry_days),
                     source_event_id: event.event_id.clone(),
@@ -3222,6 +3465,8 @@ impl<'a> ReplayContext<'a> {
                         settlement_pending_event_id: record.settlement_pending_event_id.clone(),
                         cancel_pending_event_id: record.cancel_pending_event_id.clone(),
                         cancel_event_id: record.cancel_event_id.clone(),
+                        amend_pending_event_id: record.amend_pending_event_id.clone(),
+                        amend_event_id: record.amend_event_id.clone(),
                         dispute_timeout_at: record
                             .dispute_timeout_at
                             .map(|timestamp| timestamp.to_rfc3339()),
@@ -3489,6 +3734,7 @@ fn summarize_valid_event(event: &Event) -> ReplayValidEventRecord {
         EventPayload::ServiceDispute(payload) => Some(payload.order_id.clone()),
         EventPayload::ServiceSettle(payload) => Some(payload.order_id.clone()),
         EventPayload::ServiceCancel(payload) => Some(payload.order_id.clone()),
+        EventPayload::OrderAmend(payload) => Some(payload.order_id.clone()),
         _ => None,
     };
     let milestone_id = match &event.payload {
@@ -3497,6 +3743,7 @@ fn summarize_valid_event(event: &Event) -> ReplayValidEventRecord {
         EventPayload::ServiceDispute(payload) => Some(payload.milestone_id.clone()),
         EventPayload::ServiceSettle(payload) => Some(payload.milestone_id.clone()),
         EventPayload::ServiceCancel(payload) => Some(payload.milestone_id.clone()),
+        EventPayload::OrderAmend(payload) => Some(payload.milestone_id.clone()),
         _ => None,
     };
 

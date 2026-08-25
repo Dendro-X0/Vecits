@@ -379,7 +379,8 @@ const BUILDER_EVENT_KINDS: SignedEnvelope["kind"][] = [
   "ServiceAccept",
   "ServiceDispute",
   "ServiceSettle",
-  "ServiceCancel"
+  "ServiceCancel",
+  "OrderAmend"
 ];
 
 function readFormControlValue(form: HTMLFormElement, name: string, fallback: string): string {

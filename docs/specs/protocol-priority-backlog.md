@@ -16,24 +16,26 @@ Last updated: August 2026
 | **P2** | Procedure guards GAP-04..06 (delivery, duplicate accept) | **Done** | SCN-16 |
 | **P3** | Procedure guards GAP-07 (settle amount edges) | **Done** | SCN-16 |
 | **P3** | Trust bootstrap + credits path spec | **Done** | `trust-bootstrap-and-credits-path-spec.md`, SCN-17 |
-| **P4** | Mutual cancel (`ServiceCancel`) | **Done** | [order-mutual-cancel-design.md](order-mutual-cancel-design.md); `marketplace-mutual-cancel.jsonl` + invalid siblings. `OrderAmend` term rewrite still deferred |
+| **P4** | Mutual cancel (`ServiceCancel`) | **Done** | [order-mutual-cancel-design.md](order-mutual-cancel-design.md); `marketplace-mutual-cancel.jsonl` + invalid siblings |
+| **P4b** | Order amend amount + expiry (`OrderAmend`) | **Done** | [order-amend-design.md](order-amend-design.md); decrease/increase fixtures. Broader term rewrite still deferred |
 | **P5** | GAP-08 offline `physical-handoff` happy path | **Done** | `marketplace-physical-handoff-accept.jsonl`, SCN-18 |
 | **P6** | Federation-scale discovery + P2H issuance limits | **Done** | R5-F1..F4 complete for v1 federation band |
 | **P3** | Aperio Rust engine → Vectis import (`R3-B1`) | **Done** | `aperio-engine-integration.md`, `v3:aperio-import.mjs` |
 
 ## Reference lane procedure coverage
 
-**GAP-01..08 + SCN-19 + P4 mutual cancel: closed for v1.** `31 invalid`, `25 valid` fixtures — `cargo run --bin cli -- fixtures run`.
+**GAP-01..08 + SCN-19 + P4 cancel + OrderAmend v1: closed for v1.** `38 invalid`, `27 valid` fixtures — `cargo run --bin cli -- fixtures run`.
 
 ## Suggested next slices (pick one)
 
 ### Post-R10 — pick non-people-gated work (August 2026)
 
-1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. `OrderAmend`) as needed
+1. **Non-people-gated backlog** — polish / deferred protocol items as needed
 2. **Human counterparty** (`PRG-5` / R6-PD) — **deferred** until a real other person is available (not a project hold)
 3. R10 maintainer invite bar — **done** (`PRG-1`..`PRG-4`); evidence under `target/r10-evidence/`
 4. Tooling — **done** — `pnpm r10:remote:*` + [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md)
 5. R3-B5 web draft import — **done** (absorbed by R7-X1; `pnpm r7:discovery-draft:smoke`)
+6. OrderAmend v1 (amount + expiry) — **done** — [order-amend-design.md](order-amend-design.md); broader evidence/milestone-shape rewrite still deferred
 
 ### Already complete (do not restart)
 

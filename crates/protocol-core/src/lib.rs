@@ -459,6 +459,18 @@ pub struct ServiceCancelPayload {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct OrderAmendPayload {
+    pub order_id: String,
+    pub milestone_id: String,
+    pub amount_credits: u64,
+    pub order_expires_at: String,
+    pub amended_at: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason_hash: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PolicySnapshotPayload {
     pub version: String,
     pub clock_skew_seconds: i64,
@@ -545,6 +557,7 @@ pub enum EventKind {
     ServiceDispute,
     ServiceSettle,
     ServiceCancel,
+    OrderAmend,
     PolicyUpdate,
 }
 
@@ -568,6 +581,7 @@ impl FromStr for EventKind {
             "ServiceDispute" => Ok(Self::ServiceDispute),
             "ServiceSettle" => Ok(Self::ServiceSettle),
             "ServiceCancel" => Ok(Self::ServiceCancel),
+            "OrderAmend" => Ok(Self::OrderAmend),
             "PolicyUpdate" => Ok(Self::PolicyUpdate),
             _ => Err(ProtocolError::UnsupportedKind),
         }
@@ -598,6 +612,7 @@ pub fn is_marketplace_kind_name(kind: &str) -> bool {
             | "ServiceDispute"
             | "ServiceSettle"
             | "ServiceCancel"
+            | "OrderAmend"
     )
 }
 
@@ -631,6 +646,7 @@ impl Display for EventKind {
             Self::ServiceDispute => "ServiceDispute",
             Self::ServiceSettle => "ServiceSettle",
             Self::ServiceCancel => "ServiceCancel",
+            Self::OrderAmend => "OrderAmend",
             Self::PolicyUpdate => "PolicyUpdate",
         };
 
@@ -655,6 +671,7 @@ pub enum EventPayload {
     ServiceDispute(ServiceDisputePayload),
     ServiceSettle(ServiceSettlePayload),
     ServiceCancel(ServiceCancelPayload),
+    OrderAmend(OrderAmendPayload),
     PolicyUpdate(PolicyUpdatePayload),
 }
 
@@ -676,6 +693,7 @@ impl EventPayload {
             Self::ServiceDispute(_) => EventKind::ServiceDispute,
             Self::ServiceSettle(_) => EventKind::ServiceSettle,
             Self::ServiceCancel(_) => EventKind::ServiceCancel,
+            Self::OrderAmend(_) => EventKind::OrderAmend,
             Self::PolicyUpdate(_) => EventKind::PolicyUpdate,
         }
     }
@@ -697,6 +715,7 @@ impl EventPayload {
             Self::ServiceDispute(payload) => serde_json::to_value(payload),
             Self::ServiceSettle(payload) => serde_json::to_value(payload),
             Self::ServiceCancel(payload) => serde_json::to_value(payload),
+            Self::OrderAmend(payload) => serde_json::to_value(payload),
             Self::PolicyUpdate(payload) => serde_json::to_value(payload),
         }?;
 
@@ -1262,6 +1281,26 @@ pub fn validate_static(event: &Event) -> Result<(), ProtocolError> {
             }
             parse_timestamp(&payload.cancelled_at)?;
         }
+        EventPayload::OrderAmend(payload) => {
+            if payload.order_id.is_empty() || payload.milestone_id.is_empty() {
+                return Err(ProtocolError::InvalidPayload(
+                    "orderId and milestoneId are required".into(),
+                ));
+            }
+            if payload.amount_credits == 0 {
+                return Err(ProtocolError::InvalidPayload(
+                    "amountCredits must be greater than zero".into(),
+                ));
+            }
+            parse_timestamp(&payload.amended_at)?;
+            let order_expires_at = parse_timestamp(&payload.order_expires_at)?;
+            let created_at = parse_timestamp(&event.created_at)?;
+            if order_expires_at <= created_at {
+                return Err(ProtocolError::InvalidPayload(
+                    "orderExpiresAt must be later than createdAt".into(),
+                ));
+            }
+        }
         EventPayload::PolicyUpdate(payload) => {
             if payload.next_policy_version.is_empty() {
                 return Err(ProtocolError::InvalidPayload(
@@ -1673,6 +1712,10 @@ fn parse_payload(kind: EventKind, payload: Value) -> Result<EventPayload, Protoc
                 .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
         ),
         EventKind::ServiceCancel => EventPayload::ServiceCancel(
+            serde_json::from_value(payload)
+                .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
+        ),
+        EventKind::OrderAmend => EventPayload::OrderAmend(
             serde_json::from_value(payload)
                 .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
         ),

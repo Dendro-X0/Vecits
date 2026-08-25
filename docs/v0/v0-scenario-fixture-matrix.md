@@ -33,6 +33,7 @@ Purpose: convert scenario modeling into executable, fixture-backed checks with e
 | `SCN-18` offline physical-handoff accept | `fixtures/valid/marketplace-physical-handoff-accept.jsonl` | dual-ack delivery + accept closes order under EC-5 template | replay output; order/milestone state reads |
 | `SCN-19` P2H policy activation | `fixtures/valid/policy-update-p2h-activation.jsonl`, `fixtures/invalid/mint-issuance-rate-exceeded.jsonl`, `fixtures/invalid/mint-p2h-risk-band-exceeded.jsonl` | `PolicyUpdate` enables issuance window + P2H band gates; rate/diversity and risk-band rejections are deterministic | `npm run generate:p2h-policy-fixtures`; `cargo run --bin cli -- fixtures run` |
 | `SCN-20` mutual cancel before delivery | `fixtures/valid/marketplace-mutual-cancel.jsonl`, `fixtures/invalid/marketplace-cancel-*.jsonl` | paired `ServiceCancel` refunds escrow and terminals `Cancelled`; post-delivery / same-actor / unauthorized / bad refs reject | [../specs/order-mutual-cancel-design.md](../specs/order-mutual-cancel-design.md); `cargo run --bin cli -- fixtures run` |
+| `SCN-21` order amend amount + expiry | `fixtures/valid/marketplace-order-amend-decrease.jsonl`, `fixtures/valid/marketplace-order-amend-increase.jsonl`, `fixtures/invalid/marketplace-amend-*.jsonl` | paired `OrderAmend` applies amount/expiry with escrow delta; invalid handshake and post-delivery reject | [../specs/order-amend-design.md](../specs/order-amend-design.md); `cargo run --bin cli -- fixtures run` |
 
 ## Minimum gate for Phase 0 close
 

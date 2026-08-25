@@ -28,6 +28,7 @@ Kickoff: July 2026
 20. `production-readiness-requirements.md` — FR-01..FR-14 for production-for-invite (R10)
 21. `remote-e2e-cross-platform-design.md` — remote topologies + XP matrix + evidence schema
 22. `order-mutual-cancel-design.md` — paired `ServiceCancel` before delivery (P4)
+23. `order-amend-design.md` — paired `OrderAmend` amount + order expiry (v1)
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 

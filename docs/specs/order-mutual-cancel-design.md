@@ -62,7 +62,7 @@ References:
 
 ## 5) Explicit non-goals
 
-- `OrderAmend` / changing price, scope, milestones, or deadlines in place
+- Changing price/scope via this event — use `OrderAmend` ([order-amend-design.md](order-amend-design.md)) or new offer/order
 - Cancel after delivery (use dispute / settle / timeout)
 - Single-party cancel
 - Client wizard UI (thin SDK kind string only for this band)
@@ -72,7 +72,7 @@ References:
 | Claim | Allowed when |
 | --- | --- |
 | **Mutual cancel verified** | Valid fixture + `cli fixtures run` green; milestone `Cancelled` with refund |
-| **OrderAmend shipped** | **Never** from this band — still deferred |
+| **OrderAmend shipped** | Separate band — see [order-amend-design.md](order-amend-design.md) |
 
 ## 7) Proof
 

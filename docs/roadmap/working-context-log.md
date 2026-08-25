@@ -6,8 +6,8 @@ Last updated: August 2026
 
 ## Current phase snapshot
 
-- **Active band:** R3-B5 discovery draft import **closed** (absorbed by R7-X1; smoke restored). P4 mutual cancel done. `OrderAmend` still deferred. R10 maintainer invite bar complete (`PRG-1`..`PRG-4`).
-- **Next atomic step:** Non-people-gated backlog (e.g. `OrderAmend`). **`PRG-5` deferred** — no human counterparty; **not** a project hold. Resume R10-F / R6-PD only when a real other person is available.
+- **Active band:** OrderAmend v1 (`amountCredits` + `orderExpiresAt`) **done** — fixtures green (`27` valid / `38` invalid). Broader term rewrite still deferred. P4 cancel + R3-B5 closed. R10 maintainer invite bar complete (`PRG-1`..`PRG-4`).
+- **Next atomic step:** Non-people-gated polish (e.g. cancel/amend client help, docs hygiene). **`PRG-5` deferred** — no human counterparty; **not** a project hold. Resume R10-F / R6-PD only when a real other person is available.
 - **Official client (deal loop + workspace + network surface)** — **shipped** (July 2026). Canonical: `docs/client/ui-contract.md` · `docs/client/client-capabilities.md`. Historical phase records: `docs/archive/frontend-phases/`
 - **In-app help** — `/help` in web client; dev docs in `docs/client/`
 - Active protocol plan: `docs/roadmap/restart-roadmap.md` (R10 added)
