@@ -4,7 +4,7 @@ Purpose: single stack-ranked view of protocol work — what is done, what is nex
 
 Status: `active`
 
-Last updated: July 2026
+Last updated: August 2026
 
 ## Stack (protocol-first)
 
@@ -27,26 +27,28 @@ Last updated: July 2026
 
 ## Suggested next slices (pick one)
 
-### Client (R8 — convenience transport)
+### Post-R10 — pick non-people-gated work (August 2026)
 
-R8 complete — see [r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md).
+1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. P4 `OrderAmend`, R3-B5 builder import) as needed
+2. **Human counterparty** (`PRG-5` / R6-PD) — **deferred** until a real other person is available (not a project hold)
+3. R10 maintainer invite bar — **done** (`PRG-1`..`PRG-4`); evidence under `target/r10-evidence/`
+4. Tooling — **done** — `pnpm r10:remote:*` + [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md)
 
-### Client (R9 — offline transport)
+### Already complete (do not restart)
 
-1. R9 NFC + LAN halo — **R9-G0**..**R9-G5** sign-off (maintainer): [r9-offline-transport-spec.md](r9-offline-transport-spec.md) · `pnpm r9:g5` — field proof optional
+- R8 convenience transport — [r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md)
+- R9 NFC + LAN halo maintainer — `pnpm r9:g5`
+- Zero-capital topologies + staged exchange + stability pack — ZC / SX / `pnpm stability:pack:quick`
 
-### Protocol / deployment
+### Parked / deferred
 
-1. **Zero-capital operator topologies (locked)** — [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) · [../runbooks/zero-capital-operator-runbook.md](../runbooks/zero-capital-operator-runbook.md) · post-reboot: [../runbooks/zero-capital-cold-start-checklist.md](../runbooks/zero-capital-cold-start-checklist.md) (`pnpm zc:cold-start`)
-2. **Staged exchange practice (locked)** — [value-layers-design.md](value-layers-design.md) · [staged-exchange-practice-design.md](staged-exchange-practice-design.md) · [../runbooks/staged-exchange-operator-runbook.md](../runbooks/staged-exchange-operator-runbook.md) (`pnpm sx:s5`)
-3. **Stability regression pack (habit)** — [../runbooks/stability-regression-pack.md](../runbooks/stability-regression-pack.md) (`pnpm stability:pack:quick` after reboot / band-done / weekly)
-4. Android NFC device smoke (optional, **hardware-gated / parked until phone+tag**) — [runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md) · units: `pnpm r9:nfc:read-unit` / `pnpm r9:nfc:write-unit`
-5. **ZC-2 field pin** (second device) — [../runbooks/zero-capital-zc2-field-checklist.md](../runbooks/zero-capital-zc2-field-checklist.md)
-6. R6-PD field proof — **deferred** (needs a counterparty) — [runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md)
-7. R7-M1 iOS scaffold — **deferred** until macOS host
-8. R7-M3 on-device mobile sidecar — **spec drafted**; implementation deferred
+1. Android NFC device smoke — [../runbooks/r9-nfc-operator-runbook.md](../runbooks/r9-nfc-operator-runbook.md)
+2. ZC-2 field pin (feeds R10-B) — [../runbooks/zero-capital-zc2-field-checklist.md](../runbooks/zero-capital-zc2-field-checklist.md)
+3. R6-PD field proof — [../runbooks/r6-post-deployment-proof-runbook.md](../runbooks/r6-post-deployment-proof-runbook.md) (R10-F)
+4. R7-M1 iOS — until macOS host
+5. R7-M3 on-device mobile sidecar — spec drafted; deferred
 
-**Solo stage note (July 2026):** R9 + R6-PD maintainer bands are complete without field testers or macOS. Production default is participant-hosted (ZC); resume deferred items when hardware/people appear.
+**Solo stage note (August 2026):** R10 maintainer invite bar met (`PRG-1`..`PRG-4`: remote pin, SF1 E2E, Win+Linux matrix, tooling). Human/community field proof (`PRG-5`) remains deferred until a counterparty exists — not a hold on other work.
 
 ## Explicit non-goals (current band)
 

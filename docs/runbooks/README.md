@@ -8,6 +8,7 @@ Operator install, deployment, backup, security, and recurring cadence.
 | [zero-capital-operator-runbook.md](zero-capital-operator-runbook.md) | Production on own hardware (no VPS) — ZC-1..ZC-4 |
 | [zero-capital-cold-start-checklist.md](zero-capital-cold-start-checklist.md) | Post-reboot bring-up: health → backup → join/halo |
 | [zero-capital-zc2-field-checklist.md](zero-capital-zc2-field-checklist.md) | Second-device pin (LAN/Tailscale) — people/device gated |
+| [r10-production-for-invite-runbook.md](r10-production-for-invite-runbook.md) | R10 production-for-invite entry + remote scripts |
 | [stability-regression-pack.md](stability-regression-pack.md) | Day-to-day operable closeout + maintainer habit triggers |
 | [staged-exchange-operator-runbook.md](staged-exchange-operator-runbook.md) | Staged digital vs offline one-shot deals |
 | [operator-security-guide.md](operator-security-guide.md) | Keys, TLS, SOC-01 |

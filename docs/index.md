@@ -2,11 +2,13 @@
 
 **If you feel lost, read only this page first.** Everything else in `/docs` is reference — not required on day one.
 
-Last updated: July 2026
+Last updated: August 2026
 
 Canonical documentation for the **Vectis** coordination protocol and reference implementation.
 
 Operators: [runbooks/operator-quickstart.md](runbooks/operator-quickstart.md). Implementers: [specs/protocol-priority-backlog.md](specs/protocol-priority-backlog.md). Session handoff: [roadmap/working-context-log.md](roadmap/working-context-log.md) · Evidence: [roadmap/progress.md](roadmap/progress.md).
+
+**Active band:** [roadmap/r10-production-readiness-execution-plan.md](roadmap/r10-production-readiness-execution-plan.md) — remote E2E + cross-platform production proof. Requirements: [specs/production-readiness-requirements.md](specs/production-readiness-requirements.md).
 
 ## What Vectis is
 
@@ -34,7 +36,7 @@ Plain limits: [foundation/limitations-and-disclaimers.md](foundation/limitations
 
 Integration guide: [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md)
 
-## Current status (July 2026)
+## Current status (August 2026)
 
 | Layer | State |
 | --- | --- |
@@ -43,6 +45,7 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 | **Discovery bridge** | Classifier + offer drafts + Aperio import — [architecture/aperio-engine-integration.md](architecture/aperio-engine-integration.md) |
 | **Client** | R4-C1..C4 complete; deal loop + workspace + network surface shipped — [client/client-capabilities.md](client/client-capabilities.md); UI rules — [client/ui-contract.md](client/ui-contract.md); **R8 convenience transport** complete — [specs/r8-convenience-transport-spec.md](specs/r8-convenience-transport-spec.md) |
 | **Gates** | RG-1..RG-4 pass; RG-5 partial (Aperio live CLI optional) |
+| **Production readiness (R10)** | Maintainer invite bar met (`PRG-1`..`PRG-4`); **`PRG-5` deferred** (no human) — [roadmap/r10-production-readiness-execution-plan.md](roadmap/r10-production-readiness-execution-plan.md) |
 
 ### Done (trust the kernel)
 
@@ -157,14 +160,21 @@ pnpm stability:pack          # full (may rebuild release binaries)
 3. Maintainer proof: `pnpm sx:s5` (or `pnpm sx:s5:quick`)
 4. In-app: `/help/staged-exchanges`
 
+**Production readiness (R10 — active):** remote E2E + cross-platform before inviting strangers.
+
+1. [roadmap/r10-production-readiness-execution-plan.md](roadmap/r10-production-readiness-execution-plan.md)
+2. [specs/production-readiness-requirements.md](specs/production-readiness-requirements.md) · [specs/remote-e2e-cross-platform-design.md](specs/remote-e2e-cross-platform-design.md)
+3. R10 maintainer band: invite bar met; human field proof deferred — continue non-people-gated work
+4. Remote scripts: `pnpm r10:remote:health` · `pnpm r10:remote:e2e-sf1` · [runbooks/r10-production-for-invite-runbook.md](runbooks/r10-production-for-invite-runbook.md)
+
 Optional later (hardware / counterparty gated):
 
 1. Android NFC device smoke — [runbooks/r9-nfc-operator-runbook.md](runbooks/r9-nfc-operator-runbook.md) (parked until phone + writable tag; units alone are not device smoke)
-2. ZC-2 second-device pin — [runbooks/zero-capital-zc2-field-checklist.md](runbooks/zero-capital-zc2-field-checklist.md)
-3. R6-PD field proof — **deferred** — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
+2. ZC-2 second-device pin — [runbooks/zero-capital-zc2-field-checklist.md](runbooks/zero-capital-zc2-field-checklist.md) (feeds R10-B)
+3. R6-PD / R10-F human field proof — [runbooks/r6-post-deployment-proof-runbook.md](runbooks/r6-post-deployment-proof-runbook.md)
 4. R7-M1 iOS — **deferred** — [runbooks/r7-m1-ios-mac-host-handoff-runbook.md](runbooks/r7-m1-ios-mac-host-handoff-runbook.md)
 
-R8 + R9 signed off; R6-PD maintainer closeout via `pnpm r6:pd`.
+R8 + R9 signed off; R6-PD maintainer closeout via `pnpm r6:pd`. Local ≠ remote E2E.
 
 ## Directory map
 
@@ -178,7 +188,7 @@ docs/
   foundation/        thesis, economics, doctrine
   v0/                fixtures, abuse matrix, evidence
   runbooks/          operator install and ops
-  roadmap/           R0–R9 tracks and progress
+  roadmap/           R0–R10 tracks and progress
   client/            official client UI contract + capabilities + help sync
   archive/           non-normative historical records
   meta/              docs sync checklist

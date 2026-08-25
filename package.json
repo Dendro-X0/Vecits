@@ -75,6 +75,8 @@
     "sx:s5:quick": "node ./scripts/sx-s5-drill.mjs --no-build",
     "stability:pack": "node ./scripts/stability-regression-pack.mjs",
     "stability:pack:quick": "node ./scripts/stability-regression-pack.mjs --no-build",
+    "r10:remote:health": "node ./scripts/r10-remote-health.mjs",
+    "r10:remote:e2e-sf1": "node ./scripts/r10-remote-e2e-sf1.mjs",
     "v3:discovery-federation:smoke": "node ./scripts/v3-discovery-federation-merge.mjs --smoke",
     "r2:backup": "node ./scripts/r2-backup.mjs",
     "r2:deploy-smoke": "node ./scripts/r2-deploy-smoke.mjs",

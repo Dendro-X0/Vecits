@@ -25,8 +25,12 @@ Kickoff: July 2026
 17. `value-layers-and-credits-investigation.md` — ephemeral credits vs persistent world value (research, locked)
 18. `value-layers-design.md` — normative L1/L2/L3 anti-financial rules
 19. `staged-exchange-practice-design.md` — staged digital vs offline one-shot deal shapes
+20. `production-readiness-requirements.md` — FR-01..FR-14 for production-for-invite (R10)
+21. `remote-e2e-cross-platform-design.md` — remote topologies + XP matrix + evidence schema
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
+
+**R10 (August 2026):** [../roadmap/r10-production-readiness-execution-plan.md](../roadmap/r10-production-readiness-execution-plan.md) — maintainer invite bar met (`PRG-1`..`PRG-4`); `PRG-5` deferred.
 
 ## Relationship to v0 docs
 

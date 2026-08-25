@@ -2,20 +2,18 @@
 
 Purpose: preserve active implementation context across long sessions so progress is not lost when context windows rotate.
 
-Last updated: July 2026
+Last updated: August 2026
 
 ## Current phase snapshot
 
+- **Active band:** R10 maintainer invite bar **complete** (`PRG-1`..`PRG-4`). Plan: [r10-production-readiness-execution-plan.md](r10-production-readiness-execution-plan.md). Entry: [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md).
+- **Next atomic step:** Non-people-gated backlog (protocol/client polish). **`PRG-5` deferred** — no human counterparty; **not** a project hold. Resume R10-F / R6-PD only when a real other person is available.
 - **Official client (deal loop + workspace + network surface)** — **shipped** (July 2026). Canonical: `docs/client/ui-contract.md` · `docs/client/client-capabilities.md`. Historical phase records: `docs/archive/frontend-phases/`
 - **In-app help** — `/help` in web client; dev docs in `docs/client/`
-- Active protocol plan: `docs/roadmap/restart-roadmap.md`
-- **R0 complete** — gate `RG-1` = `pass`
-- **R1 complete** — gate `RG-2` = `pass`
-- **R2 complete** — gate `RG-3` = `pass`; evidence in `docs/roadmap/progress.md` § 2026-07
-- **R4-C1..C4 complete** — client/kernel audit; `npm run r4:client-audit`
-- **Next implementation slice:** **`R7-D1`** — Tauri v2 desktop scaffold ([r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md))
+- Active protocol plan: `docs/roadmap/restart-roadmap.md` (R10 added)
+- **R0–R2, R4, R7–R9** — complete as previously recorded; local/maintainer proof only
 - R3-B1 (standalone Aperio CLI) remains parallel when repo access available
-- Production operator data: `./.data/r2` (not `./.data/default`, which is for fresh init / experiments)
+- Production operator data: `./.data/r2` (not `./.data/default`, which is for fresh init / experiments); ZC preferred: `./.data/zc1`
 
 ### R2 progress (complete)
 

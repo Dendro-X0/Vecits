@@ -2,6 +2,21 @@
 
 This file tracks high-level progress over time.
 
+## 2026-08
+
+- **R10 production readiness (FR locked 2026-08-25):**
+  - Requirements: `docs/specs/production-readiness-requirements.md` — status `locked` (Q1–Q4 all A)
+  - Remote E2E + XP design: `docs/specs/remote-e2e-cross-platform-design.md` — status `locked`
+  - Execution plan: `docs/roadmap/r10-production-readiness-execution-plan.md` (gates `PRG-1`..`PRG-5`)
+  - Lock summary: Tailscale/LAN only; XP-2+XP-3; SF1 invite bar; macOS recommended
+  - **R10-B1..B3 / `PRG-1` PASS (2026-08-25):** release node LAN serve + peer `/health` + Local operator node pin (RT-B). Evidence `target/r10-evidence/r10-b1-20260825/`
+  - **R10-C / `PRG-2` PASS (2026-08-25):** remote `software-fixes` SF1 via LAN HTTP ingest; order closed. Evidence `target/r10-evidence/r10-c1-sf1-20260825/`
+  - **R10-D1 PASS / D2 PASS / `PRG-3` PASS (2026-08-25):** XP-2 Windows + XP-3 Linux Docker host SF1. Evidence `target/r10-evidence/r10-d2-xp3-20260825/`
+  - **R10-E / `PRG-4` PASS:** `pnpm r10:remote:health`, `pnpm r10:remote:e2e-sf1`, [r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md); stability pack green
+  - **`PRG-5` DEFERRED (2026-08-25):** no human counterparty available — **not** a project hold; do not claim human/community field proof
+  - **Maintainer production-for-invite bar:** met via `PRG-1`..`PRG-4` + locked FR
+  - Claim discipline: local verified ≠ remote E2E ≠ human field proof
+
 ## 2026-07
 
 - **Value layers + staged exchange practice (locked):**

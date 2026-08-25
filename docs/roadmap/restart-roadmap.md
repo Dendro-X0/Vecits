@@ -28,7 +28,7 @@ The reference implementation proved protocol credibility in alpha conditions. It
 
 Transform Vectis from a maintainer-operated reference implementation into a **deployable coordination kernel** plus a **professional official client** (marketplace platform, Tauri v2 desktop/mobile) that independent operators can run, customize, and trust—without fiat rails, platform admins, or speculative token economics.
 
-**Active focus (July 2026):** **R7**, **R8**, **R9** (`R9-G0`..`G5`), and **R6-PD maintainer** complete and archived on this band. **Zero-capital production topologies locked** ([zero-capital-operator-topology-design.md](../specs/zero-capital-operator-topology-design.md)) — participant-hosted default; VPS optional. **Blocked / deferred:** R6-PD human field proof (no counterparty); R7-M1 iOS (no macOS host). Optional later: Android NFC device smoke when hardware is available.
+**Active focus (August 2026):** **R10 maintainer invite bar complete** (`PRG-1`..`PRG-4`) — [r10-production-readiness-execution-plan.md](r10-production-readiness-execution-plan.md) · [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md). Pick non-people-gated backlog next. **Zero-capital topologies locked** ([zero-capital-operator-topology-design.md](../specs/zero-capital-operator-topology-design.md)). **Deferred (not a project hold):** human counterparty field proof (`PRG-5` / R6-PD); R7-M1 iOS; NFC device smoke until hardware.
 
 ## Pre-implementation gate
 
@@ -66,6 +66,8 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
                          └──────────→ R5 Federation + policy packs
                          │
                          └──────────→ R6 Lane expansion (compute-job+)
+                         │
+                         └──────────→ R10 Production readiness (remote E2E + XP) ← MAINTAINER COMPLETE
 ```
 
 | Phase | Goal | Duration (estimate) |
@@ -78,6 +80,7 @@ R0 Spec lock ──→ R1 Kernel + packaging ──→ R2 First deployment proof
 | **R7** | Professional official client (Tauri v2) | **complete** (desktop MVP) | see [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) |
 | **R8** | Convenience transport (QR, deep links, offline handoff UX) | **complete** (July 2026) | see [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) |
 | **R9** | Offline transport (NFC + LAN halo) | **complete** (July 2026, `R9-G0`..`G5`) | see [r9-offline-transport-execution-plan.md](r9-offline-transport-execution-plan.md) |
+| **R10** | Production readiness — remote E2E + cross-platform | **maintainer complete** (`PRG-5` deferred) | [r10-production-readiness-execution-plan.md](r10-production-readiness-execution-plan.md) |
 | **R5** | Policy packs + federation polish | 3–6 weeks |
 | **R6** | Lane expansion and community templates | ongoing |
 
