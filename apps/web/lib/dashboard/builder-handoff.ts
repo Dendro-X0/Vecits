@@ -29,3 +29,18 @@ export function buildDisputeBuilderHref(
   }
   return `/dashboard/builder?${params.toString()}`;
 }
+
+export function buildAdjustBuilderHref(
+  step: "cancel" | "amend" = "cancel",
+  orderId?: string | null,
+  milestoneId?: string | null
+): string {
+  const params = new URLSearchParams({ branch: "adjust", step });
+  if (orderId?.trim()) {
+    params.set("order", orderId.trim());
+  }
+  if (milestoneId?.trim()) {
+    params.set("milestone", milestoneId.trim());
+  }
+  return `/dashboard/builder?${params.toString()}`;
+}

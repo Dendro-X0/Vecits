@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Scale, Sparkles, Wrench } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Pencil, Scale, Sparkles, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -12,7 +12,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { loadActiveSession } from "@/lib/auth/session";
-import { buildDisputeBuilderHref } from "@/lib/dashboard/builder-handoff";
+import {
+  buildAdjustBuilderHref,
+  buildDisputeBuilderHref
+} from "@/lib/dashboard/builder-handoff";
 import {
   loadTrustBootstrapSnapshot,
   type ProviderEligibility
@@ -68,13 +71,31 @@ const DISPUTE_STEPS: Array<{
   }
 ];
 
+const ADJUST_STEPS: Array<{
+  mode: MarketplaceBuilderMode;
+  label: string;
+  description: string;
+}> = [
+  {
+    mode: "cancel",
+    label: "Mutual cancel",
+    description: "Exit before delivery with a paired cancel and full escrow refund."
+  },
+  {
+    mode: "amend",
+    label: "Amend amount / expiry",
+    description: "Rewrite milestone amount and order expiry with a paired handshake."
+  }
+];
+
 const TRANSACTION_STEP_MODES = new Set<MarketplaceBuilderMode>(
   TRANSACTION_STEPS.map((step) => step.mode)
 );
 
 const DISPUTE_STEP_MODES = new Set<MarketplaceBuilderMode>(DISPUTE_STEPS.map((step) => step.mode));
+const ADJUST_STEP_MODES = new Set<MarketplaceBuilderMode>(ADJUST_STEPS.map((step) => step.mode));
 
-type BuilderFlow = "happy" | "dispute";
+type BuilderFlow = "happy" | "dispute" | "adjust";
 
 function isTransactionStepMode(value: string | null): value is MarketplaceBuilderMode {
   return value !== null && TRANSACTION_STEP_MODES.has(value as MarketplaceBuilderMode);
@@ -82,6 +103,10 @@ function isTransactionStepMode(value: string | null): value is MarketplaceBuilde
 
 function isDisputeStepMode(value: string | null): value is MarketplaceBuilderMode {
   return value !== null && DISPUTE_STEP_MODES.has(value as MarketplaceBuilderMode);
+}
+
+function isAdjustStepMode(value: string | null): value is MarketplaceBuilderMode {
+  return value !== null && ADJUST_STEP_MODES.has(value as MarketplaceBuilderMode);
 }
 
 function nextTransactionStep(mode: MarketplaceBuilderMode): MarketplaceBuilderMode | null {
@@ -109,11 +134,14 @@ export function TransactionBuilderPanel() {
   const importParam = searchParams.get("import");
 
   const [flow, setFlow] = useState<BuilderFlow>(() =>
-    branchParam === "dispute" ? "dispute" : "happy"
+    branchParam === "dispute" ? "dispute" : branchParam === "adjust" ? "adjust" : "happy"
   );
   const [step, setStep] = useState<MarketplaceBuilderMode>(() => {
     if (branchParam === "dispute") {
       return stepParam === "settle" ? "settle" : "dispute";
+    }
+    if (branchParam === "adjust") {
+      return stepParam === "amend" ? "amend" : "cancel";
     }
     return isTransactionStepMode(stepParam) ? stepParam : "offer";
   });
@@ -121,8 +149,11 @@ export function TransactionBuilderPanel() {
     () =>
       operatorParam === "1" &&
       branchParam !== "dispute" &&
+      branchParam !== "adjust" &&
       stepParam !== "dispute" &&
-      stepParam !== "settle"
+      stepParam !== "settle" &&
+      stepParam !== "cancel" &&
+      stepParam !== "amend"
   );
   const [operatorInitialMode, setOperatorInitialMode] = useState<MarketplaceBuilderMode | undefined>(
     () => (operatorParam === "dispute" ? "dispute" : undefined)
@@ -179,6 +210,13 @@ export function TransactionBuilderPanel() {
       }
       return;
     }
+    if (branchParam === "adjust") {
+      setFlow("adjust");
+      if (isAdjustStepMode(stepParam)) {
+        setStep(stepParam);
+      }
+      return;
+    }
     if (isTransactionStepMode(stepParam)) {
       setFlow("happy");
       setStep(stepParam);
@@ -188,13 +226,22 @@ export function TransactionBuilderPanel() {
     }
   }, [branchParam, operatorParam, stepParam]);
 
-  const steps = flow === "dispute" ? DISPUTE_STEPS : TRANSACTION_STEPS;
+  const steps =
+    flow === "dispute" ? DISPUTE_STEPS : flow === "adjust" ? ADJUST_STEPS : TRANSACTION_STEPS;
   const activeStep = steps.find((item) => item.mode === step) ?? steps[0];
   const activeStepIndex = steps.findIndex((item) => item.mode === step);
-  const nextStep = activeStepIndex >= 0 ? steps[activeStepIndex + 1] ?? null : null;
+  const nextStep =
+    flow === "adjust"
+      ? null
+      : activeStepIndex >= 0
+        ? steps[activeStepIndex + 1] ?? null
+        : null;
 
   function handleAccepted(mode: MarketplaceBuilderMode) {
     setLastCompletedStep(mode);
+    if (flow === "adjust") {
+      return;
+    }
     const next =
       flow === "dispute" ? nextDisputeStep(mode) : nextTransactionStep(mode);
     if (next) {
@@ -252,6 +299,18 @@ export function TransactionBuilderPanel() {
           <Scale className="size-4" />
           Resolve a problem
         </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant={flow === "adjust" ? "default" : "outline"}
+          onClick={() => {
+            setFlow("adjust");
+            setStep("cancel");
+          }}
+        >
+          <Pencil className="size-4" />
+          Adjust terms
+        </Button>
       </div>
 
       <section className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
@@ -265,6 +324,11 @@ export function TransactionBuilderPanel() {
                 <>
                   <Scale aria-hidden="true" className="h-3.5 w-3.5 text-primary" />
                   Dispute branch
+                </>
+              ) : flow === "adjust" ? (
+                <>
+                  <Pencil aria-hidden="true" className="h-3.5 w-3.5 text-primary" />
+                  Adjust branch
                 </>
               ) : (
                 <>
@@ -280,6 +344,12 @@ export function TransactionBuilderPanel() {
                 The current step is{" "}
                 <span className="font-medium text-foreground">{activeStep.label}</span>. Use this
                 branch when delivery does not meet locked terms.
+              </>
+            ) : flow === "adjust" ? (
+              <>
+                The current step is{" "}
+                <span className="font-medium text-foreground">{activeStep.label}</span>. Use this
+                branch before delivery to exit together or rewrite amount and expiry.
               </>
             ) : (
               <>
@@ -299,7 +369,9 @@ export function TransactionBuilderPanel() {
                 ? `Finish ${activeStep.label.toLowerCase()} to continue into ${nextStep.label.toLowerCase()}.`
                 : flow === "dispute"
                   ? "Settlement completes the dispute branch. Track the order from Transactions."
-                  : "You are on the final guided step. After acceptance, track the exchange from Transactions."}
+                  : flow === "adjust"
+                    ? "Cancel and amend are separate handshakes — pick the action you need, then track the order from Transactions."
+                    : "You are on the final guided step. After acceptance, track the exchange from Transactions."}
             </p>
           </div>
           <div className="space-y-2 text-sm text-muted-foreground">
@@ -307,6 +379,17 @@ export function TransactionBuilderPanel() {
               <>
                 <p>Use a draft import if you already discovered a service idea.</p>
                 <p>Use Transactions when you want to continue from live order state.</p>
+              </>
+            ) : flow === "adjust" ? (
+              <>
+                <p>Both parties must sign. Prefill from the live order when possible.</p>
+                <p>
+                  Read{" "}
+                  <Link href="/help/cancel-and-amend" className="text-primary hover:underline">
+                    cancel and amend
+                  </Link>{" "}
+                  before delivery starts.
+                </p>
               </>
             ) : (
               <>
@@ -325,7 +408,22 @@ export function TransactionBuilderPanel() {
             <Button nativeButton={false} render={<Link href="/dashboard/transactions" />} variant="outline" size="sm">
               Track transactions
             </Button>
-            <Button nativeButton={false} render={<Link href="/help/deal-flow" />} variant="ghost" size="sm">
+            <Button
+              nativeButton={false}
+              render={
+                <Link
+                  href={
+                    flow === "adjust"
+                      ? "/help/cancel-and-amend"
+                      : flow === "dispute"
+                        ? "/help/disputes"
+                        : "/help/deal-flow"
+                  }
+                />
+              }
+              variant="ghost"
+              size="sm"
+            >
               Help guides
             </Button>
           </div>
@@ -333,15 +431,30 @@ export function TransactionBuilderPanel() {
             <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-sm text-muted-foreground">
               <span className="font-medium text-foreground">{labelForStep(lastCompletedStep, flow)}</span>{" "}
               completed.
-              {nextStep ? ` Continue with ${nextStep.label.toLowerCase()}.` : " Your exchange is ready for follow-up tracking."}
+              {nextStep
+                ? ` Continue with ${nextStep.label.toLowerCase()}.`
+                : flow === "adjust"
+                  ? " Track the order from Transactions for the updated state."
+                  : " Your exchange is ready for follow-up tracking."}
             </div>
           ) : null}
         </div>
       </section>
 
       <nav
-        aria-label={flow === "dispute" ? "Dispute steps" : "Transaction steps"}
-        className={cn("grid gap-3", flow === "dispute" ? "sm:grid-cols-2" : "sm:grid-cols-2 xl:grid-cols-5")}
+        aria-label={
+          flow === "dispute"
+            ? "Dispute steps"
+            : flow === "adjust"
+              ? "Adjust steps"
+              : "Transaction steps"
+        }
+        className={cn(
+          "grid gap-3",
+          flow === "dispute" || flow === "adjust"
+            ? "sm:grid-cols-2"
+            : "sm:grid-cols-2 xl:grid-cols-5"
+        )}
       >
         {steps.map((item, index) => {
           const selected = item.mode === step;
@@ -452,6 +565,16 @@ export function TransactionBuilderPanel() {
           </Button>
           <Button
             nativeButton={false}
+            render={
+              <Link href={buildAdjustBuilderHref("cancel", orderParam, milestoneParam)} />
+            }
+            variant="outline"
+            size="sm"
+          >
+            Adjust deep link
+          </Button>
+          <Button
+            nativeButton={false}
             render={<Link href="/dashboard/settings?advanced=1" />}
             variant="ghost"
             size="sm"
@@ -466,6 +589,7 @@ export function TransactionBuilderPanel() {
 }
 
 function labelForStep(mode: MarketplaceBuilderMode, flow: BuilderFlow): string {
-  const steps = flow === "dispute" ? DISPUTE_STEPS : TRANSACTION_STEPS;
+  const steps =
+    flow === "dispute" ? DISPUTE_STEPS : flow === "adjust" ? ADJUST_STEPS : TRANSACTION_STEPS;
   return steps.find((step) => step.mode === mode)?.label ?? mode;
 }

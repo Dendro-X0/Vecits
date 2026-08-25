@@ -57,6 +57,45 @@ export const HELP_ARTICLES: HelpArticle[] = [
           "Help → Staged exchanges for Profile A / Profile B.",
           "Operator runbook: docs/runbooks/staged-exchange-operator-runbook.md"
         ]
+      },
+      {
+        heading: "Before delivery — cancel or amend",
+        body: "If both parties agree to exit or rewrite amount and expiry before delivery starts, use Adjust terms in Publish & transact. That path is separate from disputes. See cancel and amend for the handshake rules."
+      }
+    ]
+  },
+  {
+    slug: "cancel-and-amend",
+    title: "Cancel and amend",
+    category: "marketplace",
+    summary:
+      "Before delivery, mutually cancel an order with a full escrow refund, or amend milestone amount and order expiry with a paired handshake.",
+    sections: [
+      {
+        heading: "When this path applies",
+        body: "Use Adjust terms only before delivery evidence is filed. After delivery, disagreement belongs on the dispute branch — not cancel or amend.",
+        bullets: [
+          "Mutual cancel — both parties exit; escrow refunds in full.",
+          "Amend amount / expiry — rewrite milestone credits and order expiry only (v1).",
+          "Cancel and amend are exclusive pending handshakes — one at a time."
+        ]
+      },
+      {
+        heading: "How to run it",
+        body: "From Publish & transact, open Adjust terms. Prefill from the live order when you can. Each action needs signatures from both buyer and provider; the node accepts or rejects based on protocol rules.",
+        bullets: [
+          "Dashboard → Publish & transact → Adjust terms.",
+          "Or open an order from Transactions and follow the adjust deep link when offered.",
+          "Help → Deal flow for the happy path; Help → Disputes after delivery."
+        ]
+      },
+      {
+        heading: "Amend escrow behavior",
+        body: "Decreasing amount refunds excess escrow to the buyer. Increasing amount leaves the milestone underfunded until the buyer spends more credits into escrow. Broader term rewrites (evidence format, add/remove milestones) are not in this client path yet."
+      },
+      {
+        heading: "What this is not",
+        body: "Cancel and amend are not unilateral exits, not dispute settlement, and not a place to renegotiate delivery evidence after work is submitted."
       }
     ]
   },
@@ -176,6 +215,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: "Connection errors",
         body: "If Overview or Transactions show a connection issue, open Settings and confirm the node is running and reachable. Advanced settings include operator tools and mobile node override for pinned hosts.",
         bullets: [
+          "Settings → Node for URL and status.",
           "Desktop / local: start or relaunch the client so the sidecar is healthy, then refresh.",
           "LAN or Tailscale pin: confirm the host is awake and the URL matches what you verified out-of-band.",
           "Public HTTPS pins: follow your operator runbook when you choose that topology.",

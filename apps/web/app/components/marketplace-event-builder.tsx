@@ -77,7 +77,9 @@ export type MarketplaceBuilderMode =
   | "delivery"
   | "accept"
   | "dispute"
-  | "settle";
+  | "settle"
+  | "cancel"
+  | "amend";
 
 type BuilderMode = MarketplaceBuilderMode;
 
@@ -201,12 +203,22 @@ type PersistedBuilderState = {
   settleDisputeReferenceEventId: string;
   buyerRefundCredits: string;
   providerRewardCredits: string;
+  cancelOrderId: string;
+  cancelledAt: string;
+  cancelOrderReferenceEventId: string;
+  cancelPendingReferenceEventId: string;
+  amendOrderId: string;
+  amendAmountCredits: string;
+  amendOrderExpiresAt: string;
+  amendedAt: string;
+  amendOrderReferenceEventId: string;
+  amendPendingReferenceEventId: string;
   sessionAcceptedEvents: SessionAcceptedEvent[];
 };
 
 const DEFAULT_NODE_API_BASE_URL = defaultNodeClientBaseUrlForForms();
 const BUILDER_STORAGE_KEY = "new-start.marketplace-builder";
-const BUILDER_STORAGE_VERSION = 8;
+const BUILDER_STORAGE_VERSION = 9;
 const RFC3339_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 
 const FIXTURE_IDENTITY_KEYS = {
@@ -488,6 +500,8 @@ export function MarketplaceEventBuilder({
     setAcceptOrderId(orderId);
     setDisputeOrderId(orderId);
     setSettleOrderId(orderId);
+    setCancelOrderId(orderId);
+    setAmendOrderId(orderId);
   }, [prefillOrderId]);
 
   useEffect(() => {
@@ -500,6 +514,8 @@ export function MarketplaceEventBuilder({
     setAcceptMilestoneId(milestoneId);
     setDisputeMilestoneId(milestoneId);
     setSettleMilestoneId(milestoneId);
+    setCancelMilestoneId(milestoneId);
+    setAmendMilestoneId(milestoneId);
   }, [prefillMilestoneId]);
 
   const [flowRoute, setFlowRoute] = useState<FlowRoute>("acceptPath");
@@ -562,6 +578,22 @@ export function MarketplaceEventBuilder({
   const [providerRewardCredits, setProviderRewardCredits] = useState("0");
   const [settledAt, setSettledAt] = useState("2026-03-01T00:10:00Z");
   const [settleDisputeReferenceEventId, setSettleDisputeReferenceEventId] = useState("");
+
+  const [cancelOrderId, setCancelOrderId] = useState("");
+  const [cancelMilestoneId, setCancelMilestoneId] = useState("m1");
+  const [cancelledAt, setCancelledAt] = useState("2026-03-01T00:08:30Z");
+  const [cancelReasonHash, setCancelReasonHash] = useState("");
+  const [cancelOrderReferenceEventId, setCancelOrderReferenceEventId] = useState("");
+  const [cancelPendingReferenceEventId, setCancelPendingReferenceEventId] = useState("");
+
+  const [amendOrderId, setAmendOrderId] = useState("");
+  const [amendMilestoneId, setAmendMilestoneId] = useState("m1");
+  const [amendAmountCredits, setAmendAmountCredits] = useState("100");
+  const [amendOrderExpiresAt, setAmendOrderExpiresAt] = useState("2026-12-31T00:00:00Z");
+  const [amendedAt, setAmendedAt] = useState("2026-03-01T00:08:30Z");
+  const [amendReasonHash, setAmendReasonHash] = useState("");
+  const [amendOrderReferenceEventId, setAmendOrderReferenceEventId] = useState("");
+  const [amendPendingReferenceEventId, setAmendPendingReferenceEventId] = useState("");
 
   const [escrowSpenderPubKey, setEscrowSpenderPubKey] = useState("");
   const [escrowOrderId, setEscrowOrderId] = useState("");
@@ -775,7 +807,15 @@ export function MarketplaceEventBuilder({
     settleMilestoneId,
     buyerRefundCredits,
     providerRewardCredits,
-    settledAt
+    settledAt,
+    cancelOrderId,
+    cancelMilestoneId,
+    cancelledAt,
+    amendOrderId,
+    amendMilestoneId,
+    amendAmountCredits,
+    amendOrderExpiresAt,
+    amendedAt
   };
   const currentRequirements = modeRequirements(mode, requirementInput);
   const currentMissingCount = currentRequirements.filter(requirement => !requirement.ok).length;
@@ -826,7 +866,11 @@ export function MarketplaceEventBuilder({
           disputeOrderId,
           disputeMilestoneId,
           settleOrderId,
-          settleMilestoneId
+          settleMilestoneId,
+          cancelOrderId,
+          cancelMilestoneId,
+          amendOrderId,
+          amendMilestoneId
         })
       : [];
 
@@ -926,6 +970,36 @@ export function MarketplaceEventBuilder({
       if (parsed.providerRewardCredits.trim()) {
         setProviderRewardCredits(parsed.providerRewardCredits);
       }
+      if (parsed.cancelOrderId.trim()) {
+        setCancelOrderId(parsed.cancelOrderId);
+      }
+      if (parsed.cancelledAt.trim()) {
+        setCancelledAt(parsed.cancelledAt);
+      }
+      if (parsed.cancelOrderReferenceEventId.trim()) {
+        setCancelOrderReferenceEventId(parsed.cancelOrderReferenceEventId);
+      }
+      if (parsed.cancelPendingReferenceEventId.trim()) {
+        setCancelPendingReferenceEventId(parsed.cancelPendingReferenceEventId);
+      }
+      if (parsed.amendOrderId.trim()) {
+        setAmendOrderId(parsed.amendOrderId);
+      }
+      if (parsed.amendAmountCredits.trim()) {
+        setAmendAmountCredits(parsed.amendAmountCredits);
+      }
+      if (parsed.amendOrderExpiresAt.trim()) {
+        setAmendOrderExpiresAt(parsed.amendOrderExpiresAt);
+      }
+      if (parsed.amendedAt.trim()) {
+        setAmendedAt(parsed.amendedAt);
+      }
+      if (parsed.amendOrderReferenceEventId.trim()) {
+        setAmendOrderReferenceEventId(parsed.amendOrderReferenceEventId);
+      }
+      if (parsed.amendPendingReferenceEventId.trim()) {
+        setAmendPendingReferenceEventId(parsed.amendPendingReferenceEventId);
+      }
       setSessionAcceptedEvents(parsed.sessionAcceptedEvents);
     } catch {
       window.localStorage.removeItem(BUILDER_STORAGE_KEY);
@@ -985,6 +1059,16 @@ export function MarketplaceEventBuilder({
       settleDisputeReferenceEventId,
       buyerRefundCredits,
       providerRewardCredits,
+      cancelOrderId,
+      cancelledAt,
+      cancelOrderReferenceEventId,
+      cancelPendingReferenceEventId,
+      amendOrderId,
+      amendAmountCredits,
+      amendOrderExpiresAt,
+      amendedAt,
+      amendOrderReferenceEventId,
+      amendPendingReferenceEventId,
       sessionAcceptedEvents
     };
     try {
@@ -1025,7 +1109,17 @@ export function MarketplaceEventBuilder({
     sessionAcceptedEvents,
     settleDisputeReferenceEventId,
     settleOrderId,
-    settledAt
+    settledAt,
+    cancelOrderId,
+    cancelledAt,
+    cancelOrderReferenceEventId,
+    cancelPendingReferenceEventId,
+    amendOrderId,
+    amendAmountCredits,
+    amendOrderExpiresAt,
+    amendedAt,
+    amendOrderReferenceEventId,
+    amendPendingReferenceEventId
   ]);
 
   useEffect(() => {
@@ -1379,7 +1473,15 @@ export function MarketplaceEventBuilder({
         settleMilestoneId,
         buyerRefundCredits,
         providerRewardCredits,
-        settledAt
+        settledAt,
+        cancelOrderId,
+        cancelMilestoneId,
+        cancelledAt,
+        amendOrderId,
+        amendMilestoneId,
+        amendAmountCredits,
+        amendOrderExpiresAt,
+        amendedAt
       });
       const missing = nextRequirements.filter(requirement => !requirement.ok);
       if (missing.length > 0) {
@@ -1659,19 +1761,45 @@ export function MarketplaceEventBuilder({
       return;
     }
 
-    if (source.kind !== "ServiceDispute") {
-      setErrorMessage(`Settle autofill expects a ${sourceLabel} ServiceDispute event.`);
+    if (mode === "cancel" || mode === "amend") {
+      if (source.kind !== "ServiceOrder") {
+        setErrorMessage(
+          `${mode === "cancel" ? "Cancel" : "Amend"} autofill expects a ${sourceLabel} ServiceOrder event.`
+        );
+        return;
+      }
+      const linkedOrderId = readStringField(payload, "orderId");
+      if (linkedOrderId) {
+        if (mode === "cancel") {
+          setCancelOrderId(linkedOrderId);
+        } else {
+          setAmendOrderId(linkedOrderId);
+        }
+      }
+      if (mode === "cancel") {
+        setCancelOrderReferenceEventId(source.eventId);
+      } else {
+        setAmendOrderReferenceEventId(source.eventId);
+      }
       return;
     }
-    const linkedOrderId = readStringField(payload, "orderId");
-    if (linkedOrderId) {
-      setSettleOrderId(linkedOrderId);
+
+    if (mode === "settle") {
+      if (source.kind !== "ServiceDispute") {
+        setErrorMessage(`Settle autofill expects a ${sourceLabel} ServiceDispute event.`);
+        return;
+      }
+      const linkedOrderId = readStringField(payload, "orderId");
+      if (linkedOrderId) {
+        setSettleOrderId(linkedOrderId);
+      }
+      const linkedMilestoneId = readStringField(payload, "milestoneId");
+      if (linkedMilestoneId) {
+        setSettleMilestoneId(linkedMilestoneId);
+      }
+      setSettleDisputeReferenceEventId(source.eventId);
+      return;
     }
-    const linkedMilestoneId = readStringField(payload, "milestoneId");
-    if (linkedMilestoneId) {
-      setSettleMilestoneId(linkedMilestoneId);
-    }
-    setSettleDisputeReferenceEventId(source.eventId);
   }
 
   async function handleHashMilestoneTerms() {
@@ -1763,6 +1891,30 @@ export function MarketplaceEventBuilder({
     const settleDisputeReferenceEventIdLive = live(
       "settleDisputeReferenceEventId",
       settleDisputeReferenceEventId
+    );
+    const cancelOrderIdLive = live("cancelOrderId", cancelOrderId);
+    const cancelledAtLive = live("cancelledAt", cancelledAt);
+    const cancelReasonHashLive = live("cancelReasonHash", cancelReasonHash);
+    const cancelOrderReferenceEventIdLive = live(
+      "cancelOrderReferenceEventId",
+      cancelOrderReferenceEventId
+    );
+    const cancelPendingReferenceEventIdLive = live(
+      "cancelPendingReferenceEventId",
+      cancelPendingReferenceEventId
+    );
+    const amendOrderIdLive = live("amendOrderId", amendOrderId);
+    const amendAmountCreditsLive = live("amendAmountCredits", amendAmountCredits);
+    const amendOrderExpiresAtLive = live("amendOrderExpiresAt", amendOrderExpiresAt);
+    const amendedAtLive = live("amendedAt", amendedAt);
+    const amendReasonHashLive = live("amendReasonHash", amendReasonHash);
+    const amendOrderReferenceEventIdLive = live(
+      "amendOrderReferenceEventId",
+      amendOrderReferenceEventId
+    );
+    const amendPendingReferenceEventIdLive = live(
+      "amendPendingReferenceEventId",
+      amendPendingReferenceEventId
     );
     const milestoneRowsLive = readMilestoneRowsFromForm(form, milestoneRows);
 
@@ -1868,7 +2020,15 @@ export function MarketplaceEventBuilder({
       settleMilestoneId,
       buyerRefundCredits: buyerRefundCreditsLive,
       providerRewardCredits: providerRewardCreditsLive,
-      settledAt: settledAtLive
+      settledAt: settledAtLive,
+      cancelOrderId: cancelOrderIdLive,
+      cancelMilestoneId,
+      cancelledAt: cancelledAtLive,
+      amendOrderId: amendOrderIdLive,
+      amendMilestoneId,
+      amendAmountCredits: amendAmountCreditsLive,
+      amendOrderExpiresAt: amendOrderExpiresAtLive,
+      amendedAt: amendedAtLive
     });
     const missingRequirements = currentRequirements.filter(requirement => !requirement.ok);
     if (missingRequirements.length > 0) {
@@ -1909,7 +2069,15 @@ export function MarketplaceEventBuilder({
                     ? !settleDisputeReferenceEventIdLive.trim()
                       ? "Dispute reference event ID"
                       : null
-                    : null;
+                    : mode === "cancel"
+                      ? !cancelOrderReferenceEventIdLive.trim()
+                        ? "Order reference event ID"
+                        : null
+                      : mode === "amend"
+                        ? !amendOrderReferenceEventIdLive.trim()
+                          ? "Order reference event ID"
+                          : null
+                        : null;
       if (missingReference) {
         setSubmitError({
           status: null,
@@ -2041,6 +2209,28 @@ export function MarketplaceEventBuilder({
                         settledAt: settledAtLive,
                         disputeReferenceEventId: settleDisputeReferenceEventIdLive
                       })
+                    : mode === "cancel"
+                      ? buildCancelUnsigned({
+                          ...common,
+                          orderId: cancelOrderIdLive,
+                          milestoneId: live("cancelMilestoneId", cancelMilestoneId),
+                          cancelledAt: cancelledAtLive,
+                          reasonHash: cancelReasonHashLive,
+                          orderReferenceEventId: cancelOrderReferenceEventIdLive,
+                          cancelReferenceEventId: cancelPendingReferenceEventIdLive
+                        })
+                      : mode === "amend"
+                        ? buildAmendUnsigned({
+                            ...common,
+                            orderId: amendOrderIdLive,
+                            milestoneId: live("amendMilestoneId", amendMilestoneId),
+                            amountCredits: amendAmountCreditsLive,
+                            orderExpiresAt: amendOrderExpiresAtLive,
+                            amendedAt: amendedAtLive,
+                            reasonHash: amendReasonHashLive,
+                            orderReferenceEventId: amendOrderReferenceEventIdLive,
+                            amendReferenceEventId: amendPendingReferenceEventIdLive
+                          })
                     : buildEscrowSpendUnsigned({
                         ...common,
                         spenderPubKey: escrowSpenderPubKeyLive,
@@ -2324,6 +2514,20 @@ export function MarketplaceEventBuilder({
           onClick={() => setModeWithContext("settle")}
         >
           ServiceSettle
+        </button>
+        <button
+          type="button"
+          style={mode === "cancel" ? selectedButtonStyle : buttonStyle}
+          onClick={() => setModeWithContext("cancel")}
+        >
+          ServiceCancel
+        </button>
+        <button
+          type="button"
+          style={mode === "amend" ? selectedButtonStyle : buttonStyle}
+          onClick={() => setModeWithContext("amend")}
+        >
+          OrderAmend
         </button>
       </div>
       <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.8rem" }}>
@@ -3629,6 +3833,173 @@ export function MarketplaceEventBuilder({
           </>
         ) : null}
 
+        {mode === "cancel" ? (
+          <>
+            {isTransaction ? (
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+                Mutual cancel before delivery. First signer proposes; counterparty matches with the
+                pending cancel event id. Escrow refunds in full on match. Draft ≠ cancelled until both
+                sides sign.
+              </div>
+            ) : null}
+            <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Order ID" : "orderId"}
+                <input
+                  name="cancelOrderId"
+                  value={cancelOrderId}
+                  onChange={event => setCancelOrderId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="mk-demo-order"
+                />
+              </label>
+              <MilestoneIdField
+                label={isTransaction ? "Milestone" : "milestoneId"}
+                name="cancelMilestoneId"
+                value={cancelMilestoneId}
+                onChange={setCancelMilestoneId}
+                rows={milestoneRows}
+                isTransaction={isTransaction}
+              />
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Cancelled at" : "cancelledAt"}
+                <input
+                  name="cancelledAt"
+                  value={cancelledAt}
+                  onChange={event => setCancelledAt(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="2026-03-01T00:08:30Z"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Reason hash (optional)" : "reasonHash"}
+                <input
+                  name="cancelReasonHash"
+                  value={cancelReasonHash}
+                  onChange={event => setCancelReasonHash(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="optional"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Order reference event ID" : "references.order eventId"}
+                <input
+                  name="cancelOrderReferenceEventId"
+                  value={cancelOrderReferenceEventId}
+                  onChange={event => setCancelOrderReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="service order eventId"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction
+                  ? "Pending cancel event ID (match only)"
+                  : "references.cancel eventId (second signer)"}
+                <input
+                  name="cancelPendingReferenceEventId"
+                  value={cancelPendingReferenceEventId}
+                  onChange={event => setCancelPendingReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="first ServiceCancel eventId"
+                />
+              </label>
+            </div>
+          </>
+        ) : null}
+
+        {mode === "amend" ? (
+          <>
+            {isTransaction ? (
+              <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+                Amend milestone amount and order expiry before delivery. Paired handshake — decrease
+                refunds excess escrow; increase leaves the milestone underfunded until more SpendCredits.
+              </div>
+            ) : null}
+            <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Order ID" : "orderId"}
+                <input
+                  name="amendOrderId"
+                  value={amendOrderId}
+                  onChange={event => setAmendOrderId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="mk-demo-order"
+                />
+              </label>
+              <MilestoneIdField
+                label={isTransaction ? "Milestone" : "milestoneId"}
+                name="amendMilestoneId"
+                value={amendMilestoneId}
+                onChange={setAmendMilestoneId}
+                rows={milestoneRows}
+                isTransaction={isTransaction}
+              />
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "New amount credits" : "amountCredits"}
+                <input
+                  name="amendAmountCredits"
+                  value={amendAmountCredits}
+                  onChange={event => setAmendAmountCredits(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="100"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "New order expires at" : "orderExpiresAt"}
+                <input
+                  name="amendOrderExpiresAt"
+                  value={amendOrderExpiresAt}
+                  onChange={event => setAmendOrderExpiresAt(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="2026-12-31T00:00:00Z"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Amended at" : "amendedAt"}
+                <input
+                  name="amendedAt"
+                  value={amendedAt}
+                  onChange={event => setAmendedAt(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="2026-03-01T00:08:30Z"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Reason hash (optional)" : "reasonHash"}
+                <input
+                  name="amendReasonHash"
+                  value={amendReasonHash}
+                  onChange={event => setAmendReasonHash(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="optional"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction ? "Order reference event ID" : "references.order eventId"}
+                <input
+                  name="amendOrderReferenceEventId"
+                  value={amendOrderReferenceEventId}
+                  onChange={event => setAmendOrderReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="service order eventId"
+                />
+              </label>
+              <label style={{ display: "block", marginBottom: "0.5rem" }}>
+                {isTransaction
+                  ? "Pending amend event ID (match only)"
+                  : "references.amend eventId (second signer)"}
+                <input
+                  name="amendPendingReferenceEventId"
+                  value={amendPendingReferenceEventId}
+                  onChange={event => setAmendPendingReferenceEventId(event.target.value)}
+                  style={fieldStyle}
+                  placeholder="first OrderAmend eventId"
+                />
+              </label>
+            </div>
+          </>
+        ) : null}
+
         {isTransaction ? (
           <div className="mb-4 rounded-xl border border-border/70 bg-muted/20 px-4 py-3">
             <p className="text-sm font-medium text-foreground">Submission status</p>
@@ -4057,6 +4428,80 @@ function buildSettleUnsigned(input: {
   });
 }
 
+function buildCancelUnsigned(input: {
+  authorPubKey: string;
+  policyVersion?: string;
+  createdAt?: string;
+  orderId: string;
+  milestoneId: string;
+  cancelledAt: string;
+  reasonHash: string;
+  orderReferenceEventId: string;
+  cancelReferenceEventId: string;
+}) {
+  const references: Record<string, string> = {
+    order: requireNonEmpty(input.orderReferenceEventId, "order reference")
+  };
+  if (input.cancelReferenceEventId.trim()) {
+    references.cancel = input.cancelReferenceEventId.trim();
+  }
+  const payload: Record<string, unknown> = {
+    orderId: requireNonEmpty(input.orderId, "orderId"),
+    milestoneId: requireNonEmpty(input.milestoneId, "milestoneId"),
+    cancelledAt: requireNonEmpty(input.cancelledAt, "cancelledAt")
+  };
+  if (input.reasonHash.trim()) {
+    payload.reasonHash = input.reasonHash.trim();
+  }
+  return createUnsignedEnvelope({
+    authorPubKey: input.authorPubKey,
+    kind: "ServiceCancel",
+    payload,
+    policyVersion: input.policyVersion,
+    createdAt: input.createdAt,
+    references
+  });
+}
+
+function buildAmendUnsigned(input: {
+  authorPubKey: string;
+  policyVersion?: string;
+  createdAt?: string;
+  orderId: string;
+  milestoneId: string;
+  amountCredits: string;
+  orderExpiresAt: string;
+  amendedAt: string;
+  reasonHash: string;
+  orderReferenceEventId: string;
+  amendReferenceEventId: string;
+}) {
+  const references: Record<string, string> = {
+    order: requireNonEmpty(input.orderReferenceEventId, "order reference")
+  };
+  if (input.amendReferenceEventId.trim()) {
+    references.amend = input.amendReferenceEventId.trim();
+  }
+  const payload: Record<string, unknown> = {
+    orderId: requireNonEmpty(input.orderId, "orderId"),
+    milestoneId: requireNonEmpty(input.milestoneId, "milestoneId"),
+    amountCredits: parsePositiveInteger(input.amountCredits, "amountCredits"),
+    orderExpiresAt: requireNonEmpty(input.orderExpiresAt, "orderExpiresAt"),
+    amendedAt: requireNonEmpty(input.amendedAt, "amendedAt")
+  };
+  if (input.reasonHash.trim()) {
+    payload.reasonHash = input.reasonHash.trim();
+  }
+  return createUnsignedEnvelope({
+    authorPubKey: input.authorPubKey,
+    kind: "OrderAmend",
+    payload,
+    policyVersion: input.policyVersion,
+    createdAt: input.createdAt,
+    references
+  });
+}
+
 function buildEscrowSpendUnsigned(input: {
   authorPubKey: string;
   policyVersion?: string;
@@ -4110,6 +4555,10 @@ function buildExplorerQuickLinks(input: {
   disputeMilestoneId: string;
   settleOrderId: string;
   settleMilestoneId: string;
+  cancelOrderId: string;
+  cancelMilestoneId: string;
+  amendOrderId: string;
+  amendMilestoneId: string;
 }): ExplorerQuickLink[] {
   const links: ExplorerQuickLink[] = [];
   const baseQuery: Record<string, string | undefined> = {
@@ -4176,6 +4625,10 @@ function orderMilestoneFromMode(input: {
   disputeMilestoneId: string;
   settleOrderId: string;
   settleMilestoneId: string;
+  cancelOrderId: string;
+  cancelMilestoneId: string;
+  amendOrderId: string;
+  amendMilestoneId: string;
 }): { orderId?: string; milestoneId?: string } {
   if (input.mode === "order") {
     return {
@@ -4205,6 +4658,18 @@ function orderMilestoneFromMode(input: {
     return {
       orderId: input.disputeOrderId.trim() || undefined,
       milestoneId: input.disputeMilestoneId.trim() || undefined
+    };
+  }
+  if (input.mode === "cancel") {
+    return {
+      orderId: input.cancelOrderId.trim() || undefined,
+      milestoneId: input.cancelMilestoneId.trim() || undefined
+    };
+  }
+  if (input.mode === "amend") {
+    return {
+      orderId: input.amendOrderId.trim() || undefined,
+      milestoneId: input.amendMilestoneId.trim() || undefined
     };
   }
   if (input.mode === "settle") {
@@ -4321,6 +4786,12 @@ function modePurpose(mode: BuilderMode): string {
   if (mode === "dispute") {
     return "Open a dispute on delivered work within allowed window.";
   }
+  if (mode === "cancel") {
+    return "Propose or match mutual cancel before delivery (full escrow refund).";
+  }
+  if (mode === "amend") {
+    return "Propose or match amount and order expiry rewrite before delivery.";
+  }
   return "Finalize dispute outcome via deterministic settlement proposal.";
 }
 
@@ -4344,6 +4815,9 @@ function expectedAutofillKindsForMode(mode: BuilderMode): SignedEnvelope["kind"]
   }
   if (mode === "settle") {
     return ["ServiceDispute"];
+  }
+  if (mode === "cancel" || mode === "amend") {
+    return ["ServiceOrder"];
   }
   return [];
 }
@@ -4402,6 +4876,14 @@ function modeRequirements(
     buyerRefundCredits: string;
     providerRewardCredits: string;
     settledAt: string;
+    cancelOrderId: string;
+    cancelMilestoneId: string;
+    cancelledAt: string;
+    amendOrderId: string;
+    amendMilestoneId: string;
+    amendAmountCredits: string;
+    amendOrderExpiresAt: string;
+    amendedAt: string;
   }
 ): FieldRequirement[] {
   const text = (label: string, value: string): FieldRequirement => ({
@@ -4479,6 +4961,22 @@ function modeRequirements(
       text("milestoneId", fields.disputeMilestoneId),
       text("reasonCode", fields.disputeReasonCode),
       text("disputedAt", fields.disputedAt)
+    ];
+  }
+  if (mode === "cancel") {
+    return [
+      text("orderId", fields.cancelOrderId),
+      text("milestoneId", fields.cancelMilestoneId),
+      text("cancelledAt", fields.cancelledAt)
+    ];
+  }
+  if (mode === "amend") {
+    return [
+      text("orderId", fields.amendOrderId),
+      text("milestoneId", fields.amendMilestoneId),
+      positiveInt("amountCredits", fields.amendAmountCredits),
+      text("orderExpiresAt", fields.amendOrderExpiresAt),
+      text("amendedAt", fields.amendedAt)
     ];
   }
   return [
@@ -4573,6 +5071,26 @@ function parsePersistedBuilderState(raw: string): PersistedBuilderState | null {
       typeof value.buyerRefundCredits === "string" ? value.buyerRefundCredits : "";
     const providerRewardCredits =
       typeof value.providerRewardCredits === "string" ? value.providerRewardCredits : "";
+    const cancelOrderId = typeof value.cancelOrderId === "string" ? value.cancelOrderId : "";
+    const cancelledAt = typeof value.cancelledAt === "string" ? value.cancelledAt : "";
+    const cancelOrderReferenceEventId =
+      typeof value.cancelOrderReferenceEventId === "string" ? value.cancelOrderReferenceEventId : "";
+    const cancelPendingReferenceEventId =
+      typeof value.cancelPendingReferenceEventId === "string"
+        ? value.cancelPendingReferenceEventId
+        : "";
+    const amendOrderId = typeof value.amendOrderId === "string" ? value.amendOrderId : "";
+    const amendAmountCredits =
+      typeof value.amendAmountCredits === "string" ? value.amendAmountCredits : "";
+    const amendOrderExpiresAt =
+      typeof value.amendOrderExpiresAt === "string" ? value.amendOrderExpiresAt : "";
+    const amendedAt = typeof value.amendedAt === "string" ? value.amendedAt : "";
+    const amendOrderReferenceEventId =
+      typeof value.amendOrderReferenceEventId === "string" ? value.amendOrderReferenceEventId : "";
+    const amendPendingReferenceEventId =
+      typeof value.amendPendingReferenceEventId === "string"
+        ? value.amendPendingReferenceEventId
+        : "";
     const sessionAcceptedEvents = Array.isArray(value.sessionAcceptedEvents)
       ? value.sessionAcceptedEvents.map(parseSessionAcceptedEvent).filter(isSessionAcceptedEvent)
       : [];
@@ -4610,6 +5128,16 @@ function parsePersistedBuilderState(raw: string): PersistedBuilderState | null {
       settleDisputeReferenceEventId,
       buyerRefundCredits,
       providerRewardCredits,
+      cancelOrderId,
+      cancelledAt,
+      cancelOrderReferenceEventId,
+      cancelPendingReferenceEventId,
+      amendOrderId,
+      amendAmountCredits,
+      amendOrderExpiresAt,
+      amendedAt,
+      amendOrderReferenceEventId,
+      amendPendingReferenceEventId,
       sessionAcceptedEvents
     };
   } catch {
@@ -4695,7 +5223,9 @@ function isBuilderMode(value: unknown): value is BuilderMode {
     value === "delivery" ||
     value === "accept" ||
     value === "dispute" ||
-    value === "settle"
+    value === "settle" ||
+    value === "cancel" ||
+    value === "amend"
   );
 }
 
@@ -4797,6 +5327,12 @@ function modeEventKind(mode: BuilderMode): SignedEnvelope["kind"] {
   if (mode === "dispute") {
     return "ServiceDispute";
   }
+  if (mode === "cancel") {
+    return "ServiceCancel";
+  }
+  if (mode === "amend") {
+    return "OrderAmend";
+  }
   return "ServiceSettle";
 }
 
@@ -4857,6 +5393,12 @@ function transactionModeLabel(mode: BuilderMode): string {
   if (mode === "dispute") {
     return "your dispute";
   }
+  if (mode === "cancel") {
+    return "mutual cancel";
+  }
+  if (mode === "amend") {
+    return "order amend";
+  }
   return "settlement";
 }
 
@@ -4879,6 +5421,12 @@ function modeLabel(mode: BuilderMode): string {
   if (mode === "dispute") {
     return "ServiceDispute";
   }
+  if (mode === "cancel") {
+    return "ServiceCancel";
+  }
+  if (mode === "amend") {
+    return "OrderAmend";
+  }
   return "ServiceSettle";
 }
 
@@ -4900,7 +5448,9 @@ function fixtureCreatedAt(preset: FixturePreset, mode: BuilderMode): string {
     delivery: "2026-03-01T00:08:00Z",
     accept: "2026-03-01T00:09:00Z",
     dispute: preset === "timeoutFlow" ? "2026-03-01T00:09:00Z" : "2026-03-01T00:09:30Z",
-    settle: "2026-03-01T00:10:00Z"
+    settle: "2026-03-01T00:10:00Z",
+    cancel: "2026-03-01T00:08:30Z",
+    amend: "2026-03-01T00:08:30Z"
   };
   return baseByMode[mode];
 }
