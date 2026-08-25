@@ -66,7 +66,7 @@ Integration guide: [architecture/aperio-engine-integration.md](architecture/aper
 
 - Federation at scale
 - Offline `physical-handoff` lane **production** deployment (fixture proven — SCN-18; R8-D adds experimental UX only)
-- `OrderAmend` event kind (use new order or paired settle for now)
+- `OrderAmend` event kind (mid-deal price/scope rewrite; mutual cancel ships as `ServiceCancel`)
 
 **Client work (no live users required):** use [client/testing-without-users.md](client/testing-without-users.md) — fixtures + two local keys + `/help` guides. Optional Studio overlay: [runbooks/codactrl-studio-runbook.md](runbooks/codactrl-studio-runbook.md).
 
@@ -75,7 +75,7 @@ Stack-ranked backlog: [specs/protocol-priority-backlog.md](specs/protocol-priori
 ## Verify in five minutes
 
 ```bash
-cargo run --bin cli -- fixtures run    # 24 valid, 25 invalid — all should pass
+cargo run --bin cli -- fixtures run    # 25 valid, 31 invalid — all should pass
 pnpm v3:discovery-bridge:smoke         # lane classifier golden
 pnpm v3:aperio-import:smoke            # Aperio JSONL → Vectis offer drafts
 pnpm v3:aperio-live-drill              # Aperio engine → import → review → ingest

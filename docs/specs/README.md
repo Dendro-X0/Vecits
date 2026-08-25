@@ -27,6 +27,7 @@ Kickoff: July 2026
 19. `staged-exchange-practice-design.md` — staged digital vs offline one-shot deal shapes
 20. `production-readiness-requirements.md` — FR-01..FR-14 for production-for-invite (R10)
 21. `remote-e2e-cross-platform-design.md` — remote topologies + XP matrix + evidence schema
+22. `order-mutual-cancel-design.md` — paired `ServiceCancel` before delivery (P4)
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 

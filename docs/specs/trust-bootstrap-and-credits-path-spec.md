@@ -119,7 +119,7 @@ A complete cold-start **software-fixes** exchange composes proven slices:
 
 No new event kinds required for v1 bootstrap.
 
-Renegotiation (v0): new `ServiceOffer`/`ServiceOrder` or paired `ServiceSettle` — no `OrderAmend` yet ([restart-decisions.md](restart-decisions.md), market-operating-model mutual amendment).
+Renegotiation (v0): new `ServiceOffer`/`ServiceOrder` or paired `ServiceSettle` — no `OrderAmend` yet. Pre-delivery exit: paired `ServiceCancel` ([order-mutual-cancel-design.md](order-mutual-cancel-design.md)).
 
 ## 7) Deferred (does not block bootstrap)
 

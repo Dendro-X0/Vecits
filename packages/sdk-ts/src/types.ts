@@ -14,6 +14,7 @@ export type EventKind =
   | "ServiceAccept"
   | "ServiceDispute"
   | "ServiceSettle"
+  | "ServiceCancel"
   | "PolicyUpdate";
 
 export interface IdentityMetadata {

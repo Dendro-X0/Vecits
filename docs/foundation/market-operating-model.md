@@ -128,9 +128,9 @@ The log is append-only. Parties do not edit prior events; they add new authorize
 | New price / scope / deadline | New `ServiceOffer` + new `ServiceOrder` | SOC-02: scope creep → new contract, not chat |
 | Compromise during dispute | Paired matching `ServiceSettle` | Both buyer and provider sign same amounts/outcome |
 | Community rule changes | Forward `PolicyUpdate` | Operator/policy authority; not per-case override |
-| Cancel open milestone | No silent cancel | Terminal states via accept, settle, or timeout only |
+| Cancel open milestone | Paired `ServiceCancel` (buyer + provider) before delivery | Full escrow refund; status `Cancelled`. See [order-mutual-cancel-design.md](../specs/order-mutual-cancel-design.md). No silent single-party cancel. |
 
-A dedicated `OrderAmend` (or similar) event kind is **optional future work** — not required for mutual autonomy if clients guide users through new offer/order flows.
+A dedicated **`OrderAmend`** event kind for mid-deal price/scope rewrite remains **optional future work**. **Mutual cancel** before delivery ships as `ServiceCancel` ([order-mutual-cancel-design.md](../specs/order-mutual-cancel-design.md)).
 
 ### Autonomy without a platform middleman
 

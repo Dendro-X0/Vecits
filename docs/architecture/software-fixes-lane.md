@@ -72,6 +72,7 @@ Renegotiation (price, scope, deadline): new offer/order by mutual signed events 
 | Scenario | Fixture |
 | --- | --- |
 | Happy path accept | `fixtures/valid/marketplace-accept.jsonl` |
+| Mutual cancel before delivery | `fixtures/valid/marketplace-mutual-cancel.jsonl` |
 | Dispute + paired settle | `fixtures/valid/marketplace-dispute-settle.jsonl` |
 | Dispute + timeout refund | `fixtures/valid/marketplace-timeout-autorefund.jsonl` |
 | Unauthorized delivery | `fixtures/invalid/marketplace-unauthorized-delivery.jsonl` |
@@ -83,7 +84,7 @@ Verify: `cargo run --bin cli -- fixtures run`
 - Subjective quality arbitration in kernel
 - Off-platform payment (SOC-01)
 - Automatic CI or GitHub integration (client/operator tooling later)
-- `OrderAmend` event kind (optional future; v0 uses new offer/order)
+- `OrderAmend` event kind (optional future; v0 uses new offer/order or mutual `ServiceCancel` to exit)
 
 ## Related docs
 

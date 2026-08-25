@@ -6,8 +6,8 @@ Last updated: August 2026
 
 ## Current phase snapshot
 
-- **Active band:** R10 maintainer invite bar **complete** (`PRG-1`..`PRG-4`). Plan: [r10-production-readiness-execution-plan.md](r10-production-readiness-execution-plan.md). Entry: [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md).
-- **Next atomic step:** Non-people-gated backlog (protocol/client polish). **`PRG-5` deferred** — no human counterparty; **not** a project hold. Resume R10-F / R6-PD only when a real other person is available.
+- **Active band:** P4 mutual cancel (`ServiceCancel`) **done** — design locked; fixtures green (`25` valid / `31` invalid). `OrderAmend` still deferred. R10 maintainer invite bar complete (`PRG-1`..`PRG-4`).
+- **Next atomic step:** Non-people-gated backlog (e.g. `OrderAmend`, R3-B5 builder import). **`PRG-5` deferred** — no human counterparty; **not** a project hold. Resume R10-F / R6-PD only when a real other person is available.
 - **Official client (deal loop + workspace + network surface)** — **shipped** (July 2026). Canonical: `docs/client/ui-contract.md` · `docs/client/client-capabilities.md`. Historical phase records: `docs/archive/frontend-phases/`
 - **In-app help** — `/help` in web client; dev docs in `docs/client/`
 - Active protocol plan: `docs/roadmap/restart-roadmap.md` (R10 added)

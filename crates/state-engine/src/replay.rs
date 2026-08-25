@@ -7,7 +7,7 @@ use protocol_core::{
     EVIDENCE_FORMAT_JOB_RECEIPT_V1, EVIDENCE_FORMAT_LOCAL_RESOURCE_RECEIPT_V1,
     EVIDENCE_FORMAT_PHYSICAL_HANDOFF_DUAL_ACK_V1, Event, EventKind, EventPayload,
     InvalidReasonCode, MintCreditsPayload, P2HRiskBand,
-    PolicyUpdatePayload, ServiceAcceptPayload, ServiceDeliveryPayload,
+    PolicyUpdatePayload, ServiceAcceptPayload, ServiceCancelPayload, ServiceDeliveryPayload,
     ServiceDisputePayload, ServiceOfferPayload, ServiceOrderPayload, ServiceSettleOutcome,
     ServiceSettlePayload, SinkKind, SpendCreditsPayload, VouchPayload, VouchRevokePayload,
     expected_delivery_mode_for_templated_service, parse_raw_event_str, parse_timestamp,
@@ -817,6 +817,13 @@ impl<'a> ReplayContext<'a> {
                 let event_id = expect_reference("dispute")?;
                 self.require_valid_reference(&event_id, EventKind::ServiceDispute)?;
             }
+            EventKind::ServiceCancel => {
+                let event_id = expect_reference("order")?;
+                self.require_valid_reference(&event_id, EventKind::ServiceOrder)?;
+                if let Some(cancel_id) = references.and_then(|map| map.get("cancel")) {
+                    self.require_valid_reference(cancel_id, EventKind::ServiceCancel)?;
+                }
+            }
         }
 
         Ok(())
@@ -884,6 +891,9 @@ impl<'a> ReplayContext<'a> {
             }
             EventPayload::ServiceSettle(payload) => {
                 self.apply_service_settle(event, payload, event_time)
+            }
+            EventPayload::ServiceCancel(payload) => {
+                self.apply_service_cancel(event, payload, event_time)
             }
             EventPayload::PolicyUpdate(payload) => {
                 self.apply_policy_update(event, payload, event_time)
@@ -1813,6 +1823,9 @@ impl<'a> ReplayContext<'a> {
                     pending_settlement_outcome: None,
                     pending_buyer_refund_credits: None,
                     pending_provider_reward_credits: None,
+                    cancel_pending_event_id: None,
+                    pending_cancel_author: None,
+                    cancel_event_id: None,
                     disputed_at: None,
                     dispute_timeout_at: None,
                     buyer_refund_credits: None,
@@ -2547,6 +2560,153 @@ impl<'a> ReplayContext<'a> {
         Ok(())
     }
 
+    fn apply_service_cancel(
+        &mut self,
+        event: &Event,
+        payload: &ServiceCancelPayload,
+        event_time: DateTime<Utc>,
+    ) -> Result<(), (InvalidReasonCode, String)> {
+        let (credit_default_expiry_days, demurrage_rate_weekly_bps) = {
+            let policy = self.effective_policy_for_time(event_time).0;
+            (
+                policy.credit_default_expiry_days,
+                policy.demurrage_rate_weekly_bps,
+            )
+        };
+        let actor = self.require_active_identity(&event.author_pub_key)?;
+        let _cancelled_at = parse_timestamp(&payload.cancelled_at)
+            .map_err(|_| (InvalidReasonCode::BadTimestamp, "invalid cancelledAt".into()))?;
+        let order_reference = event
+            .references
+            .as_ref()
+            .and_then(|refs| refs.get("order"))
+            .ok_or_else(|| {
+                (
+                    InvalidReasonCode::MissingReference,
+                    "missing order reference".into(),
+                )
+            })?;
+        let order = self.orders.get(&payload.order_id).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "order does not exist".into(),
+            )
+        })?;
+        if order.created_event_id != *order_reference {
+            return Err((
+                InvalidReasonCode::MissingReference,
+                "order reference does not match order".into(),
+            ));
+        }
+        let buyer_pub_key = order.buyer_pub_key.clone();
+        if actor != order.buyer_pub_key && actor != order.provider_pub_key {
+            return Err((
+                InvalidReasonCode::UnauthorizedActor,
+                "cancel actor must be buyer or provider".into(),
+            ));
+        }
+        let key = milestone_key(&payload.order_id, &payload.milestone_id);
+        let milestone_snapshot = self.milestones.get(&key).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone state is missing".into(),
+            )
+        })?;
+        let cancel_reference = event
+            .references
+            .as_ref()
+            .and_then(|refs| refs.get("cancel").cloned());
+
+        if matches!(
+            milestone_snapshot.status.as_str(),
+            "Open" | "PartiallyFunded" | "Funded"
+        ) {
+            if cancel_reference.is_some() {
+                return Err((
+                    InvalidReasonCode::InvalidStateTransition,
+                    "first cancel must not reference a prior cancel".into(),
+                ));
+            }
+            let milestone = self.milestones.get_mut(&key).ok_or_else(|| {
+                (
+                    InvalidReasonCode::InvalidStateTransition,
+                    "milestone state is missing".into(),
+                )
+            })?;
+            milestone.status = "CancelPending".into();
+            milestone.cancel_pending_event_id = Some(event.event_id.clone());
+            milestone.pending_cancel_author = Some(actor);
+            return Ok(());
+        }
+
+        if milestone_snapshot.status != "CancelPending" {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone is not cancellable".into(),
+            ));
+        }
+
+        let cancel_reference = cancel_reference.ok_or_else(|| {
+            (
+                InvalidReasonCode::MissingReference,
+                "missing cancel reference".into(),
+            )
+        })?;
+        if milestone_snapshot.cancel_pending_event_id.as_deref() != Some(cancel_reference.as_str())
+        {
+            return Err((
+                InvalidReasonCode::MissingReference,
+                "cancel reference does not match pending cancel".into(),
+            ));
+        }
+        let pending_author = milestone_snapshot
+            .pending_cancel_author
+            .clone()
+            .ok_or_else(|| {
+                (
+                    InvalidReasonCode::InvalidStateTransition,
+                    "pending cancel author missing".into(),
+                )
+            })?;
+        if pending_author == actor {
+            return Err((
+                InvalidReasonCode::InvalidStateTransition,
+                "second cancel must come from counterparty".into(),
+            ));
+        }
+
+        let refund_amount = milestone_snapshot.funded_amount;
+        let milestone = self.milestones.get_mut(&key).ok_or_else(|| {
+            (
+                InvalidReasonCode::InvalidStateTransition,
+                "milestone state is missing".into(),
+            )
+        })?;
+        milestone.status = "Cancelled".into();
+        milestone.cancel_event_id = Some(event.event_id.clone());
+        milestone.cancel_pending_event_id = None;
+        milestone.pending_cancel_author = None;
+        milestone.buyer_refund_credits = Some(refund_amount);
+        milestone.provider_reward_credits = Some(0);
+
+        if refund_amount > 0 {
+            self.normalize_lots(&buyer_pub_key, event_time);
+            self.lots
+                .entry(buyer_pub_key.clone())
+                .or_default()
+                .push(ReplayLotRecord {
+                    amount: refund_amount,
+                    remaining_amount: refund_amount,
+                    minted_at: event_time,
+                    expires_at: event_time + Duration::days(credit_default_expiry_days),
+                    source_event_id: event.event_id.clone(),
+                    last_decay_at: event_time,
+                    demurrage_rate_weekly_bps,
+                });
+        }
+        Ok(())
+    }
+
     fn apply_policy_update(
         &mut self,
         event: &Event,
@@ -3017,7 +3177,7 @@ impl<'a> ReplayContext<'a> {
                         .map(|milestone| {
                             matches!(
                                 milestone.status.as_str(),
-                                "Accepted" | "Settled" | "AutoRefunded"
+                                "Accepted" | "Settled" | "AutoRefunded" | "Cancelled"
                             )
                         })
                         .unwrap_or(false)
@@ -3060,6 +3220,8 @@ impl<'a> ReplayContext<'a> {
                         dispute_event_id: record.dispute_event_id.clone(),
                         settlement_event_id: record.settlement_event_id.clone(),
                         settlement_pending_event_id: record.settlement_pending_event_id.clone(),
+                        cancel_pending_event_id: record.cancel_pending_event_id.clone(),
+                        cancel_event_id: record.cancel_event_id.clone(),
                         dispute_timeout_at: record
                             .dispute_timeout_at
                             .map(|timestamp| timestamp.to_rfc3339()),
@@ -3326,6 +3488,7 @@ fn summarize_valid_event(event: &Event) -> ReplayValidEventRecord {
         EventPayload::ServiceAccept(payload) => Some(payload.order_id.clone()),
         EventPayload::ServiceDispute(payload) => Some(payload.order_id.clone()),
         EventPayload::ServiceSettle(payload) => Some(payload.order_id.clone()),
+        EventPayload::ServiceCancel(payload) => Some(payload.order_id.clone()),
         _ => None,
     };
     let milestone_id = match &event.payload {
@@ -3333,6 +3496,7 @@ fn summarize_valid_event(event: &Event) -> ReplayValidEventRecord {
         EventPayload::ServiceAccept(payload) => Some(payload.milestone_id.clone()),
         EventPayload::ServiceDispute(payload) => Some(payload.milestone_id.clone()),
         EventPayload::ServiceSettle(payload) => Some(payload.milestone_id.clone()),
+        EventPayload::ServiceCancel(payload) => Some(payload.milestone_id.clone()),
         _ => None,
     };
 

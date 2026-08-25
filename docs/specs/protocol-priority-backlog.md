@@ -16,20 +16,20 @@ Last updated: August 2026
 | **P2** | Procedure guards GAP-04..06 (delivery, duplicate accept) | **Done** | SCN-16 |
 | **P3** | Procedure guards GAP-07 (settle amount edges) | **Done** | SCN-16 |
 | **P3** | Trust bootstrap + credits path spec | **Done** | `trust-bootstrap-and-credits-path-spec.md`, SCN-17 |
-| **P4** | `OrderAmend` / mutual cancel event kinds | **Deferred** | Spec-only; renegotiate via new order or paired settle |
+| **P4** | Mutual cancel (`ServiceCancel`) | **Done** | [order-mutual-cancel-design.md](order-mutual-cancel-design.md); `marketplace-mutual-cancel.jsonl` + invalid siblings. `OrderAmend` term rewrite still deferred |
 | **P5** | GAP-08 offline `physical-handoff` happy path | **Done** | `marketplace-physical-handoff-accept.jsonl`, SCN-18 |
 | **P6** | Federation-scale discovery + P2H issuance limits | **Done** | R5-F1..F4 complete for v1 federation band |
 | **P3** | Aperio Rust engine → Vectis import (`R3-B1`) | **Done** | `aperio-engine-integration.md`, `v3:aperio-import.mjs` |
 
 ## Reference lane procedure coverage
 
-**GAP-01..08 + SCN-19: closed for v1.** `25 invalid`, `24 valid` fixtures — `cargo run --bin cli -- fixtures run`.
+**GAP-01..08 + SCN-19 + P4 mutual cancel: closed for v1.** `31 invalid`, `25 valid` fixtures — `cargo run --bin cli -- fixtures run`.
 
 ## Suggested next slices (pick one)
 
 ### Post-R10 — pick non-people-gated work (August 2026)
 
-1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. P4 `OrderAmend`, R3-B5 builder import) as needed
+1. **Non-people-gated backlog** — polish / deferred protocol items (e.g. `OrderAmend`, R3-B5 builder import) as needed
 2. **Human counterparty** (`PRG-5` / R6-PD) — **deferred** until a real other person is available (not a project hold)
 3. R10 maintainer invite bar — **done** (`PRG-1`..`PRG-4`); evidence under `target/r10-evidence/`
 4. Tooling — **done** — `pnpm r10:remote:*` + [../runbooks/r10-production-for-invite-runbook.md](../runbooks/r10-production-for-invite-runbook.md)

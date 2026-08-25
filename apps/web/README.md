@@ -6,7 +6,7 @@ Track 3 Next.js shell that:
 - generates Ed25519 keypairs in-browser
 - signs an `IdentityCreate` event locally
 - submits signed events to `POST /events`
-- provides a marketplace draft builder for `ServiceOffer`, `ServiceOrder`, `SpendCredits` (escrow), `ServiceDelivery`, `ServiceAccept`, `ServiceDispute`, and `ServiceSettle` (draft -> sign -> submit)
+- provides a marketplace draft builder for `ServiceOffer`, `ServiceOrder`, `SpendCredits` (escrow), `ServiceDelivery`, `ServiceAccept`, `ServiceDispute`, `ServiceSettle`, and `ServiceCancel` (draft -> sign -> submit; cancel has no dedicated wizard UI yet)
 - includes marketplace flow-assist autofill from the last signed event to chain references/IDs across order -> escrow -> delivery -> accept/dispute -> settle
 - includes fixture preset autofill for marketplace IDs/timestamps/nonces (accept-flow and timeout-flow baselines)
 - includes one-click flow progression controls (accept/dispute lanes with start/prev/next step navigation)

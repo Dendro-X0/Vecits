@@ -126,6 +126,10 @@ pub struct MilestoneState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settlement_pending_event_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel_pending_event_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel_event_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dispute_timeout_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buyer_refund_credits: Option<u64>,
@@ -370,6 +374,12 @@ pub struct ReplayMilestoneRecord {
     pub pending_buyer_refund_credits: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pending_provider_reward_credits: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel_pending_event_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pending_cancel_author: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel_event_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disputed_at: Option<DateTime<Utc>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

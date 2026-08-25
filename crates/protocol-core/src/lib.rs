@@ -449,6 +449,16 @@ pub struct ServiceSettlePayload {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ServiceCancelPayload {
+    pub order_id: String,
+    pub milestone_id: String,
+    pub cancelled_at: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason_hash: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PolicySnapshotPayload {
     pub version: String,
     pub clock_skew_seconds: i64,
@@ -534,6 +544,7 @@ pub enum EventKind {
     ServiceAccept,
     ServiceDispute,
     ServiceSettle,
+    ServiceCancel,
     PolicyUpdate,
 }
 
@@ -556,6 +567,7 @@ impl FromStr for EventKind {
             "ServiceAccept" => Ok(Self::ServiceAccept),
             "ServiceDispute" => Ok(Self::ServiceDispute),
             "ServiceSettle" => Ok(Self::ServiceSettle),
+            "ServiceCancel" => Ok(Self::ServiceCancel),
             "PolicyUpdate" => Ok(Self::PolicyUpdate),
             _ => Err(ProtocolError::UnsupportedKind),
         }
@@ -585,6 +597,7 @@ pub fn is_marketplace_kind_name(kind: &str) -> bool {
             | "ServiceAccept"
             | "ServiceDispute"
             | "ServiceSettle"
+            | "ServiceCancel"
     )
 }
 
@@ -617,6 +630,7 @@ impl Display for EventKind {
             Self::ServiceAccept => "ServiceAccept",
             Self::ServiceDispute => "ServiceDispute",
             Self::ServiceSettle => "ServiceSettle",
+            Self::ServiceCancel => "ServiceCancel",
             Self::PolicyUpdate => "PolicyUpdate",
         };
 
@@ -640,6 +654,7 @@ pub enum EventPayload {
     ServiceAccept(ServiceAcceptPayload),
     ServiceDispute(ServiceDisputePayload),
     ServiceSettle(ServiceSettlePayload),
+    ServiceCancel(ServiceCancelPayload),
     PolicyUpdate(PolicyUpdatePayload),
 }
 
@@ -660,6 +675,7 @@ impl EventPayload {
             Self::ServiceAccept(_) => EventKind::ServiceAccept,
             Self::ServiceDispute(_) => EventKind::ServiceDispute,
             Self::ServiceSettle(_) => EventKind::ServiceSettle,
+            Self::ServiceCancel(_) => EventKind::ServiceCancel,
             Self::PolicyUpdate(_) => EventKind::PolicyUpdate,
         }
     }
@@ -680,6 +696,7 @@ impl EventPayload {
             Self::ServiceAccept(payload) => serde_json::to_value(payload),
             Self::ServiceDispute(payload) => serde_json::to_value(payload),
             Self::ServiceSettle(payload) => serde_json::to_value(payload),
+            Self::ServiceCancel(payload) => serde_json::to_value(payload),
             Self::PolicyUpdate(payload) => serde_json::to_value(payload),
         }?;
 
@@ -1237,6 +1254,14 @@ pub fn validate_static(event: &Event) -> Result<(), ProtocolError> {
                 }
             }
         }
+        EventPayload::ServiceCancel(payload) => {
+            if payload.order_id.is_empty() || payload.milestone_id.is_empty() {
+                return Err(ProtocolError::InvalidPayload(
+                    "orderId and milestoneId are required".into(),
+                ));
+            }
+            parse_timestamp(&payload.cancelled_at)?;
+        }
         EventPayload::PolicyUpdate(payload) => {
             if payload.next_policy_version.is_empty() {
                 return Err(ProtocolError::InvalidPayload(
@@ -1644,6 +1669,10 @@ fn parse_payload(kind: EventKind, payload: Value) -> Result<EventPayload, Protoc
                 .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
         ),
         EventKind::ServiceSettle => EventPayload::ServiceSettle(
+            serde_json::from_value(payload)
+                .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
+        ),
+        EventKind::ServiceCancel => EventPayload::ServiceCancel(
             serde_json::from_value(payload)
                 .map_err(|error| ProtocolError::InvalidPayload(error.to_string()))?,
         ),
