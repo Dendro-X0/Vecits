@@ -1,7 +1,7 @@
 import type { QueryParams } from "@/app/explorer/lib";
 import { getOptionalParam, getSingleParam } from "@/app/explorer/lib";
-import { DiscoveryDraftImportCta } from "@/components/marketplace/discovery-draft-import-cta";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
+import { PostJobCta } from "@/components/marketplace/post-job-cta";
 import type { SortOption } from "@/lib/marketplace/lanes";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
 
@@ -22,25 +22,25 @@ export function MarketplaceToolbar({
   const query = getSingleParam(searchParams, "q");
 
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Listings</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {total} {total === 1 ? "service" : "services"} · no paid placement, no promoted slots
-        </p>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Listings</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {total} {total === 1 ? "service" : "services"} · no paid placement, no promoted slots
+          </p>
+        </div>
+        <PostJobCta size="sm" variant="default" />
       </div>
 
-      <div className="flex flex-col gap-3 lg:items-end">
-        <DiscoveryDraftImportCta searchParams={searchParams} />
-        <MarketplaceFilters
+      <MarketplaceFilters
         pathname={pathname}
         initialQuery={query}
         initialSort={currentSort}
         signedIn={signedIn}
         baseUrl={getOptionalParam(searchParams, "base_url")}
         asOf={getOptionalParam(searchParams, "as_of")}
-        />
-      </div>
+      />
     </div>
   );
 }

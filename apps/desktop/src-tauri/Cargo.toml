@@ -1,6 +1,6 @@
 [package]
 name = "vectis-desktop"
-version = "0.1.0"
+version = "0.2.0"
 description = "Vectis official desktop client"
 authors = ["Vectis"]
 edition = "2021"

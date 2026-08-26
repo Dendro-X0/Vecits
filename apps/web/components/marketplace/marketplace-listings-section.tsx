@@ -15,6 +15,7 @@ type MarketplaceListingsSectionProps = {
   loaded: {
     error?: string;
     mockMode: boolean;
+    listings: MarketplaceListing[];
   };
   activeSection?: "all" | "mutual-aid";
   activeLane?: string;
@@ -51,7 +52,7 @@ export function MarketplaceListingsSection({
             variant="connection-error"
             message={humanizeMarketplaceError(loaded.error)}
           />
-        ) : listings.length === 0 ? (
+        ) : loaded.listings.length === 0 ? (
           <MarketplaceStatusPanel variant="empty" mockMode={loaded.mockMode} />
         ) : (
           <ListingGridWithSession

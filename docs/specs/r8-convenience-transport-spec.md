@@ -8,7 +8,7 @@ Last updated: July 2026
 
 Related: [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md), [mobile-sidecar-policy-spec.md](mobile-sidecar-policy-spec.md), [../runbooks/offline-lane-experimental-runbook.md](../runbooks/offline-lane-experimental-runbook.md), [../client/testing-without-users.md](../client/testing-without-users.md).
 
-Execution plan: [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md)
+Execution plan: [../archive/roadmap/r8-convenience-transport-execution-plan.md](../archive/roadmap/r8-convenience-transport-execution-plan.md)
 
 ## 1) Problem statement
 
@@ -222,7 +222,7 @@ npm run r8:transport:smoke        # Tier 0–2 transport smoke
 
 ## 10) Related docs
 
-- [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md)
+- [../archive/roadmap/r8-convenience-transport-execution-plan.md](../archive/roadmap/r8-convenience-transport-execution-plan.md)
 - [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md)
 - [r6-post-deployment-proof-spec.md](r6-post-deployment-proof-spec.md)
 - [../architecture/lane-template-catalog.md](../architecture/lane-template-catalog.md)

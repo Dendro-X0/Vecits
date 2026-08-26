@@ -62,10 +62,10 @@ export function AuthCarousel() {
 
           <div className="mt-12">
             <div className="overflow-hidden rounded-3xl border border-white/15 bg-white/5 p-3 shadow-2xl backdrop-blur-md">
-              <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500/20 via-indigo-500/15 to-slate-700/20">
+              <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-gradient-to-br from-primary/25 via-cyan-500/15 to-slate-700/20">
                 <div className="absolute inset-0 opacity-40 mix-blend-overlay transition-transform duration-1000 group-hover:scale-110">
-                  <div className="absolute left-[-10%] top-[-10%] h-[50%] w-[50%] rounded-full bg-sky-400 blur-[80px]" />
-                  <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-indigo-400 blur-[80px]" />
+                  <div className="absolute left-[-10%] top-[-10%] h-[50%] w-[50%] rounded-full bg-primary/50 blur-[80px]" />
+                  <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-cyan-400/40 blur-[80px]" />
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center p-8">
@@ -101,7 +101,7 @@ export function AuthCarousel() {
               }, 180);
             }}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === index ? "w-8 bg-sky-400" : "w-1.5 bg-white/20 hover:bg-white/35"
+              i === index ? "w-8 bg-primary" : "w-1.5 bg-white/20 hover:bg-white/35"
             }`}
             aria-label={`Go to slide ${i + 1}`}
           />

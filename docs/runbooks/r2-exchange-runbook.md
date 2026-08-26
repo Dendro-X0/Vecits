@@ -90,6 +90,6 @@ Defined in `scripts/lib/r2-exchange-core.mjs`. Do **not** reuse these keys in pr
 
 ## Related docs
 
-- `docs/roadmap/r2-deployment-proof-execution-plan.md`
+- `docs/archive/roadmap/r2-deployment-proof-execution-plan.md`
 - `docs/runbooks/operator-backup-runbook.md`
 - `docs/runbooks/alpha-operations-runbook.md`

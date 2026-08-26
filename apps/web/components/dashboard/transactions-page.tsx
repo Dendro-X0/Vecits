@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LaneBadge } from "@/components/marketplace/lane-badge";
 import { loadActiveSession } from "@/lib/auth/session";
 import { useDesktopNodeReady } from "@/lib/desktop/use-desktop-node-ready";
 import { useDesktopNodeRetry } from "@/lib/desktop/use-desktop-node-retry";
@@ -249,15 +250,13 @@ function TransactionOrderCard({
   order: TransactionOrderSummary;
   workspaceSummary?: OrderWorkspaceSummary;
 }) {
-  const laneLabel = order.serviceType.replace(/-/g, " ");
-
   return (
     <Card className={order.progress.needsViewerAction ? "border-primary/30" : undefined}>
       <CardContent className="space-y-4 p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="lane">{laneLabel}</Badge>
+              <LaneBadge serviceType={order.serviceType} />
               <Badge variant="outline">{order.role === "buyer" ? "Buying" : "Selling"}</Badge>
               {order.progress.milestoneTotal > 1 ? (
                 <Badge variant="outline">

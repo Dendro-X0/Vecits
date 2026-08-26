@@ -39,7 +39,7 @@ Last updated: August 2026
 
 ### Already complete (do not restart)
 
-- R8 convenience transport — [r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md)
+- R8 convenience transport — [r8-convenience-transport-execution-plan.md](../archive/roadmap/r8-convenience-transport-execution-plan.md)
 - R9 NFC + LAN halo maintainer — `pnpm r9:g5`
 - Zero-capital topologies + staged exchange + stability pack — ZC / SX / `pnpm stability:pack:quick`
 
@@ -71,4 +71,4 @@ Last updated: August 2026
 - [r8-convenience-transport-spec.md](r8-convenience-transport-spec.md)
 - [../v0/protocol-fixture-gap-audit.md](../v0/protocol-fixture-gap-audit.md)
 - [../v0/v0-scenario-fixture-matrix.md](../v0/v0-scenario-fixture-matrix.md)
-- [../roadmap/restart-roadmap.md](../roadmap/restart-roadmap.md)
+- [../project-status.md](../project-status.md)

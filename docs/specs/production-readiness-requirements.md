@@ -6,7 +6,7 @@ Status: `locked` (maintainer FR decisions 2026-08-25)
 
 Last updated: August 2026
 
-Related: [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) (ZC-D1..D5 locked), [deployment-distribution-spec.md](deployment-distribution-spec.md), [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md), [../roadmap/r10-production-readiness-execution-plan.md](../roadmap/r10-production-readiness-execution-plan.md), [remote-e2e-cross-platform-design.md](remote-e2e-cross-platform-design.md).
+Related: [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) (ZC-D1..D5 locked), [deployment-distribution-spec.md](deployment-distribution-spec.md), [trust-bootstrap-and-credits-path-spec.md](trust-bootstrap-and-credits-path-spec.md), [../archive/roadmap/r10-production-readiness-execution-plan.md](../archive/roadmap/r10-production-readiness-execution-plan.md), [remote-e2e-cross-platform-design.md](remote-e2e-cross-platform-design.md).
 
 ## 1) North star (this band)
 

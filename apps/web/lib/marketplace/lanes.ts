@@ -9,7 +9,7 @@ export const MARKETPLACE_LANES: MarketplaceLane[] = [
   {
     id: "software-fixes",
     label: "Software Fixes",
-    description: "Narrow, artifact-verifiable bug fixes and CI repairs."
+    description: "Narrow, artifact-verifiable bug fixes — including features broken by rushed AI edits."
   },
   {
     id: "feature-work",
@@ -39,7 +39,8 @@ export const MARKETPLACE_LANES: MarketplaceLane[] = [
   {
     id: "project-maintenance",
     label: "Project Maintenance",
-    description: "Stalled project continuation and upkeep tasks.",
+    description:
+      "Stalled projects and collabs (game mods, music, OSS) — settle in credits, barter, or shared digital resources.",
     mutualAid: true
   },
   {

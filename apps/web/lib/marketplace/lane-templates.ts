@@ -20,7 +20,7 @@ export const SERVICE_LANE_TEMPLATES: ServiceLaneTemplate[] = [
     allowedEvidenceFormats: ["artifactHash"],
     defaultMilestoneEvidenceFormat: "artifactHash",
     strict: false,
-    description: "Narrow artifact-verifiable fixes for bugs and defects."
+    description: "Narrow artifact-verifiable fixes for bugs, CI breaks, and AI-regressed features."
   },
   {
     id: "feature-work",
@@ -86,7 +86,8 @@ export const SERVICE_LANE_TEMPLATES: ServiceLaneTemplate[] = [
     allowedEvidenceFormats: ["artifactHash"],
     defaultMilestoneEvidenceFormat: "artifactHash",
     strict: false,
-    description: "Stalled-project continuation and maintenance-oriented deliverables."
+    description:
+      "Stalled-project continuation and collabs (game, music, OSS) with customizable rewards — credits, barter, or shared digital resources."
   },
   {
     id: "compute-job",

@@ -112,7 +112,7 @@ export function HelpSidebarNav({ className, onNavigate, variant = "full" }: Help
         </div>
       ) : null}
 
-      <nav aria-label="Help documentation" className="flex-1 overflow-y-auto px-3 py-4">
+      <nav aria-label="Help documentation" className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
         {filteredGroups.map((group) => {
           const GroupIcon = GROUP_ICONS[group.id] ?? BookOpen;
           return (

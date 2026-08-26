@@ -1,7 +1,7 @@
 {
   "name": "vectis-workspace",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev:web": "node ./scripts/ensure-dev-web-port.mjs && pnpm --filter @new-start/sdk-ts build && node ./scripts/dev-web.mjs",

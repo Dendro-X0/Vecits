@@ -101,4 +101,4 @@ pnpm r7:mobile:readiness          # regression guard for R7-M2
 - [mobile-sidecar-policy-spec.md](mobile-sidecar-policy-spec.md)
 - [r7-m2-remote-pinned-node-wiring-spec.md](r7-m2-remote-pinned-node-wiring-spec.md)
 - [../runbooks/mobile-scaffold-runbook.md](../runbooks/mobile-scaffold-runbook.md)
-- [../roadmap/r7-professional-client-execution-plan.md](../roadmap/r7-professional-client-execution-plan.md)
+- [../archive/roadmap/r7-professional-client-execution-plan.md](../archive/roadmap/r7-professional-client-execution-plan.md)

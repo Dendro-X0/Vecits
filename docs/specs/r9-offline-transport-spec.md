@@ -10,7 +10,7 @@ Last updated: July 2026
 
 Related: [r8-convenience-transport-spec.md](r8-convenience-transport-spec.md), [mobile-sidecar-policy-spec.md](mobile-sidecar-policy-spec.md), [../v0/v0-track4-sync-spec.md](../v0/v0-track4-sync-spec.md), [../runbooks/offline-lane-experimental-runbook.md](../runbooks/offline-lane-experimental-runbook.md).
 
-Execution plan: [../roadmap/r9-offline-transport-execution-plan.md](../roadmap/r9-offline-transport-execution-plan.md)
+Execution plan: [../archive/roadmap/r9-offline-transport-execution-plan.md](../archive/roadmap/r9-offline-transport-execution-plan.md)
 
 ## 1) Problem statement
 
@@ -190,7 +190,7 @@ No second human required. Travel router optional; localhost multi-bind or two lo
 ## 9) Related docs
 
 - [r8-convenience-transport-spec.md](r8-convenience-transport-spec.md)
-- [../roadmap/r9-offline-transport-execution-plan.md](../roadmap/r9-offline-transport-execution-plan.md)
+- [../archive/roadmap/r9-offline-transport-execution-plan.md](../archive/roadmap/r9-offline-transport-execution-plan.md)
 - [r9-h1-halo-join-ux-design.md](r9-h1-halo-join-ux-design.md)
 - [r9-n1-android-nfc-read-design.md](r9-n1-android-nfc-read-design.md)
 - [r9-n2-android-nfc-write-design.md](r9-n2-android-nfc-write-design.md)

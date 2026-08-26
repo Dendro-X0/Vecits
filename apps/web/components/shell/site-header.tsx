@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { AuthStatus } from "@/components/auth/auth-status";
 import { VectisBrand } from "@/components/brand/vectis-brand";
+import { GlobalSearchTrigger } from "@/components/search/global-search";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { useDesktopShell } from "@/lib/desktop/use-desktop-shell";
@@ -62,6 +63,8 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-2">
+          <GlobalSearchTrigger className="hidden md:inline-flex" />
+          <GlobalSearchTrigger compact className="md:hidden" />
           <Button
             type="button"
             variant="outline"

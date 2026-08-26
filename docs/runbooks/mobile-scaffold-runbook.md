@@ -119,5 +119,5 @@ npm run r7:ios:scaffold-smoke
 
 ## Related docs
 
-- `docs/roadmap/r7-professional-client-execution-plan.md`
+- `docs/archive/roadmap/r7-professional-client-execution-plan.md`
 - `docs/roadmap/restart-roadmap.md`

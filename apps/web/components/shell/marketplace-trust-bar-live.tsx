@@ -18,15 +18,22 @@ export function MarketplaceTrustBarLive({
   mockMode
 }: MarketplaceTrustBarLiveProps) {
   const desktop = useDesktopShell();
-  const [label, setLabel] = useState(nodeLabel);
+  // Defer label until mount so SSR/client URL resolution cannot disagree.
+  const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!desktop) {
-      setLabel(nodeLabel);
+    if (desktop) {
+      setLabel(readDesktopNodeDisplayUrl() ?? nodeLabel);
       return;
     }
-    setLabel(readDesktopNodeDisplayUrl() ?? nodeLabel);
+    setLabel(nodeLabel);
   }, [desktop, nodeLabel]);
 
-  return <MarketplaceTrustBar nodeLabel={label} asOf={asOf} mockMode={mockMode} />;
+  return (
+    <MarketplaceTrustBar
+      nodeLabel={label ?? "Connecting to node…"}
+      asOf={asOf}
+      mockMode={mockMode}
+    />
+  );
 }

@@ -11,6 +11,9 @@ export type MarketplaceListing = DiscoveryOfferRow & {
   trustSnippet?: ListingTrustSnippet;
 };
 
+/** Protocol max for ServiceOffer.unitDefinition. */
+export const UNIT_DEFINITION_MAX = 200;
+
 const UNIT_HINTS: Record<string, string> = {
   "software-fixes": "Bounded fix per issue",
   "feature-work": "Feature increment delivery",
@@ -18,16 +21,63 @@ const UNIT_HINTS: Record<string, string> = {
   translation: "Localization package",
   testing: "Verification report",
   research: "Research brief artifact",
-  "project-maintenance": "Maintenance continuation task",
+  "project-maintenance": "Collab · credits, barter, or shared resources",
   "compute-job": "Deterministic compute job"
 };
 
+/** Split title + description packed into unitDefinition (newline-separated). */
+export function parseUnitDefinition(unit: string): { title: string; description: string } {
+  const trimmed = unit.trim();
+  if (!trimmed) {
+    return { title: "", description: "" };
+  }
+  const breakAt = trimmed.indexOf("\n");
+  if (breakAt < 0) {
+    return { title: trimmed, description: "" };
+  }
+  return {
+    title: trimmed.slice(0, breakAt).trim(),
+    description: trimmed.slice(breakAt + 1).trim()
+  };
+}
+
+/** Pack title + description into unitDefinition within the protocol length cap. */
+export function composeUnitDefinition(title: string, description: string): string {
+  const trimmedTitle = title.trim();
+  const trimmedDescription = description.trim();
+  if (!trimmedDescription) {
+    return trimmedTitle.slice(0, UNIT_DEFINITION_MAX);
+  }
+  const separator = "\n";
+  const titleBudget = Math.min(trimmedTitle.length, UNIT_DEFINITION_MAX - separator.length - 1);
+  const safeTitle = trimmedTitle.slice(0, Math.max(titleBudget, 0));
+  const remaining = UNIT_DEFINITION_MAX - safeTitle.length - separator.length;
+  if (remaining <= 0) {
+    return safeTitle.slice(0, UNIT_DEFINITION_MAX);
+  }
+  return `${safeTitle}${separator}${trimmedDescription.slice(0, remaining)}`;
+}
+
 export function enrichListing(offer: DiscoveryOfferRow): MarketplaceListing {
-  const laneLabel = offer.service_type.replace(/-/g, " ");
+  const copy = listingCopyFromUnitDefinition(offer.unit_definition ?? "", offer.service_type);
   return {
     ...offer,
-    title: `${capitalizeWords(laneLabel)} — ${offer.offer_id}`,
-    subtitle: UNIT_HINTS[offer.service_type] ?? "In-protocol service exchange"
+    title: copy.title,
+    subtitle: copy.subtitle
+  };
+}
+
+/** Build display title/subtitle from a packed unitDefinition string. */
+export function listingCopyFromUnitDefinition(
+  unitDefinition: string,
+  serviceType: string
+): { title: string; subtitle: string } {
+  const { title, description } = parseUnitDefinition(unitDefinition);
+  const laneLabel = capitalizeWords(serviceType.replace(/-/g, " "));
+  return {
+    title: title || laneLabel || "Untitled offer",
+    subtitle:
+      description || UNIT_HINTS[serviceType] || "In-protocol service exchange"
   };
 }
 
@@ -60,6 +110,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-software-fix",
     provider_pub_key: "a09aa5f47a6759802ff955f8dc2d2a14a5c99d23be97f864127ff9383455a4f0",
     service_type: "software-fixes",
+    unit_definition: "Fix failing CI on Rust crate\nBounded fix per issue · artifact delivery",
     status: "active",
     price_per_unit_credits: 120,
     offer_expires_at: "2026-12-01T00:00:00Z",
@@ -76,6 +127,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-documentation",
     provider_pub_key: "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
     service_type: "documentation",
+    unit_definition: "API reference refresh for open-source SDK\nStructured doc deliverable",
     status: "active",
     price_per_unit_credits: 90,
     offer_expires_at: "2026-12-01T00:00:00Z",
@@ -92,6 +144,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-maintenance",
     provider_pub_key: "a09aa5f47a6759802ff955f8dc2d2a14a5c99d23be97f864127ff9383455a4f0",
     service_type: "project-maintenance",
+    unit_definition: "Unblock stalled maintainer backlog\nMutual aid · maintenance continuation",
     status: "active",
     price_per_unit_credits: 160,
     offer_expires_at: "2026-12-01T00:00:00Z",
@@ -108,6 +161,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-research",
     provider_pub_key: "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
     service_type: "research",
+    unit_definition: "Lane economics brief with hashed deliverable\nResearch brief artifact",
     status: "active",
     price_per_unit_credits: 140,
     offer_expires_at: "2026-12-01T00:00:00Z",
@@ -124,6 +178,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-testing",
     provider_pub_key: "a09aa5f47a6759802ff955f8dc2d2a14a5c99d23be97f864127ff9383455a4f0",
     service_type: "testing",
+    unit_definition: "Reproduction report for flaky integration suite\nVerification report",
     status: "active",
     price_per_unit_credits: 95,
     offer_expires_at: "2026-12-01T00:00:00Z",
@@ -140,6 +195,7 @@ export const SHOWCASE_LISTINGS: MarketplaceListing[] = [
     offer_id: "showcase-compute",
     provider_pub_key: "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
     service_type: "compute-job",
+    unit_definition: "Deterministic batch transform with job receipt\nReceipt-based compute delivery",
     status: "active",
     price_per_unit_credits: 220,
     offer_expires_at: "2026-12-01T00:00:00Z",

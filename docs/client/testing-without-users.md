@@ -248,7 +248,7 @@ Everything else in Phase 1–3 client work can be validated solo with fixtures +
 
 ## 15. R8 convenience transport (when a low-trust counterparty appears)
 
-Complete client track: [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md) · Spec: [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md).
+Complete client track: [../archive/roadmap/r8-convenience-transport-execution-plan.md](../archive/roadmap/r8-convenience-transport-execution-plan.md) · Spec: [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md).
 
 Use these asks when someone is willing to **look** but not yet **trust** the full app:
 

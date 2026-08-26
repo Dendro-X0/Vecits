@@ -32,7 +32,7 @@ Kickoff: July 2026
 
 Operational integration: [../architecture/aperio-engine-integration.md](../architecture/aperio-engine-integration.md) (Aperio Rust engine → Vectis lanes).
 
-**R10 (August 2026):** [../roadmap/r10-production-readiness-execution-plan.md](../roadmap/r10-production-readiness-execution-plan.md) — maintainer invite bar met (`PRG-1`..`PRG-4`); `PRG-5` deferred.
+**R10 (August 2026):** [../archive/roadmap/r10-production-readiness-execution-plan.md](../archive/roadmap/r10-production-readiness-execution-plan.md) — maintainer invite bar met (`PRG-1`..`PRG-4`); `PRG-5` deferred.
 
 ## Relationship to v0 docs
 

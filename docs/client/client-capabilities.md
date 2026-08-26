@@ -2,7 +2,7 @@
 
 Technical description of shipped behavior in the official Vectis client (`apps/web` / desktop shell). Normative UI rules: [ui-contract.md](ui-contract.md). Solo testing: [testing-without-users.md](testing-without-users.md).
 
-Status: **shipped** (July 2026). Historical phase plans live under [../archive/frontend-phases/](../archive/frontend-phases/README.md) — not normative.
+Status: **shipped** (August 2026). Current state: [../project-status.md](../project-status.md). Historical phase plans: [../archive/frontend-phases/](../archive/frontend-phases/README.md) — not normative.
 
 ## Non-goals (client shell)
 
@@ -21,11 +21,14 @@ Reliable freelancer↔client path: agree terms, fund milestones, deliver evidenc
 
 - Split workspace shell (sidebar + coordination canvas) with deduplicated route headers
 - Overview, Transactions, Publish & transact, and Settings workflow navigation
+- **Global search** — `Ctrl/⌘+K` or `/` (outside `/help`); catalog covers pages, settings categories, help articles, marketplace lanes; triggers in site header and dashboard shell
+- **Keyboard back** — `Alt+←` or `Ctrl/⌘+[` when not typing in a form field
 - Theme-aware surfaces (`apps/web/lib/ui/theme-surfaces.ts`)
 - Kernel-backed overview and transactions — no showcase fallbacks
 
 ### Settings
 
+- Category nav: Profile, Connection, Security — deep link via `?category=profile|connection|security`
 - General vs **Advanced** settings (advanced collapsed by default; `?advanced=1` deep link)
 - Security callout for identity portability (backup + passkey before device switch)
 - Technical operator controls behind advanced disclosure
@@ -51,7 +54,9 @@ Reliable freelancer↔client path: agree terms, fund milestones, deliver evidenc
 
 ### Marketplace and explorer
 
-- Marketplace landing recovery states and listings section
+- Marketplace landing with lane catalog, mutual-aid shelf, trust band, and Post a job CTA
+- Lane and status icons on listing cards; offer ID for disambiguation
+- Unified primary accent (cyan brand) — see [../meta/design-audit-2026-08-26.md](../meta/design-audit-2026-08-26.md)
 - Explorer premium shell, grouped forms, normalized labels
 
 ## Workspace
@@ -94,7 +99,7 @@ Daily participant surfaces on top of the deal loop — still kernel-truth labele
 
 ### Help
 
-- In-app help center (`/help`, articles in `lib/help/articles.ts`)
+- In-app help center (`/help`) with sticky sidebar, on-page TOC, and reading progress
 - Maintainer map: [in-app-help-sync.md](in-app-help-sync.md)
 
 ## Network surface
@@ -131,7 +136,7 @@ Cold-start and trust labeling without kernel changes. Protocol obligations: [../
 
 ### Convenience transport (R8)
 
-Tier 0 QR → Tier 1 signed bundles → Tier 2 experimental handoff wizard — [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md) · [../roadmap/r8-convenience-transport-execution-plan.md](../roadmap/r8-convenience-transport-execution-plan.md).
+Tier 0 QR → Tier 1 signed bundles → Tier 2 experimental handoff wizard — [../specs/r8-convenience-transport-spec.md](../specs/r8-convenience-transport-spec.md) · [../archive/roadmap/r8-convenience-transport-execution-plan.md](../archive/roadmap/r8-convenience-transport-execution-plan.md).
 
 ## Verification
 
@@ -155,6 +160,8 @@ Manual smoke (two local keys): [testing-without-users.md](testing-without-users.
 - `apps/web/lib/dashboard/transaction-progress.ts`
 - `apps/web/lib/dashboard/load-transactions.ts`
 - `apps/web/lib/workspace/`
+- `apps/web/components/search/global-search.tsx`
+- `apps/web/lib/search/global-search-items.ts`
 - `apps/web/lib/help/articles.ts`
 
 ## Open follow-ups (outside this client contract)

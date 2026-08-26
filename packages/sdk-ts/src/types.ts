@@ -100,6 +100,8 @@ export interface DiscoveryOfferRow {
   offer_id: string;
   provider_pub_key: string;
   service_type: string;
+  /** Packed title + description (newline-separated) from ServiceOffer. */
+  unit_definition?: string;
   status: string;
   price_per_unit_credits: number;
   offer_expires_at: string;

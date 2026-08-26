@@ -1,8 +1,15 @@
 import Link from "next/link";
+import {
+  Handshake,
+  LayoutGrid,
+  Map,
+  type LucideIcon
+} from "lucide-react";
 
 import type { QueryParams } from "@/app/explorer/lib";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
 import { MARKETPLACE_LANES } from "@/lib/marketplace/lanes";
+import { getLaneIcon } from "@/lib/marketplace/lane-icons";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
@@ -28,16 +35,19 @@ export function CategorySidebar({
             href={buildMarketplaceHref("/marketplace", searchParams)}
             active={activeSection === "all" && !activeLane}
             label="All listings"
+            icon={LayoutGrid}
           />
           <SidebarLink
             href={buildMarketplaceHref("/marketplace/mutual-aid", searchParams)}
             active={activeSection === "mutual-aid"}
             label="Mutual aid"
+            icon={Handshake}
           />
           <SidebarLink
             href={buildMarketplaceHref("/marketplace/lanes", searchParams)}
             active={false}
             label="Lane catalog"
+            icon={Map}
           />
         </div>
       </div>
@@ -54,6 +64,7 @@ export function CategorySidebar({
                 href={buildMarketplaceHref(`/marketplace/lanes/${lane.id}`, searchParams)}
                 active={activeLane === lane.id}
                 label={lane.label}
+                icon={getLaneIcon(lane.id)}
                 hint={lane.mutualAid ? "Aid" : undefined}
               />
             ))}
@@ -68,26 +79,37 @@ function SidebarLink({
   href,
   active,
   label,
+  icon: Icon,
   hint
 }: {
   href: string;
   active?: boolean;
   label: string;
+  icon: LucideIcon;
   hint?: string;
 }) {
   return (
     <Link
       href={href}
       className={cn(
-        "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition",
+        "flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition",
         active
           ? "bg-primary/10 text-foreground ring-1 ring-primary/25"
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       )}
     >
-      <span>{label}</span>
+      <span className="flex min-w-0 items-center gap-2">
+        <Icon
+          className={cn(
+            "size-3.5 shrink-0",
+            active ? "text-primary" : "text-muted-foreground/80"
+          )}
+          aria-hidden="true"
+        />
+        <span className="truncate">{label}</span>
+      </span>
       {hint ? (
-        <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-secondary-foreground">
+        <span className="shrink-0 rounded-full bg-secondary px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-secondary-foreground">
           {hint}
         </span>
       ) : null}

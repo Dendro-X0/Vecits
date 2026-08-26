@@ -1,22 +1,15 @@
 # Roadmap
 
-Active restart-era planning, progress tracking, and session handoff.
+**Active trackers only.** For current state see [../project-status.md](../project-status.md).
 
 | Document | Purpose |
 | --- | --- |
-| [../client/client-capabilities.md](../client/client-capabilities.md) | Official client shipped capabilities (deal loop, workspace, network surface) |
-| [../client/ui-contract.md](../client/ui-contract.md) | Normative client UI rules |
-| [restart-roadmap.md](restart-roadmap.md) | Canonical R0–R10 plan and gates |
-| [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) | **What is done / what's next** (protocol stack) |
-| [r10-production-readiness-execution-plan.md](r10-production-readiness-execution-plan.md) | **Maintainer complete** (`PRG-5` deferred): remote E2E + XP matrix |
-| [../specs/production-readiness-requirements.md](../specs/production-readiness-requirements.md) | FR-01..FR-14 for production-for-invite |
-| [../specs/remote-e2e-cross-platform-design.md](../specs/remote-e2e-cross-platform-design.md) | Remote topologies + XP matrix |
-| [r7-professional-client-execution-plan.md](r7-professional-client-execution-plan.md) | Tauri v2 official client (complete) |
-| [r8-convenience-transport-execution-plan.md](r8-convenience-transport-execution-plan.md) | Complete: QR, deep links, offline-friendly handoff UX |
-| [r9-offline-transport-execution-plan.md](r9-offline-transport-execution-plan.md) | Complete: NFC carrier + LAN operator-node halo (`R9-G0`..`G5`) |
-| [r0-spec-lock-execution-plan.md](r0-spec-lock-execution-plan.md) | R0 tracker |
-| [r2-deployment-proof-execution-plan.md](r2-deployment-proof-execution-plan.md) | R2 deployment proof |
-| [progress.md](progress.md) | Milestone evidence index |
-| [working-context-log.md](working-context-log.md) | Session handoff |
+| [../project-status.md](../project-status.md) | **Canonical current state** — shipped, gaps, next work |
+| [../specs/protocol-priority-backlog.md](../specs/protocol-priority-backlog.md) | Protocol stack rank |
+| [restart-roadmap.md](restart-roadmap.md) | Pointer to archived full R-track plan |
+| [progress.md](progress.md) | Milestone changelog and evidence index |
+| [working-context-log.md](working-context-log.md) | Session handoff (current snapshot) |
+
+Completed R0–R10 execution plans: [../archive/roadmap/README.md](../archive/roadmap/README.md)
 
 ← [Docs index](../index.md)

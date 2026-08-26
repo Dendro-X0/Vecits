@@ -8,6 +8,7 @@ import { ArrowLeftRight, BookOpen, Handshake, LayoutDashboard, PenLine, QrCode, 
 import { AuthStatus } from "@/components/auth/auth-status";
 import { VectisBrand } from "@/components/brand/vectis-brand";
 import { WorkspaceRoleHint } from "@/components/dashboard/workspace-role-hint";
+import { GlobalSearchTrigger } from "@/components/search/global-search";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useDesktopShell } from "@/lib/desktop/use-desktop-shell";
 import { cn } from "@/lib/utils";
@@ -155,6 +156,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <div className="flex shrink-0 items-start gap-3 pt-1">
             <WorkspaceRoleHint />
             <div className="flex shrink-0 items-center gap-2">
+              <GlobalSearchTrigger className="hidden sm:inline-flex" />
+              <GlobalSearchTrigger compact className="sm:hidden" />
               <ThemeToggle />
               <AuthStatus />
             </div>

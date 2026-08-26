@@ -108,5 +108,5 @@ cp /backup/vectis/2026-07-01/events.log ./.data/restored/
 ## Related docs
 
 - `docs/runbooks/operator-quickstart.md`
-- `docs/roadmap/r2-deployment-proof-execution-plan.md`
+- `docs/archive/roadmap/r2-deployment-proof-execution-plan.md`
 - `docs/specs/deployment-distribution-spec.md`

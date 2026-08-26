@@ -109,6 +109,14 @@ async function openAdvancedDetails(page) {
   }
 }
 
+/** Offer publish defaults to Standard (no Offer ID / protocol fields). Smoke needs Advanced. */
+async function selectOfferFormAdvanced(page) {
+  const root = page.locator("#marketplace-event-builder");
+  const advanced = root.getByRole("button", { name: "Advanced" });
+  await advanced.waitFor({ timeout: 10000 });
+  await advanced.click();
+}
+
 async function fillLabeledInput(page, label, value) {
   const root = page.locator("#marketplace-event-builder");
   const input = root
@@ -259,6 +267,7 @@ async function main() {
       const page = await ctx.newPage();
       await signIn(page, webUrl, R2_KEYS.provider);
       await openBuilderStep(page, webUrl, "offer");
+      await selectOfferFormAdvanced(page);
       await configureSigningKeys(page, {
         nodeProxy,
         publicKeyHex: keys.providerPubKey,
@@ -326,6 +335,7 @@ async function main() {
       await fillLabeledInput(page, "Order ID", orderId);
       await fillLabeledInput(page, "Amount to fund", price);
       await fillLabeledInput(page, "Payment nonce", `${runId}-escrow`);
+      await fillReferenceEventId(page, "Order reference event ID", orderEventId);
       await submitBuilderStep(page, /Sign and submit escrow funding/i);
       record(results, "guided builder: fund escrow (buyer)", true, `${price} credits`);
       await ctx.close();

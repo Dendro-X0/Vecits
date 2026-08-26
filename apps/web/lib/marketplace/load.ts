@@ -4,31 +4,26 @@ import { filterListingsByQuery } from "@/components/marketplace/marketplace-tool
 import type { SortOption } from "@/lib/marketplace/lanes";
 import {
   enrichListing,
-  SHOWCASE_LISTINGS,
   sortListings,
   type MarketplaceListing
 } from "@/lib/marketplace/listings";
 import { fetchMarketplaceDiscovery } from "@/lib/marketplace/node";
-import {
-  loadListingTrustSnippets,
-  showcaseListingTrustSnippet
-} from "@/lib/marketplace/trust-signals";
+import { loadListingTrustSnippets } from "@/lib/marketplace/trust-signals";
 
-const MOCK_MODE_ENABLED = process.env.NEXT_PUBLIC_VECTIS_MOCK_MODE === "1";
+export type MarketplaceListingsLoad = {
+  listings: MarketplaceListing[];
+  showcase: boolean;
+  mockMode: boolean;
+  baseUrl: string;
+  asOf?: string;
+  error?: string;
+};
 
 async function attachTrustSnippets(
   baseUrl: string,
   listings: MarketplaceListing[],
-  asOf?: string,
-  showcase = false
+  asOf?: string
 ): Promise<MarketplaceListing[]> {
-  if (showcase) {
-    return listings.map((listing) => ({
-      ...listing,
-      trustSnippet: showcaseListingTrustSnippet(listing)
-    }));
-  }
-
   const snippets = await loadListingTrustSnippets(baseUrl, listings, asOf);
   return listings.map((listing) => {
     const snippet = snippets.get(listing.provider_pub_key.toLowerCase());
@@ -36,17 +31,14 @@ async function attachTrustSnippets(
   });
 }
 
-export async function loadMarketplaceListings(
+/**
+ * Live discovery only — never injects showcase/demo offers.
+ * Empty node → empty listings; unreachable node → error + empty listings.
+ */
+export async function loadLiveMarketplaceListings(
   searchParams: QueryParams,
   options: { serviceType?: string; mutualAidOnly?: boolean } = {}
-): Promise<{
-  listings: MarketplaceListing[];
-  showcase: boolean;
-  mockMode: boolean;
-  baseUrl: string;
-  asOf?: string;
-  error?: string;
-}> {
+): Promise<MarketplaceListingsLoad> {
   const discovery = await fetchMarketplaceDiscovery(searchParams, {
     serviceType: options.serviceType,
     limit: 48,
@@ -54,32 +46,14 @@ export async function loadMarketplaceListings(
   });
 
   if (!discovery.ok) {
-    if (!MOCK_MODE_ENABLED) {
-      return {
-        listings: [],
-        showcase: false,
-        mockMode: false,
-        baseUrl: discovery.baseUrl,
-        error:
-          discovery.error ??
-          "Unable to reach live marketplace data on this node. Check kernel connection settings."
-      };
-    }
-    let listings = SHOWCASE_LISTINGS;
-    if (options.serviceType) {
-      listings = listings.filter((listing) => listing.service_type === options.serviceType);
-    }
-    if (options.mutualAidOnly) {
-      listings = listings.filter((listing) => listing.service_type === "project-maintenance");
-    }
     return {
-      listings: await attachTrustSnippets(discovery.baseUrl, listings, undefined, true),
-      showcase: true,
-      mockMode: true,
+      listings: [],
+      showcase: false,
+      mockMode: false,
       baseUrl: discovery.baseUrl,
       error:
         discovery.error ??
-        "Live node unavailable. Mock mode is enabled, so showcase listings are displayed."
+        "Unable to reach live marketplace data on this node. Check kernel connection settings."
     };
   }
 
@@ -89,32 +63,30 @@ export async function loadMarketplaceListings(
   }
 
   if (listings.length === 0) {
-    if (!MOCK_MODE_ENABLED) {
-      return {
-        listings: [],
-        showcase: false,
-        mockMode: false,
-        baseUrl: discovery.baseUrl,
-        asOf: discovery.view.as_of
-      };
-    }
     return {
-      listings: await attachTrustSnippets(discovery.baseUrl, SHOWCASE_LISTINGS, undefined, true),
-      showcase: true,
-      mockMode: true,
-      baseUrl: discovery.baseUrl,
-      asOf: discovery.view.as_of,
-      error: "No live listings on this node. Mock mode is enabled, so showcase previews are shown."
-    };
-  }
-
-    return {
-      listings: await attachTrustSnippets(discovery.baseUrl, listings, discovery.view.as_of),
+      listings: [],
       showcase: false,
       mockMode: false,
       baseUrl: discovery.baseUrl,
       asOf: discovery.view.as_of
     };
+  }
+
+  return {
+    listings: await attachTrustSnippets(discovery.baseUrl, listings, discovery.view.as_of),
+    showcase: false,
+    mockMode: false,
+    baseUrl: discovery.baseUrl,
+    asOf: discovery.view.as_of
+  };
+}
+
+/** @deprecated Prefer loadLiveMarketplaceListings — alias kept for existing imports. */
+export async function loadMarketplaceListings(
+  searchParams: QueryParams,
+  options: { serviceType?: string; mutualAidOnly?: boolean } = {}
+): Promise<MarketplaceListingsLoad> {
+  return loadLiveMarketplaceListings(searchParams, options);
 }
 
 export function prepareListings(

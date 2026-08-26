@@ -5,6 +5,7 @@ Legacy context merged from earlier `dcos/` exploration and completed frontend ph
 | Document | Purpose |
 | --- | --- |
 | [legacy-dcos-index.md](legacy-dcos-index.md) | Index of merged legacy docs |
+| [roadmap/](roadmap/README.md) | Completed R0–R10 execution plans (July–August 2026) |
 | [frontend-phases/](frontend-phases/README.md) | Historical frontend Phase 1–3 plans/completions |
 | [vision.md](vision.md) | Original vision |
 | [glossary.md](glossary.md) | Terminology |

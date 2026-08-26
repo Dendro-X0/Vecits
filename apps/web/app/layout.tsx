@@ -6,6 +6,7 @@ import { DesktopInitScript } from "@/components/desktop/desktop-init-script";
 import { ThemeInitScript } from "@/components/theme/theme-init-script";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { DesktopVaultHydrator } from "@/components/auth/desktop-vault-hydrator";
+import { GlobalSearchProvider } from "@/components/search/global-search";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 
 import "./globals.css";
@@ -29,8 +30,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <ThemeProvider>
           <DesktopShell>
-            <DesktopVaultHydrator />
-            {children}
+            <GlobalSearchProvider>
+              <DesktopVaultHydrator />
+              {children}
+            </GlobalSearchProvider>
           </DesktopShell>
         </ThemeProvider>
       </body>

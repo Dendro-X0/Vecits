@@ -119,4 +119,4 @@ If the market node should absorb policy or history from a gateway, reverse peer 
 
 - [two-node-deployment-runbook.md](two-node-deployment-runbook.md)
 - [../v0/v0-track4-sync-spec.md](../v0/v0-track4-sync-spec.md)
-- [../roadmap/r9-offline-transport-execution-plan.md](../roadmap/r9-offline-transport-execution-plan.md)
+- [../archive/roadmap/r9-offline-transport-execution-plan.md](../archive/roadmap/r9-offline-transport-execution-plan.md)

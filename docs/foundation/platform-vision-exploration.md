@@ -126,7 +126,7 @@ Guitar-for-labor or utility-for-service involves:
 
 ## Client roadmap: self-hosted official apps
 
-**Decision (July 2026):** **Tauri v2** wraps `apps/web`; `vectis-node` runs as a **sidecar** (not embedded Next API). See [../roadmap/r7-professional-client-execution-plan.md](../roadmap/r7-professional-client-execution-plan.md).
+**Decision (July 2026):** **Tauri v2** wraps `apps/web`; `vectis-node` runs as a **sidecar** (not embedded Next API). See [../archive/roadmap/r7-professional-client-execution-plan.md](../archive/roadmap/r7-professional-client-execution-plan.md).
 
 All official clients are **self-hosted shells** over `vectis-node` + SDK — operators and users run their own stack.
 

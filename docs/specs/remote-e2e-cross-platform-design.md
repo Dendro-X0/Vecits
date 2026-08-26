@@ -7,7 +7,7 @@ Status: `locked` (2026-08-25; RT-A/RT-B gate topology; XP-2+XP-3 must; SF1 invit
 Last updated: August 2026
 
 Implements requirements: [production-readiness-requirements.md](production-readiness-requirements.md)  
-Execution: [../roadmap/r10-production-readiness-execution-plan.md](../roadmap/r10-production-readiness-execution-plan.md)  
+Execution: [../archive/roadmap/r10-production-readiness-execution-plan.md](../archive/roadmap/r10-production-readiness-execution-plan.md)  
 Topology: [zero-capital-operator-topology-design.md](zero-capital-operator-topology-design.md) ZC-2 / ZC-3
 
 ## 1) Problem

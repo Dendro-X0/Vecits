@@ -34,6 +34,7 @@ type DiscoveryRow = {
   offer_id: string;
   provider_pub_key: string;
   service_type: string;
+  unit_definition?: string;
   status: string;
   price_per_unit_credits: number;
   offer_expires_at: string;

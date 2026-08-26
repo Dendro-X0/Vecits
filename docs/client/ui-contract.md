@@ -75,13 +75,19 @@ Goal: production-grade dashboard — no showcase/demo behavior; non-technical us
 - `apps/web/components/marketplace/marketplace-hero.tsx`
 - `apps/web/components/marketplace/marketplace-status-panel.tsx`
 - `apps/web/components/marketplace/marketplace-listings-section.tsx`
+- `apps/web/components/marketplace/marketplace-live-browse.tsx`
+- `apps/web/lib/marketplace/load.ts` (`loadLiveMarketplaceListings`)
 - `apps/web/app/marketplace/page.tsx`
 
 Rules:
 
 - Connection failures show a recovery panel with settings action — not raw `fetch failed`.
 - Empty node state shows publish/sign-in actions — not showcase fallback.
+- Browse grids always load **live** discovery from the connected node (client-side). Never bake showcase or build-time offers into the grid; if the node has zero offers, show the empty panel.
+- Maintainer drill offers on a local node are still real kernel state — they appear until cancelled/expired or the local data dir is reset. They are not client mock/showcase rows.
 - Hero leads with clear CTAs: browse, mutual aid, identity workspace.
+- Desktop maximized shell has no blue edge frame (`::before` inset + outer ring off).
+- Listing card titles use the lane label from live discovery (not `lane — offerId` strings that look like placeholders).
 
 ## Settings
 
@@ -104,10 +110,13 @@ Rules:
 - `apps/web/components/dashboard/transaction-builder-panel.tsx`
 - `apps/web/app/dashboard/builder/page.tsx`
 - `apps/web/app/components/marketplace-event-builder.tsx` (`variant="transaction"`)
+- `apps/web/components/marketplace/offer-publish-editor.tsx`
+- Spec: [frontend-spec-guided-offer-publish.md](frontend-spec-guided-offer-publish.md) (Standard / Advanced + preview — **implemented**)
 
 Rules:
 
 - Default dashboard builder is a guided five-step flow: publish offer → place order → fund escrow → deliver → accept.
+- Offer step defaults to **Standard** (intent chips, plain title, category, price, date expiry, live listing preview). **Advanced** exposes protocol fields.
 - Operator chrome (fixture presets, lane starters, dispute path, session checklist, raw JSON dumps) stays behind "Operator builder".
 - Discovery draft import is optional and collapsed by default.
 - Successful submits show a plain-language confirmation and advance to the next step.

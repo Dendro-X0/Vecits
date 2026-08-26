@@ -67,7 +67,7 @@ export function AuthShell({
               backgroundSize: "32px 32px"
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/10 via-transparent to-indigo-500/10" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-cyan-500/10" />
           <div className="relative z-10 flex flex-1 flex-col px-12 py-14">
             <AuthCarousel />
           </div>

@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ArrowUpRight, BadgeCheck, Coins, UserRound } from "lucide-react";
 
 import type { QueryParams } from "@/app/explorer/lib";
+import { LaneBadge } from "@/components/marketplace/lane-badge";
 import { ListingTrustBadges } from "@/components/marketplace/provider-trust-signals";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/marketplace/status-badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildMarketplaceHref } from "@/lib/marketplace/node";
 import type { MarketplaceListing } from "@/lib/marketplace/listings";
-import { formatCredits, formatServiceType, truncatePubkey } from "@/lib/utils";
+import { formatCredits, truncatePubkey } from "@/lib/utils";
 
 type ListingCardProps = {
   listing: MarketplaceListing;
@@ -22,15 +23,18 @@ export function ListingCard({ listing, searchParams, signedIn = false }: Listing
   );
 
   return (
-    <Card className="group flex h-full flex-col transition hover:border-sky-400/25 hover:shadow-[0_20px_60px_-30px_rgba(56,189,248,0.35)]">
+    <Card className="group flex h-full flex-col transition hover:border-primary/30 hover:shadow-[0_20px_60px_-30px_color-mix(in_oklch,var(--primary)_35%,transparent)]">
       <CardHeader className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="lane">{formatServiceType(listing.service_type)}</Badge>
-          {listing.showcase ? <Badge variant="muted">Showcase</Badge> : null}
-          {listing.status === "active" ? <Badge variant="success">Active</Badge> : null}
+          <LaneBadge serviceType={listing.service_type} />
+          {listing.showcase ? <StatusBadge status="showcase" /> : null}
+          {listing.status ? <StatusBadge status={listing.status} /> : null}
         </div>
         <CardTitle className="line-clamp-2 text-base leading-snug">{listing.title}</CardTitle>
         <p className="line-clamp-2 text-sm text-muted-foreground">{listing.subtitle}</p>
+        <p className="font-mono text-xs text-muted-foreground/80" title={listing.offer_id}>
+          {listing.offer_id}
+        </p>
       </CardHeader>
 
       <CardContent className="mt-auto space-y-4">
@@ -72,7 +76,7 @@ export function ListingCard({ listing, searchParams, signedIn = false }: Listing
         {signedIn ? (
           <Link
             href={detailHref}
-            className="inline-flex h-10 flex-1 items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground transition hover:bg-sky-300"
+            className="inline-flex h-10 flex-1 items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground transition hover:bg-primary/80"
           >
             Start exchange
           </Link>

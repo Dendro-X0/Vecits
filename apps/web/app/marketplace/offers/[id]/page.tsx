@@ -13,9 +13,10 @@ import {
 import type { QueryParams } from "@/app/explorer/lib";
 import { getNodeBaseUrl, getOptionalParam, toErrorMessage } from "@/app/explorer/lib";
 import { KernelTruthBanner } from "@/components/marketplace/kernel-truth-banner";
+import { LaneBadge } from "@/components/marketplace/lane-badge";
+import { StatusBadge } from "@/components/marketplace/status-badge";
 import { ProviderTrustSignalsCard } from "@/components/marketplace/provider-trust-signals";
 import { StartExchangePanel } from "@/components/marketplace/start-exchange-panel";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { normalizeOfferTerms } from "@/lib/marketplace/offer-normalize";
 import { SHOWCASE_LISTINGS } from "@/lib/marketplace/listings";
@@ -133,8 +134,8 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
         <div className="space-y-6">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="lane">{formatServiceType(serviceType)}</Badge>
-              {showcase ? <Badge variant="muted">Showcase</Badge> : <Badge variant="success">Kernel</Badge>}
+              <LaneBadge serviceType={serviceType} />
+              {showcase ? <StatusBadge status="showcase" /> : <StatusBadge status="kernel" />}
             </div>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
               {listing?.title ?? `${formatServiceType(serviceType)} — ${id}`}
@@ -188,7 +189,7 @@ export default async function OfferDetailPage({ params }: OfferDetailPageProps) 
               </div>
 
               {listing ? (
-                <div className="rounded-xl border border-sky-400/20 bg-sky-400/10 p-4 text-sm">
+                <div className="rounded-xl border border-primary/25 bg-primary/10 p-4 text-sm">
                   <p className="font-medium text-foreground">Alignment signal</p>
                   <p className="mt-1 text-muted-foreground">
                     Discovery fit score {listing.discovery_score} · lane score {listing.lane_score}{" "}
@@ -222,7 +223,7 @@ function DetailRow({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-sky-300" />
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
       <div>
         <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
         <p className="mt-1 text-foreground">{value}</p>

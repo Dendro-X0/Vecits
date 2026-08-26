@@ -1,6 +1,6 @@
 # R10 — Production for invite (operator entry)
 
-Purpose: single entry for bringing a participant-hosted node from **local-verified** to **production-for-invite** proof language. Implements [../roadmap/r10-production-readiness-execution-plan.md](../roadmap/r10-production-readiness-execution-plan.md).
+Purpose: single entry for bringing a participant-hosted node from **local-verified** to **production-for-invite** proof language. Implements [../archive/roadmap/r10-production-readiness-execution-plan.md](../archive/roadmap/r10-production-readiness-execution-plan.md).
 
 Status: `active` (maintainer invite bar met; `PRG-5` deferred)
 

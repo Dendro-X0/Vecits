@@ -68,7 +68,7 @@ On a macOS host:
 
 ## Related docs
 
-- `docs/roadmap/r7-professional-client-execution-plan.md`
+- `docs/archive/roadmap/r7-professional-client-execution-plan.md`
 - `docs/runbooks/mobile-scaffold-runbook.md`
 - `docs/specs/mobile-sidecar-policy-spec.md`
 

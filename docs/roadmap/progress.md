@@ -1,13 +1,23 @@
 # Progress
 
-This file tracks high-level progress over time.
+This file tracks high-level progress over time. **For current state, read [project-status.md](../project-status.md) first.**
 
 ## 2026-08
 
+- **Documentation consolidation (2026-08-26):**
+  - Audit: `docs/meta/documentation-audit-2026-08-26.md`
+  - Canonical current state: `docs/project-status.md`
+  - Completed R-track execution plans archived to `docs/archive/roadmap/`
+  - Frontend specs moved to `docs/client/frontend-spec-*.md`
+  - Design audit moved to `docs/meta/design-audit-2026-08-26.md`
+  - `working-context-log.md` replaced with current snapshot; historical log archived
+- **Client UX (August 2026):**
+  - Global search (`Ctrl/⌘+K`), settings `?category=` deep links, keyboard back shortcut
+  - Marketplace trust/accent polish, help docs layout (sidebar + on-page TOC)
 - **R10 production readiness (FR locked 2026-08-25):**
   - Requirements: `docs/specs/production-readiness-requirements.md` — status `locked` (Q1–Q4 all A)
   - Remote E2E + XP design: `docs/specs/remote-e2e-cross-platform-design.md` — status `locked`
-  - Execution plan: `docs/roadmap/r10-production-readiness-execution-plan.md` (gates `PRG-1`..`PRG-5`)
+  - Execution plan: `docs/archive/roadmap/r10-production-readiness-execution-plan.md` (gates `PRG-1`..`PRG-5`)
   - Lock summary: Tailscale/LAN only; XP-2+XP-3; SF1 invite bar; macOS recommended
   - **R10-B1..B3 / `PRG-1` PASS (2026-08-25):** release node LAN serve + peer `/health` + Local operator node pin (RT-B). Evidence `target/r10-evidence/r10-b1-20260825/`
   - **R10-C / `PRG-2` PASS (2026-08-25):** remote `software-fixes` SF1 via LAN HTTP ingest; order closed. Evidence `target/r10-evidence/r10-c1-sf1-20260825/`

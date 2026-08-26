@@ -60,11 +60,21 @@ const THEME_LABELS = {
   system: "System"
 } as const;
 
+function parseSettingsCategory(value: string | null): SettingsCategory | null {
+  if (value === "profile" || value === "connection" || value === "security") {
+    return value;
+  }
+  return null;
+}
+
 export function DashboardSettingsPanel() {
   const searchParams = useSearchParams();
   const advancedOpenByDefault = searchParams.get("advanced") === "1";
+  const categoryFromUrl = parseSettingsCategory(searchParams.get("category"));
   const { preference } = useTheme();
-  const [activeCategory, setActiveCategory] = useState<SettingsCategory>("profile");
+  const [activeCategory, setActiveCategory] = useState<SettingsCategory>(
+    () => categoryFromUrl ?? "profile"
+  );
   const [session, setSession] = useState<AuthSession | null>(null);
   const [profile, setProfile] = useState<UserProfile>(EMPTY_PROFILE);
   const [profileSaved, setProfileSaved] = useState(false);
@@ -84,6 +94,20 @@ export function DashboardSettingsPanel() {
       setProfile(loadProfile(active.publicKeyHex));
     }
   }, []);
+
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setActiveCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
+
+  function setCategory(next: SettingsCategory) {
+    setActiveCategory(next);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("category", next);
+    const query = params.toString();
+    window.history.replaceState(null, "", `/dashboard/settings${query ? `?${query}` : ""}`);
+  }
 
   function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,7 +156,7 @@ export function DashboardSettingsPanel() {
           <p className="px-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
             General
           </p>
-          <SettingsCategoryNav active={activeCategory} onChange={setActiveCategory} />
+          <SettingsCategoryNav active={activeCategory} onChange={setCategory} />
         </aside>
 
         <div className="min-w-0">

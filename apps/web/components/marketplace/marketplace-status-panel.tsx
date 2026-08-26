@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PackageOpen, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { PostJobCta } from "@/components/marketplace/post-job-cta";
 import { Button } from "@/components/ui/button";
 import { isVectisDesktopClient, loadActiveSession } from "@/lib/auth/session";
 
@@ -80,9 +81,7 @@ export function MarketplaceStatusPanel({
               : "This node has no active marketplace offers right now. Browse another lane, or publish the first offer from your identity workspace."}
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <Button nativeButton={false} render={<Link href="/dashboard/builder" />} size="lg">
-          Publish
-        </Button>
+        <PostJobCta size="lg" />
         {signedIn ? (
           <Button
             nativeButton={false}

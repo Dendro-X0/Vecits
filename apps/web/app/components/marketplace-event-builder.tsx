@@ -16,6 +16,10 @@ import { FormEvent, useEffect, useState } from "react";
 import { KernelTruthNotice } from "./kernel-truth-notice";
 import { DiscoveryDraftImportPanel } from "@/components/marketplace/discovery-draft-import-panel";
 import { MilestoneScheduleEditor } from "@/components/marketplace/milestone-schedule-editor";
+import {
+  OfferPublishEditor,
+  type OfferFormDensity
+} from "@/components/marketplace/offer-publish-editor";
 import { loadActiveSession } from "@/lib/auth/session";
 import {
   Select,
@@ -48,7 +52,6 @@ import {
   defaultNodeClientBaseUrlForForms,
   validateNodeClientBaseUrl
 } from "@/lib/node-client-base-url";
-import { LanePublishFitPanel } from "@/components/marketplace/lane-publish-fit-panel";
 import {
   DEFAULT_SERVICE_LANE_TEMPLATE_ID,
   SERVICE_LANE_TEMPLATES,
@@ -472,6 +475,7 @@ export function MarketplaceEventBuilder({
   const isTransaction = variant === "transaction";
   const isControlled = controlledMode !== undefined;
   const [internalMode, setInternalMode] = useState<BuilderMode>("offer");
+  const [offerFormDensity, setOfferFormDensity] = useState<OfferFormDensity>("standard");
   const mode = isControlled ? controlledMode : internalMode;
 
   function setModeState(nextMode: BuilderMode) {
@@ -556,19 +560,20 @@ export function MarketplaceEventBuilder({
   const [deliveryNotesHash, setDeliveryNotesHash] = useState("");
   const [deliveryHintsJson, setDeliveryHintsJson] = useState("");
   const [deliveryHintsMessage, setDeliveryHintsMessage] = useState<string | null>(null);
-  const [deliveredAt, setDeliveredAt] = useState("2026-03-01T00:08:00Z");
+  // Defaults track envelope createdAt floor; live/empty createdAt is clamped on submit.
+  const [deliveredAt, setDeliveredAt] = useState("2026-04-01T00:08:00Z");
   const [deliveryOrderReferenceEventId, setDeliveryOrderReferenceEventId] = useState("");
 
   const [acceptOrderId, setAcceptOrderId] = useState("");
   const [acceptMilestoneId, setAcceptMilestoneId] = useState("m1");
-  const [acceptedAt, setAcceptedAt] = useState("2026-03-01T00:09:00Z");
+  const [acceptedAt, setAcceptedAt] = useState("2026-04-01T00:09:00Z");
   const [acceptDeliveryReferenceEventId, setAcceptDeliveryReferenceEventId] = useState("");
 
   const [disputeOrderId, setDisputeOrderId] = useState("");
   const [disputeMilestoneId, setDisputeMilestoneId] = useState("m1");
   const [disputeReasonCode, setDisputeReasonCode] = useState("quality");
   const [disputeNotesHash, setDisputeNotesHash] = useState("");
-  const [disputedAt, setDisputedAt] = useState("2026-03-01T00:09:30Z");
+  const [disputedAt, setDisputedAt] = useState("2026-04-01T00:09:30Z");
   const [disputeDeliveryReferenceEventId, setDisputeDeliveryReferenceEventId] = useState("");
 
   const [settleOrderId, setSettleOrderId] = useState("");
@@ -576,12 +581,12 @@ export function MarketplaceEventBuilder({
   const [settleOutcome, setSettleOutcome] = useState<"buyerWins" | "split">("split");
   const [buyerRefundCredits, setBuyerRefundCredits] = useState("100");
   const [providerRewardCredits, setProviderRewardCredits] = useState("0");
-  const [settledAt, setSettledAt] = useState("2026-03-01T00:10:00Z");
+  const [settledAt, setSettledAt] = useState("2026-04-01T00:10:00Z");
   const [settleDisputeReferenceEventId, setSettleDisputeReferenceEventId] = useState("");
 
   const [cancelOrderId, setCancelOrderId] = useState("");
   const [cancelMilestoneId, setCancelMilestoneId] = useState("m1");
-  const [cancelledAt, setCancelledAt] = useState("2026-03-01T00:08:30Z");
+  const [cancelledAt, setCancelledAt] = useState("2026-04-01T00:08:30Z");
   const [cancelReasonHash, setCancelReasonHash] = useState("");
   const [cancelOrderReferenceEventId, setCancelOrderReferenceEventId] = useState("");
   const [cancelPendingReferenceEventId, setCancelPendingReferenceEventId] = useState("");
@@ -590,7 +595,7 @@ export function MarketplaceEventBuilder({
   const [amendMilestoneId, setAmendMilestoneId] = useState("m1");
   const [amendAmountCredits, setAmendAmountCredits] = useState("100");
   const [amendOrderExpiresAt, setAmendOrderExpiresAt] = useState("2026-12-31T00:00:00Z");
-  const [amendedAt, setAmendedAt] = useState("2026-03-01T00:08:30Z");
+  const [amendedAt, setAmendedAt] = useState("2026-04-01T00:08:30Z");
   const [amendReasonHash, setAmendReasonHash] = useState("");
   const [amendOrderReferenceEventId, setAmendOrderReferenceEventId] = useState("");
   const [amendPendingReferenceEventId, setAmendPendingReferenceEventId] = useState("");
@@ -787,35 +792,44 @@ export function MarketplaceEventBuilder({
     orderExpiresAt,
     milestoneRows,
     guidedOrderTerms: isTransaction,
+    guidedReferences: isTransaction,
+    offerReferenceEventId,
     escrowSpenderPubKey,
     escrowOrderId,
     escrowMilestoneId,
     escrowAmount,
     escrowNonce,
+    escrowOrderReferenceEventId,
     deliveryOrderId,
     deliveryMilestoneId,
     deliveryEvidenceFormat,
     deliveredAt,
+    deliveryOrderReferenceEventId,
     acceptOrderId,
     acceptMilestoneId,
     acceptedAt,
+    acceptDeliveryReferenceEventId,
     disputeOrderId,
     disputeMilestoneId,
     disputeReasonCode,
     disputedAt,
+    disputeDeliveryReferenceEventId,
     settleOrderId,
     settleMilestoneId,
     buyerRefundCredits,
     providerRewardCredits,
     settledAt,
+    settleDisputeReferenceEventId,
     cancelOrderId,
     cancelMilestoneId,
     cancelledAt,
+    cancelOrderReferenceEventId,
     amendOrderId,
     amendMilestoneId,
     amendAmountCredits,
     amendOrderExpiresAt,
-    amendedAt
+    amendedAt,
+    amendOrderReferenceEventId
   };
   const currentRequirements = modeRequirements(mode, requirementInput);
   const currentMissingCount = currentRequirements.filter(requirement => !requirement.ok).length;
@@ -1453,35 +1467,44 @@ export function MarketplaceEventBuilder({
         orderExpiresAt,
         milestoneRows,
         guidedOrderTerms: isTransaction,
+        guidedReferences: isTransaction,
+        offerReferenceEventId,
         escrowSpenderPubKey,
         escrowOrderId,
         escrowMilestoneId,
         escrowAmount,
         escrowNonce,
+        escrowOrderReferenceEventId,
         deliveryOrderId,
         deliveryMilestoneId,
         deliveryEvidenceFormat,
         deliveredAt,
+        deliveryOrderReferenceEventId,
         acceptOrderId,
         acceptMilestoneId,
         acceptedAt,
+        acceptDeliveryReferenceEventId,
         disputeOrderId,
         disputeMilestoneId,
         disputeReasonCode,
         disputedAt,
+        disputeDeliveryReferenceEventId,
         settleOrderId,
         settleMilestoneId,
         buyerRefundCredits,
         providerRewardCredits,
         settledAt,
+        settleDisputeReferenceEventId,
         cancelOrderId,
         cancelMilestoneId,
         cancelledAt,
+        cancelOrderReferenceEventId,
         amendOrderId,
         amendMilestoneId,
         amendAmountCredits,
         amendOrderExpiresAt,
-        amendedAt
+        amendedAt,
+        amendOrderReferenceEventId
       });
       const missing = nextRequirements.filter(requirement => !requirement.ok);
       if (missing.length > 0) {
@@ -1946,6 +1969,17 @@ export function MarketplaceEventBuilder({
       return;
     }
 
+    // Resolve envelope time once so payload action timestamps cannot land before createdAt
+    // (kernel rejects deliveredAt < createdAt). Empty createdAt previously used Date.now()
+    // while defaults stayed on a stale March/April floor.
+    const resolvedCreatedAt = createdAtLive.trim() || new Date().toISOString();
+    const deliveredAtSafe = clampTimestampNotBefore(deliveredAtLive, resolvedCreatedAt);
+    const acceptedAtSafe = clampTimestampNotBefore(acceptedAtLive, resolvedCreatedAt);
+    const disputedAtSafe = clampTimestampNotBefore(disputedAtLive, resolvedCreatedAt);
+    const settledAtSafe = clampTimestampNotBefore(settledAtLive, resolvedCreatedAt);
+    const cancelledAtSafe = clampTimestampNotBefore(cancelledAtLive, resolvedCreatedAt);
+    const amendedAtSafe = clampTimestampNotBefore(amendedAtLive, resolvedCreatedAt);
+
     const activeSession = loadActiveSession();
     const authorPubKeyTrimmed = (
       authorPubKeyLive.trim() ||
@@ -2000,35 +2034,44 @@ export function MarketplaceEventBuilder({
       orderExpiresAt: orderExpiresAtLive,
       milestoneRows: milestoneRowsLive,
       guidedOrderTerms: isTransaction,
+      guidedReferences: isTransaction,
+      offerReferenceEventId: offerReferenceEventIdLive,
       escrowSpenderPubKey: escrowSpenderPubKeyLive,
       escrowOrderId: escrowOrderIdLive,
       escrowMilestoneId,
       escrowAmount: escrowAmountLive,
       escrowNonce: escrowNonceLive,
+      escrowOrderReferenceEventId: escrowOrderReferenceEventIdLive,
       deliveryOrderId: deliveryOrderIdLive,
       deliveryMilestoneId,
       deliveryEvidenceFormat: deliveryEvidenceFormatLive,
-      deliveredAt: deliveredAtLive,
+      deliveredAt: deliveredAtSafe,
+      deliveryOrderReferenceEventId: deliveryOrderReferenceEventIdLive,
       acceptOrderId: acceptOrderIdLive,
       acceptMilestoneId,
-      acceptedAt: acceptedAtLive,
+      acceptedAt: acceptedAtSafe,
+      acceptDeliveryReferenceEventId: acceptDeliveryReferenceEventIdLive,
       disputeOrderId: disputeOrderIdLive,
       disputeMilestoneId,
       disputeReasonCode: disputeReasonCodeLive,
-      disputedAt: disputedAtLive,
+      disputedAt: disputedAtSafe,
+      disputeDeliveryReferenceEventId: disputeDeliveryReferenceEventIdLive,
       settleOrderId: settleOrderIdLive,
       settleMilestoneId,
       buyerRefundCredits: buyerRefundCreditsLive,
       providerRewardCredits: providerRewardCreditsLive,
-      settledAt: settledAtLive,
+      settledAt: settledAtSafe,
+      settleDisputeReferenceEventId: settleDisputeReferenceEventIdLive,
       cancelOrderId: cancelOrderIdLive,
       cancelMilestoneId,
-      cancelledAt: cancelledAtLive,
+      cancelledAt: cancelledAtSafe,
+      cancelOrderReferenceEventId: cancelOrderReferenceEventIdLive,
       amendOrderId: amendOrderIdLive,
       amendMilestoneId,
       amendAmountCredits: amendAmountCreditsLive,
       amendOrderExpiresAt: amendOrderExpiresAtLive,
-      amendedAt: amendedAtLive
+      amendedAt: amendedAtSafe,
+      amendOrderReferenceEventId: amendOrderReferenceEventIdLive
     });
     const missingRequirements = currentRequirements.filter(requirement => !requirement.ok);
     if (missingRequirements.length > 0) {
@@ -2138,7 +2181,7 @@ export function MarketplaceEventBuilder({
       const common = {
         authorPubKey: authorPubKeyTrimmed,
         policyVersion: policyVersionLive.trim() || undefined,
-        createdAt: createdAtLive.trim() || undefined
+        createdAt: resolvedCreatedAt
       };
 
       const unsigned =
@@ -2177,7 +2220,7 @@ export function MarketplaceEventBuilder({
                   artifactHashes: deliveryArtifactHashesLive,
                   urls: deliveryUrlsLive,
                   notesHash: deliveryNotesHashLive,
-                  deliveredAt: deliveredAtLive,
+                  deliveredAt: deliveredAtSafe,
                   orderReferenceEventId: deliveryOrderReferenceEventIdLive
                 })
               : mode === "accept"
@@ -2185,7 +2228,7 @@ export function MarketplaceEventBuilder({
                     ...common,
                     orderId: acceptOrderIdLive,
                     milestoneId: acceptMilestoneIdLive,
-                    acceptedAt: acceptedAtLive,
+                    acceptedAt: acceptedAtSafe,
                     deliveryReferenceEventId: acceptDeliveryReferenceEventIdLive
                   })
                 : mode === "dispute"
@@ -2195,7 +2238,7 @@ export function MarketplaceEventBuilder({
                       milestoneId: live("disputeMilestoneId", disputeMilestoneId),
                       reasonCode: disputeReasonCodeLive,
                       notesHash: disputeNotesHashLive,
-                      disputedAt: disputedAtLive,
+                      disputedAt: disputedAtSafe,
                       deliveryReferenceEventId: disputeDeliveryReferenceEventIdLive
                     })
                   : mode === "settle"
@@ -2206,7 +2249,7 @@ export function MarketplaceEventBuilder({
                         outcome: settleOutcome,
                         buyerRefundCredits: buyerRefundCreditsLive,
                         providerRewardCredits: providerRewardCreditsLive,
-                        settledAt: settledAtLive,
+                        settledAt: settledAtSafe,
                         disputeReferenceEventId: settleDisputeReferenceEventIdLive
                       })
                     : mode === "cancel"
@@ -2214,7 +2257,7 @@ export function MarketplaceEventBuilder({
                           ...common,
                           orderId: cancelOrderIdLive,
                           milestoneId: live("cancelMilestoneId", cancelMilestoneId),
-                          cancelledAt: cancelledAtLive,
+                          cancelledAt: cancelledAtSafe,
                           reasonHash: cancelReasonHashLive,
                           orderReferenceEventId: cancelOrderReferenceEventIdLive,
                           cancelReferenceEventId: cancelPendingReferenceEventIdLive
@@ -2226,7 +2269,7 @@ export function MarketplaceEventBuilder({
                             milestoneId: live("amendMilestoneId", amendMilestoneId),
                             amountCredits: amendAmountCreditsLive,
                             orderExpiresAt: amendOrderExpiresAtLive,
-                            amendedAt: amendedAtLive,
+                            amendedAt: amendedAtSafe,
                             reasonHash: amendReasonHashLive,
                             orderReferenceEventId: amendOrderReferenceEventIdLive,
                             amendReferenceEventId: amendPendingReferenceEventIdLive
@@ -2992,16 +3035,41 @@ export function MarketplaceEventBuilder({
               </div>
             ) : null}
             {isTransaction ? (
-              <div className="mb-4 rounded-xl border border-border/70 bg-muted/25 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
-                Start with the basics buyers care about: what you offer, how pricing works, how proof is delivered, and when the offer expires.
-              </div>
-            ) : null}
-            {isTransaction ? (
-              <LanePublishFitPanel
-                template={activeLaneTemplate}
-                customLane={serviceLaneTemplateId === "custom"}
+              <OfferPublishEditor
+                density={offerFormDensity}
+                onDensityChange={setOfferFormDensity}
+                offerId={offerId}
+                onOfferIdChange={setOfferId}
+                serviceLaneTemplateId={serviceLaneTemplateId}
+                onServiceLaneTemplateChange={handleServiceLaneTemplateChange}
+                onResetTemplateDefaults={() => applyServiceLaneTemplate(serviceLaneTemplateId)}
+                activeLaneTemplate={activeLaneTemplate}
+                serviceType={serviceType}
+                onServiceTypeChange={setServiceType}
+                unitDefinition={unitDefinition}
+                onUnitDefinitionChange={setUnitDefinition}
+                pricePerUnitCredits={pricePerUnitCredits}
+                onPricePerUnitCreditsChange={setPricePerUnitCredits}
+                compensationMode={compensationMode}
+                onCompensationModeChange={setCompensationMode}
+                barterTerms={barterTerms}
+                onBarterTermsChange={setBarterTerms}
+                barterTags={barterTags}
+                onBarterTagsChange={setBarterTags}
+                deliveryMode={deliveryMode}
+                onDeliveryModeChange={setDeliveryMode}
+                offerExpiresAt={offerExpiresAt}
+                onOfferExpiresAtChange={setOfferExpiresAt}
+                allowedEvidenceFormats={allowedEvidenceFormats}
+                onAllowedEvidenceFormatsChange={setAllowedEvidenceFormats}
+                termsHash={termsHash}
+                onTermsHashChange={setTermsHash}
+                laneTemplateConstraintWarning={laneTemplateConstraintWarning}
+                fieldStyle={fieldStyle}
+                buttonStyle={buttonStyle}
               />
-            ) : null}
+            ) : (
+              <div>
             <div className={isTransaction ? "grid gap-4 lg:grid-cols-2" : undefined}>
             <label style={{ display: "block", marginBottom: "0.5rem" }}>
               {isTransaction ? "Offer ID" : "offerId"}
@@ -3175,6 +3243,8 @@ export function MarketplaceEventBuilder({
                 {laneTemplateConstraintWarning}
               </pre>
             ) : null}
+              </div>
+            )}
           </>
         ) : null}
 
@@ -4005,7 +4075,15 @@ export function MarketplaceEventBuilder({
             <p className="text-sm font-medium text-foreground">Submission status</p>
             {transactionSubmitState === "draft" ? (
               <p className="mt-1 text-sm text-muted-foreground">
-                Draft ready. Review this step and submit when you are ready.
+                {currentMissingCount > 0
+                  ? `Draft incomplete — ${currentMissingCount} required field${
+                      currentMissingCount === 1 ? "" : "s"
+                    } still need attention.`
+                  : mode === "offer" &&
+                      providerEligibility &&
+                      !providerEligibility.thresholdMet
+                    ? "Fields look complete, but provider admission is still blocked."
+                    : "Draft ready. Review this step and submit when you are ready."}
               </p>
             ) : null}
             {transactionSubmitState === "submitting" ? (
@@ -4764,6 +4842,18 @@ function friendlyRequirementLabel(label: string): string {
   if (label === "deliveryOrderId" || label === "acceptOrderId") {
     return "Order ID";
   }
+  if (label === "offerReferenceEventId") {
+    return "Offer reference event ID";
+  }
+  if (label === "orderReferenceEventId") {
+    return "Order reference event ID";
+  }
+  if (label === "deliveryReferenceEventId") {
+    return "Delivery reference event ID";
+  }
+  if (label === "disputeReferenceEventId") {
+    return "Dispute reference event ID";
+  }
   return label.replace(/([A-Z])/g, " $1");
 }
 
@@ -4855,35 +4945,44 @@ function modeRequirements(
     orderExpiresAt: string;
     milestoneRows: OrderMilestoneDraft[];
     guidedOrderTerms?: boolean;
+    guidedReferences?: boolean;
+    offerReferenceEventId?: string;
     escrowSpenderPubKey: string;
     escrowOrderId: string;
     escrowMilestoneId: string;
     escrowAmount: string;
     escrowNonce: string;
+    escrowOrderReferenceEventId?: string;
     deliveryOrderId: string;
     deliveryMilestoneId: string;
     deliveryEvidenceFormat: string;
     deliveredAt: string;
+    deliveryOrderReferenceEventId?: string;
     acceptOrderId: string;
     acceptMilestoneId: string;
     acceptedAt: string;
+    acceptDeliveryReferenceEventId?: string;
     disputeOrderId: string;
     disputeMilestoneId: string;
     disputeReasonCode: string;
     disputedAt: string;
+    disputeDeliveryReferenceEventId?: string;
     settleOrderId: string;
     settleMilestoneId: string;
     buyerRefundCredits: string;
     providerRewardCredits: string;
     settledAt: string;
+    settleDisputeReferenceEventId?: string;
     cancelOrderId: string;
     cancelMilestoneId: string;
     cancelledAt: string;
+    cancelOrderReferenceEventId?: string;
     amendOrderId: string;
     amendMilestoneId: string;
     amendAmountCredits: string;
     amendOrderExpiresAt: string;
     amendedAt: string;
+    amendOrderReferenceEventId?: string;
   }
 ): FieldRequirement[] {
   const text = (label: string, value: string): FieldRequirement => ({
@@ -4898,6 +4997,7 @@ function modeRequirements(
     const parsed = Number.parseInt(value.trim(), 10);
     return { label, ok: Number.isFinite(parsed) && parsed >= 0 };
   };
+  const guidedRefs = Boolean(fields.guidedReferences);
 
   if (mode === "offer") {
     const requirements: FieldRequirement[] = [
@@ -4929,63 +5029,107 @@ function modeRequirements(
         })
       )
     ];
+    if (guidedRefs) {
+      requirements.push(text("offerReferenceEventId", fields.offerReferenceEventId ?? ""));
+    }
     return requirements;
   }
   if (mode === "escrowSpend") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("spenderPubKey", fields.escrowSpenderPubKey),
       text("orderId", fields.escrowOrderId),
       text("milestoneId", fields.escrowMilestoneId),
       positiveInt("amount", fields.escrowAmount),
       text("nonce", fields.escrowNonce)
     ];
+    if (guidedRefs) {
+      requirements.push(text("orderReferenceEventId", fields.escrowOrderReferenceEventId ?? ""));
+    }
+    return requirements;
   }
   if (mode === "delivery") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("orderId", fields.deliveryOrderId),
       text("milestoneId", fields.deliveryMilestoneId),
       text("evidenceFormat", fields.deliveryEvidenceFormat),
       text("deliveredAt", fields.deliveredAt)
     ];
+    if (guidedRefs) {
+      requirements.push(text("orderReferenceEventId", fields.deliveryOrderReferenceEventId ?? ""));
+    }
+    return requirements;
   }
   if (mode === "accept") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("orderId", fields.acceptOrderId),
       text("milestoneId", fields.acceptMilestoneId),
       text("acceptedAt", fields.acceptedAt)
     ];
+    if (guidedRefs) {
+      requirements.push(text("deliveryReferenceEventId", fields.acceptDeliveryReferenceEventId ?? ""));
+    }
+    return requirements;
   }
   if (mode === "dispute") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("orderId", fields.disputeOrderId),
       text("milestoneId", fields.disputeMilestoneId),
       text("reasonCode", fields.disputeReasonCode),
       text("disputedAt", fields.disputedAt)
     ];
+    if (guidedRefs) {
+      requirements.push(text("deliveryReferenceEventId", fields.disputeDeliveryReferenceEventId ?? ""));
+    }
+    return requirements;
   }
   if (mode === "cancel") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("orderId", fields.cancelOrderId),
       text("milestoneId", fields.cancelMilestoneId),
       text("cancelledAt", fields.cancelledAt)
     ];
+    if (guidedRefs) {
+      requirements.push(text("orderReferenceEventId", fields.cancelOrderReferenceEventId ?? ""));
+    }
+    return requirements;
   }
   if (mode === "amend") {
-    return [
+    const requirements: FieldRequirement[] = [
       text("orderId", fields.amendOrderId),
       text("milestoneId", fields.amendMilestoneId),
       positiveInt("amountCredits", fields.amendAmountCredits),
       text("orderExpiresAt", fields.amendOrderExpiresAt),
       text("amendedAt", fields.amendedAt)
     ];
+    if (guidedRefs) {
+      requirements.push(text("orderReferenceEventId", fields.amendOrderReferenceEventId ?? ""));
+    }
+    return requirements;
   }
-  return [
+  const settleRequirements: FieldRequirement[] = [
     text("orderId", fields.settleOrderId),
     text("milestoneId", fields.settleMilestoneId),
     nonNegativeInt("buyerRefundCredits", fields.buyerRefundCredits),
     nonNegativeInt("providerRewardCredits", fields.providerRewardCredits),
     text("settledAt", fields.settledAt)
   ];
+  if (guidedRefs) {
+    settleRequirements.push(text("disputeReferenceEventId", fields.settleDisputeReferenceEventId ?? ""));
+  }
+  return settleRequirements;
+}
+
+function clampTimestampNotBefore(value: string, floorIso: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return floorIso;
+  }
+  const valueMs = Date.parse(trimmed);
+  const floorMs = Date.parse(floorIso);
+  if (!Number.isFinite(valueMs) || !Number.isFinite(floorMs) || valueMs >= floorMs) {
+    return trimmed;
+  }
+  return floorIso;
 }
 
 function validateOptionalRfc3339(value: string | undefined): string | null {

@@ -63,6 +63,6 @@ For `R7-M2`, mobile uses **remote pinned node mode** by default.
 
 ## Related docs
 
-- `docs/roadmap/r7-professional-client-execution-plan.md`
+- `docs/archive/roadmap/r7-professional-client-execution-plan.md`
 - `docs/runbooks/mobile-scaffold-runbook.md`
 - `docs/v0/r4-client-kernel-audit.md`
