@@ -84,11 +84,15 @@ async function main() {
   }
 
   const marketplace = await readUtf8("apps/web/app/marketplace/page.tsx");
-  if (
-    !/variant="offProtocol"|variant='offProtocol'/.test(marketplace) &&
-    !/KernelTruthBanner/.test(marketplace)
-  ) {
-    failures.push("marketplace entry missing SOC-01 off-protocol payment warning");
+  if (!/MarketplaceTrustNotes/.test(marketplace)) {
+    failures.push("marketplace entry missing MarketplaceTrustNotes (SOC-01 / kernel-truth disclosure)");
+  }
+
+  const marketplaceTrustNotes = await readUtf8(
+    "apps/web/components/marketplace/marketplace-trust-notes.tsx"
+  );
+  if (!/off-platform payment|PayPal/i.test(marketplaceTrustNotes)) {
+    failures.push("marketplace trust notes missing SOC-01 off-protocol payment warning");
   }
 
   const helpArticles = await readUtf8("apps/web/lib/help/articles.ts");
@@ -140,13 +144,18 @@ async function main() {
   }
 
   const marketplaceHero = await readUtf8("apps/web/components/marketplace/marketplace-hero.tsx");
-  if (!/Lane catalog/.test(marketplaceHero) || !/DiscoveryDraftImportCta/.test(marketplaceHero)) {
-    failures.push("marketplace hero missing lane catalog or discovery import CTA");
+  if (!/Lane catalog/.test(marketplaceHero)) {
+    failures.push("marketplace hero missing lane catalog link");
+  }
+  if (!/import=discovery|import:\s*"discovery"/.test(marketplaceHero) && !/Import a discovery draft/.test(marketplaceHero)) {
+    failures.push("marketplace hero missing discovery draft import entry point");
   }
 
-  const marketplaceToolbar = await readUtf8("apps/web/components/marketplace/marketplace-toolbar.tsx");
-  if (!/DiscoveryDraftImportCta/.test(marketplaceToolbar)) {
-    failures.push("marketplace toolbar missing discovery import CTA");
+  // Discovery import CTA + QR share may be demoted from the listings toolbar;
+  // require the capability surface to remain available for R8 share flows.
+  const discoveryCta = await readUtf8("apps/web/components/marketplace/discovery-draft-import-cta.tsx");
+  if (!/DiscoveryDraftImportCta/.test(discoveryCta) || !/import:\s*"discovery"/.test(discoveryCta)) {
+    failures.push("discovery draft import CTA missing builder deep link");
   }
 
   const discoveryImportPanel = await readUtf8(
@@ -164,8 +173,14 @@ async function main() {
   }
 
   const eventBuilder = await readUtf8("apps/web/app/components/marketplace-event-builder.tsx");
-  if (!/LanePublishFitPanel/.test(eventBuilder)) {
-    failures.push("marketplace event builder missing lane publish fit panel");
+  const offerPublishEditor = await readUtf8(
+    "apps/web/components/marketplace/offer-publish-editor.tsx"
+  );
+  if (!/OfferPublishEditor/.test(eventBuilder)) {
+    failures.push("marketplace event builder missing OfferPublishEditor");
+  }
+  if (!/LanePublishFitPanel/.test(offerPublishEditor)) {
+    failures.push("offer publish editor missing lane publish fit panel");
   }
   if (!/discovery-draft-import/.test(eventBuilder)) {
     failures.push("marketplace event builder missing discovery import anchor");
@@ -235,7 +250,6 @@ async function main() {
     failures.push("order action hub missing transport QR share");
   }
 
-  const discoveryCta = await readUtf8("apps/web/components/marketplace/discovery-draft-import-cta.tsx");
   if (!/TransportQrPanel/.test(discoveryCta)) {
     failures.push("discovery draft import CTA missing transport QR share");
   }
